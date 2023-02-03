@@ -1,0 +1,9 @@
+#!/usr/bin/env -S stimela run -l
+_include: 
+  - (cultcargo)wsclean.yml
+
+dummy-recipe:
+  info: a dummy recipe
+  steps:
+    image:
+      cab: wsclean
