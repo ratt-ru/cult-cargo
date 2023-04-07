@@ -11,6 +11,11 @@ packages = [{include = "cultcargo"}]
 python = "^3.8"
 stimela = "2.0rc2"
 
+[tool.poetry.group.builder]
+optional = true
+
+[tool.poetry.group.builder.dependencies]
+click = "^8.1"
 
 [build-system]
 requires = ["poetry-core"]
