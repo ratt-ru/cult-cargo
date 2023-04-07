@@ -76,8 +76,8 @@ images:
 
   smops:
     versions:
-      '0.1.6':
-        package: smops==0.1.6
+      '0.1.7':
+        package: smops==0.1.7
       latest: 
         package: smops
       master:
