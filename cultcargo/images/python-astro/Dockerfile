@@ -15,6 +15,9 @@ RUN pip install --no-cache-dir \
     python-casacore astropy astroplan astro-tigger-lsm \
     owlcat dask-ms scipy omegaconf bdsf msutils
 
+# change this to master or release version when ready
+RUN pip install --no-cache-dir git+https://github.com/caracal-pipeline/stimela@singularize
+
 RUN ln -s /usr/bin/python{VERSION} /usr/bin/python
 
 CMD /usr/bin/python{VERSION}
