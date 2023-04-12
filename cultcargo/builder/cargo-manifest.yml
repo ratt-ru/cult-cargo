@@ -34,9 +34,9 @@ images:
 
   python-astro:
     versions:
-      '3.8': {}
-      '3.9': {}
       '3.10': {}
+      '3.9': {}
+      '3.8': {}
 
   casa:
     assign:
@@ -67,12 +67,23 @@ images:
       
   crystalball:
     versions:
-      '0.3.0':
-        package: crystalball==0.3.0
-      latest: 
-        package: crystalball
+      # '0.3.0':
+      #   package: crystalball==0.3.0
+      # latest: 
+      #   package: crystalball
       master:
         package: git+https://github.com/caracal-pipeline/crystalball
+      issue-51:
+        package: git+https://github.com/caracal-pipeline/crystalball@issue-51
+
+  tricolour:
+    versions:
+      '0.1.8':
+        package: tricolour==0.1.8
+      latest: 
+        package: tricolour
+      master:
+        package: git+https://github.com/ratt-ru/tricolour
 
   smops:
     versions:
@@ -95,5 +106,9 @@ images:
   quartical:
     versions:
       base:
-        package: git+https://github.com/JSKenyon/QuartiCal@stimelation
+        package: git+https://github.com/ratt-ru/QuartiCal@stimelation
 
+  cubical:
+    versions:
+      base:
+        package: git+https://github.com/ratt-ru/CubiCal@noxcal

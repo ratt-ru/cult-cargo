@@ -1,0 +1,20 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  taql.update:
+    name: taql.update 
+    info: "interface to taql update (https://manpages.ubuntu.com/manpages/impish/man1/taql.1.html)"
+    image: ${vars.cult-cargo.registry}/pythion-astro:cc${vars.cult-cargo.version}
+    command: taql update
+
+    policies:
+      positional: true
+    inputs:
+      ms:
+        dtype: MS
+        required: true
+      commands:
+        dtype: List[str]
+        policies:
+          repeat: list

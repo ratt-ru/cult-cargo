@@ -1,0 +1,44 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  tricolour:
+    info: Tricolour flagger (https://github.com/ratt-ru/tricolour)
+    image: ${vars.cult-cargo.registry}/tricolour:cc${vars.cult-cargo.version}
+    command: tricolour
+
+    inputs:
+      ms:
+        dtype: MS
+        policies:
+          positional: true
+      config:
+        dtype: File
+      ignore-flags:
+        dtype: bool
+      flagging-strategy:
+        choices: [standard,polarisation,total_power]
+      row-chunks:
+        dtype: int
+      baseline-chunks:
+        dtype: int
+      nworkers:
+        dtype: int
+      dilate-masks:
+        dtype: Union[int,str]
+      data-column:
+        dtype: str
+      field-names:
+        dtype: str
+      scan_numbers:
+        dtype: str
+      disable-post-mortem:
+        dtype: bool
+        default: true
+      window-backend:
+        choices: [numpy, zarr-disk]
+      temporary-directory:
+        dtype: Directory
+      subtract-model-column:
+        dtype: str
+

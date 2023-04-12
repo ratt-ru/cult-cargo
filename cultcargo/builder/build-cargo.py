@@ -93,8 +93,10 @@ def build_cargo(manifest: str, build=False, push=False, all=False, rebuild=False
         image_info = conf.images[image]
         image_vars = global_vars.copy()
         image_vars.update(IMAGE=image, **(image_info.assign or {}))
+        image_vars.setdefault("CMD", image)
 
         path = os.path.join(BASE_IMAGES, image).format(**image_vars)
+        latest = None
 
         for version in versions:
             version_info = image_info.versions[version]
@@ -106,7 +108,10 @@ def build_cargo(manifest: str, build=False, push=False, all=False, rebuild=False
             dockerfile = version_info.get('dockerfile') or image_info.dockerfile or 'Dockerfile'
             dockerfile = dockerfile.format(**version_vars)
             image_version = version_info.VERSION.format(**version_vars)
-            image_version += f"-cc{CULT_VERSION}"
+            if image_version == "latest":
+                latest = image_version = f"cc{CULT_VERSION}"
+            else:
+                image_version += f"-cc{CULT_VERSION}"
 
             dockerpath = os.path.join(path, dockerfile)
             print(f"[bold green]{image}:{image_version}[/bold green] defined by {dockerpath}")
@@ -123,16 +128,14 @@ def build_cargo(manifest: str, build=False, push=False, all=False, rebuild=False
                 run(f"docker push {full_image}", cwd=path)
 
         if all_versions and versions:
-            latest = None
-            if image_info.latest:
-                latest = image_info.latest.format(**version_vars)
-            elif 'latest' not in image_info.versions:
-                latest = image_version  # use latest version from loop above
-            if latest:
+            if latest is None:
+                latest = image_version  # use last version from loop above
                 run(f"docker tag {registry}/{image}:{latest} {registry}/{image}:cc{CULT_VERSION}", cwd=build_dir)
-
                 if push:
                     run(f"docker push {registry}/{image}:cc{CULT_VERSION}", cwd=path)
+            run(f"docker tag {registry}/{image}:cc{CULT_VERSION} {registry}/{image}:latest", cwd=build_dir)
+            if push:
+                run(f"docker push {registry}/{image}:latest", cwd=path)
 
 
 

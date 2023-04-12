@@ -1,0 +1,23 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  tigger.convert:
+    name: tigger.convert
+    info: Interface to the tigger-convert command (https://github.com/ratt-ru/tigger-lsm)
+    command: tigger-convert
+    image: ${vars.cult-cargo.registry}/python-astro:cc${vars.cult-cargo.version}
+    inputs:
+      src:
+        dtype: File
+        required: true
+        policies:
+          positional: true
+      force:
+        dtype: bool
+        default: true
+    outputs:
+      dest:
+        dtype: File
+        policies:
+          positional: true

@@ -1,3 +1,4 @@
 vars:
   cult-cargo:
+    registry: quay.io/stimela2
     version: 0.0.2

@@ -1,0 +1,32 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  msutils.copycol:
+    info: Copies one MS column to another. See https://github.com/SpheMakh/msutils
+    flavour: python
+    command: MSUtils.msutils.copycol
+    image: ${vars.cult-cargo.registry}/python-astro:cc${vars.cult-cargo.version}
+    inputs:
+      msname: 
+        dtype: MS
+        required: true
+      fromcol:
+        dtype: str
+        required: true
+      tocol:
+        dtype: str
+        required: true
+
+  msutils.addcol:
+    info: Adds an MS column. See https://github.com/SpheMakh/msutils
+    flavour: python
+    command: MSUtils.msutils.addcol
+    image: ${vars.cult-cargo.registry}/python-astro:cc${vars.cult-cargo.version}
+    inputs:
+      msname: 
+        dtype: MS
+        required: true
+      colname:
+        dtype: str
+        required: true

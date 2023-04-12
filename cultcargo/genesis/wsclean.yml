@@ -1,7 +1,7 @@
 lib:
   params: 
     wsclean:
-      base_inputs:
+      base-inputs:
         ms:
           info: Measurement set(s)
           writable: true
@@ -35,8 +35,8 @@ lib:
           info: Make PSF only
           dtype: bool
         weight:
-          info: "Weightmode can be: natural, uniform, briggs. Default: uniform. When using Briggs' weighting, add the robustness parameter, like: '-weight briggs 0.5'"
-          dtype: str
+          info: "Weighting: natural, uniform (default), briggs. When using Briggs, add the robustness parameter as a number"
+          dtype: Union[str, Tuple[str, float]]
           policies:
             split: " "
             repeat: list
@@ -109,7 +109,7 @@ lib:
           dtype:  bool
         use-wgridder:
           dtype: bool
-        temp_dir:
+        temp-dir:
           dtype: Directory
         log-time:
           dtype: bool
@@ -125,8 +125,18 @@ lib:
           dtype: bool
         simulate-noise:
           dtype: Union[float, str]
+        taper-inner-tukey:
+          dtype: float
+        minuv-l:
+          dtype: float
+        maxuv-l:
+          dtype: float
+        minuvw-m:
+          dtype: float
+        maxuvw-m:
+          dtype: float
 
-      base_outputs:
+      base-outputs:
         source-list:
           info: Source list
           dtype: File
