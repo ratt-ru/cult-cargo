@@ -8,6 +8,7 @@ cabs:
     image: ${vars.cult-cargo.registry}/wsclean:cc${vars.cult-cargo.version}
     command: wsclean
     info: WSClean imager
+    dynamic_schema: cultcargo.genesis.wsclean.make_stimela_schema
 
     defaults:
       column: DATA
@@ -20,53 +21,180 @@ cabs:
     inputs:
       _use: lib.params.wsclean.base-inputs
 
+      multi:
+        chan:
+          info: 
+            Forces output schema to use multi-channel mode. Stimela will normally infer this
+            from the nchan setting, but you can set this parameter to override.
+          dtype: bool
+          category: Obscure
+          policies:
+            skip: true
+        pol:
+          info: 
+            Forces output schema to use multi-Stokes mode. Stimela will normally infer this
+            from the pol setting, but you can set  this parameter to override.
+          dtype: bool
+          category: Obscure
+          policies:
+            skip: true
+        interval:
+          info:
+            Forces output schema to use multi-interval mode. Stimela will normally infer this
+            from the intervals-out setting -- use this parameter to override.
+          dtype: bool
+          category: Obscure
+          policies:
+            skip: true
+
     outputs:
       _use: lib.params.wsclean.base-outputs
 
-      dirty:
-        info: Dirty images
-        dtype: List[File]
-        implicit: "=GLOB({current.prefix}-[0-9][0-9][0-9][0-9]-dirty.fits)"
-        must_exist: false
-      restored: 
-        info: Restored images
-        dtype: List[File]
-        implicit: "=GLOB({current.prefix}-[0-9][0-9][0-9][0-9]-image.fits)"
-        must_exist: false
-      restored-timeint: 
-        info: Restored images per time interval
-        dtype: List[File]
-        implicit: "=GLOB({current.prefix}-t[0-9][0-9][0-9][0-9]-image.fits)"
-        must_exist: false
-      residual:
-        dtype: List[File]
-        implicit: "=GLOB({current.prefix}-[0-9][0-9][0-9][0-9]-residual.fits)"
-        must_exist: false
-      model:
-        info: Model images
-        dtype: List[File]
-        implicit: "=GLOB({current.prefix}-[0-9][0-9][0-9][0-9]-model.fits)"
-        must_exist: false
-      restored-mfs:
-        info: Restored MFS image
-        dtype: File
-        implicit: "{current.prefix}-MFS-image.fits"
-        must_exist: false
-      residual-mfs:
-        info: Residual MFS image
-        dtype: File
-        implicit: "{current.prefix}-MFS-residual.fits"
-        must_exist: false
-      model-mfs:
-        info: Model MFS image
-        dtype: File
-        implicit: "{current.prefix}-MFS-model.fits"
-        must_exist: false
-      dirty-mfs:
-        info: Dirty MFS image
-        dtype: File
-        implicit: "{current.prefix}-MFS-dirty.fits"
-        must_exist: false
+      # dirty:
+      #   timeint:
+      #     info: Dirty images per time interval
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-t[0-9][0-9][0-9][0-9]-dirty.fits)"
+      #     must_exist: false
+      #   perband:
+      #     info: Dirty images per band
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-[0-9][0-9][0-9][0-9]-dirty.fits)"
+      #     must_exist: false
+      #   timeint-perband:
+      #     info: Dirty images per time interval and band
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-t[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-dirty.fits)"
+      #     must_exist: false
+      #   mfs:
+      #     info: Dirty MFS image
+      #     dtype: File
+      #     implicit: "{current.prefix}-MFS-dirty.fits"
+      #     must_exist: false
+      #   image:
+      #     info: Dirty image, single channel mode
+      #     dtype: File
+      #     implicit: "{current.prefix}-dirty.fits"
+      #     must_exist: false
+      #   timeint-mfs:
+      #     info: Dirty MFS image per time interbal
+      #     dtype: List[File]
+      #     implicit: "{current.prefix}-t[0-9][0-9][0-9][0-9]-MFS-dirty.fits"
+      #     must_exist: false
+      # restored: 
+      #   timeint:
+      #     info: Restored images per time interval
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-t[0-9][0-9][0-9][0-9]-image.fits)"
+      #     must_exist: false
+      #   perband:
+      #     info: Restored images per band
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-[0-9][0-9][0-9][0-9]-image.fits)"
+      #     must_exist: false
+      #   timeint-perband:
+      #     info: Restored images per time interval and band
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-t[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-image.fits)"
+      #     must_exist: false
+      #   mfs:
+      #     info: Restored MFS image
+      #     dtype: File
+      #     implicit: "{current.prefix}-MFS-image.fits"
+      #     must_exist: false
+      #   image:
+      #     info: Restored image, single channel mode
+      #     dtype: File
+      #     implicit: "{current.prefix}-image.fits"
+      #     must_exist: false
+      #   timeint-mfs:
+      #     info: Restored MFS image per time interbal
+      #     dtype: List[File]
+      #     implicit: "{current.prefix}-t[0-9][0-9][0-9][0-9]-MFS-image.fits"
+      #     must_exist: false
+      # residual:
+      #   timeint:
+      #     info: Residual images per time interval
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-t[0-9][0-9][0-9][0-9]-residual.fits)"
+      #     must_exist: false
+      #   perband:
+      #     info: Residual images per band
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-[0-9][0-9][0-9][0-9]-residual.fits)"
+      #     must_exist: false
+      #   timeint-perband:
+      #     info: Residual images per time interval and band
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-t[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-residual.fits)"
+      #     must_exist: false
+      #   mfs:
+      #     info: Residual MFS image
+      #     dtype: File
+      #     implicit: "{current.prefix}-MFS-residual.fits"
+      #     must_exist: false
+      #   image:
+      #     info: Residual image, single channel mode
+      #     dtype: File
+      #     implicit: "{current.prefix}-residual.fits"
+      #     must_exist: false
+      #   timeint-mfs:
+      #     info: Residual MFS image per time interbal
+      #     dtype: List[File]
+      #     implicit: "{current.prefix}-t[0-9][0-9][0-9][0-9]-MFS-residual.fits"
+      #     must_exist: false
+      # model:
+      #   timeint:
+      #     info: Model images per time interval
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-t[0-9][0-9][0-9][0-9]-model.fits)"
+      #     must_exist: false
+      #   perband:
+      #     info: Model images per band
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-[0-9][0-9][0-9][0-9]-model.fits)"
+      #     must_exist: false
+      #   timeint-perband:
+      #     info: Model images per time interval and band
+      #     dtype: List[File]
+      #     implicit: "=GLOB({current.prefix}-t[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]-model.fits)"
+      #     must_exist: false
+      #   mfs:
+      #     info: Model MFS image
+      #     dtype: File
+      #     implicit: "{current.prefix}-MFS-model.fits"
+      #     must_exist: false
+      #   image:
+      #     info: Model image, single channel mode
+      #     dtype: File
+      #     implicit: "{current.prefix}-model.fits"
+      #     must_exist: false
+      #   timeint-mfs:
+      #     info: Model MFS image per time interbal
+      #     dtype: List[File]
+      #     implicit: "{current.prefix}-t[0-9][0-9][0-9][0-9]-MFS-model.fits"
+      #     must_exist: false
+      # ## retained for backwards compatibility
+      # restored-mfs:
+      #   info: Restored MFS image
+      #   dtype: File
+      #   implicit: "{current.prefix}-MFS-image.fits"
+      #   must_exist: false
+      # residual-mfs:
+      #   info: Residual MFS image
+      #   dtype: File
+      #   implicit: "{current.prefix}-MFS-residual.fits"
+      #   must_exist: false
+      # model-mfs:
+      #   info: Model MFS image
+      #   dtype: File
+      #   implicit: "{current.prefix}-MFS-model.fits"
+      #   must_exist: false
+      # dirty-mfs:
+      #   info: Dirty MFS image
+      #   dtype: File
+      #   implicit: "{current.prefix}-MFS-dirty.fits"
+      #   must_exist: false
 
   wsclean-pol:
     name: wsclean-pol
@@ -140,6 +268,10 @@ cabs:
         implicit: "=GLOB({current.prefix}-MFS-[IQUV]-dirty.fits)"
         must_exist: false
       dirty:
+        timeint:
+          dtype: List[File]
+          implicit: "=GLOB({current.prefix}-t[0-9][0-9][0-9][0-9]-dirty.fits)"
+          must_exist: false
         stokes:
           info: Dirty images
           dtype: List[File]

@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -U pip setuptools wheel
 
 # add useful astro stuff
 RUN pip install --no-cache-dir \
-    python-casacore astropy astroplan astro-tigger-lsm \
+    python-casacore astropy astroplan regions astro-tigger-lsm \
     owlcat dask-ms scipy omegaconf bdsf msutils
 
 # change this to master or release version when ready
