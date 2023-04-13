@@ -25,6 +25,11 @@ lib:
         deconvolution-channels:
           info: Channels to use in deconvolution
           dtype: int
+        pol: 
+          choices: [I, IQ, IV, IQUV]
+          default: I
+        join-polarizations:
+          dtype: bool
         intervals-out:
           dtype: int
         threads:
