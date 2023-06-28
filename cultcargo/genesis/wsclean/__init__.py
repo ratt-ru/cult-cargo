@@ -1,20 +1,27 @@
 from scabha.cargo import Parameter
-from omegaconf import OmegaConf
 from typing import Dict, Any
 
-def img_output(imagetype, desc, glob):
+def img_output(imagetype, desc, path, glob=True, must_exist=False):
     # reamp image type to output filename component
     if imagetype == "restored":
         imagetype = "image"
+    implicit = f"{{current.prefix}}-{path}-{imagetype}.fits"
+    if glob:
+        implicit = f"=GLOB({implicit})"
     return Parameter(
         info=f"{imagetype.capitalize()} {desc}",
-        dtype="List[File]",
-        implicit=f"=GLOB({{current.prefix}}-{glob}-{imagetype}.fits)",
-        must_exist=False)   
+        dtype="List[File]" if glob else "File",
+        implicit=implicit,
+        must_exist=must_exist)   
 
 
 def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], outputs: Dict[str, Parameter]):
     """Augments a schema for stimela based on solver.terms"""
+
+    # predict mode has no outputs
+    if params.get('predict'):
+        return inputs, outputs
+
     outputs = outputs.copy()
 
     # nchan -- if not an integer, assume runtime evaluation and >=2 then
@@ -32,6 +39,10 @@ def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], ou
     multitime = params.get('multi.intervals', not isinstance(ntime, int) or ntime > 1)
 
     for imagetype in "dirty", "restored", "residual", "model":
+        if imagetype == "dirty" or params.get('niter', 0) > 0:
+            must_exist = True
+        else:
+            must_exist = False
         for st in stokes:
             # define name/description/filename components for this Stokes 
             if multistokes:
@@ -45,25 +56,32 @@ def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], ou
                 if multichan:
                     outputs[f"{imagetype}.{st_name}per-interval.per-band"] = img_output(imagetype,
                         f"{st_desc} images per time interval and band",
-                        f"t[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]{st_fname}")
+                        f"t[0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9]{st_fname}", 
+                        must_exist=must_exist)
                     outputs[f"{imagetype}.{st_name}per-interval.mfs"] = img_output(imagetype,
                         f"{st_desc} MFS image per time interval",
-                        f"t[0-9][0-9][0-9][0-9]-MFS{st_fname}")
+                        f"t[0-9][0-9][0-9][0-9]-MFS{st_fname}",
+                        must_exist=must_exist)
                 else:
                     outputs[f"{imagetype}.{st_name}per-interval"] = img_output(imagetype,
                         f"{st_desc} image per time interval",
-                        f"t[0-9][0-9][0-9][0-9]{st_fname}")
+                        f"t[0-9][0-9][0-9][0-9]{st_fname}",
+                        must_exist=must_exist)
+
             else:
                 if multichan:
                     outputs[f"{imagetype}.{st_name}per-band"] = img_output(imagetype,
                         f"{st_desc} images per band",
-                        f"[0-9][0-9][0-9][0-9]{st_fname}")
+                        f"[0-9][0-9][0-9][0-9]{st_fname}",
+                        must_exist=must_exist)
                     outputs[f"{imagetype}.{st_name}mfs"] = img_output(imagetype,
                         f"{st_desc} MFS image",
-                        f"MFS{st_fname}")
+                        f"MFS{st_fname}", glob=False,
+                        must_exist=must_exist)
                 else:
                     outputs[f"{imagetype}{st_name}"] = img_output(imagetype,
                         f"{st_desc} image",
-                        f"{st_fname}")
+                        f"{st_fname}", glob=False,
+                        must_exist=must_exist)
 
     return inputs, outputs

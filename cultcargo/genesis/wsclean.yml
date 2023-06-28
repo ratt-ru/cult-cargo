@@ -107,15 +107,15 @@ lib:
           dtype: bool
         no-update-model-required:
           dtype: bool
-        cont:
+        continue:
           dtype: bool
-          nom_de_guerre: continue 
         subtract-model:
           dtype:  bool
         use-wgridder:
           dtype: bool
         temp-dir:
           dtype: Directory
+          skip_freshness_checks: true
         log-time:
           dtype: bool
         interval:
