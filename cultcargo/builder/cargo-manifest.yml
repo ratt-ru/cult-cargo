@@ -64,6 +64,15 @@ images:
         package: breizorro
       master:
         package: git+https://github.com/ratt-ru/breizorro
+
+  shadems:
+    versions:
+      '0.5.3':
+        package: shadems==0.5.3
+      latest: 
+        package: shadems
+      master:
+        package: git+https://github.com/ratt-ru/shadeMS
       
   crystalball:
     versions:
