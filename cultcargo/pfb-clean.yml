@@ -1,0 +1,5 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  _include: genesis/pfb-clean/latest/stimela_cabs.yaml
