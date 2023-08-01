@@ -2,7 +2,7 @@ from dataclasses import make_dataclass
 from omegaconf import OmegaConf as oc
 from typing import Dict, Any
 from scabha.cargo import Parameter
-from quartical.config import Gain, BaseConfig, gain_schema
+from . import Gain, BaseConfig, gain_schema
 
 
 def finalize_structure(additional_config):
