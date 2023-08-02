@@ -96,7 +96,7 @@ inputs:
     metavar: DEG
 
   _include:
-    - (pfb.parser)dist.yml
+    - dist.yml
 
 outputs:
     {}

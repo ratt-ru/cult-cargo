@@ -1,6 +1,6 @@
 from dataclasses import fields, _MISSING_TYPE
 from typing import List, Dict
-from converters import as_time, as_freq
+from .converters import as_time, as_freq
 
 
 class BaseConfigSection:

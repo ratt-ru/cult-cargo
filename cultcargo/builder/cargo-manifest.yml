@@ -122,6 +122,6 @@ images:
       base:
         package: git+https://github.com/ratt-ru/CubiCal@noxcal
 
-  # pfb-clean:
-  #     latest:
-  #       package: git+https://github.com/ratt-ru/pfb-clean@awskube
+  pfb-clean:
+      latest:
+        package: git+https://github.com/ratt-ru/pfb-clean@awskube

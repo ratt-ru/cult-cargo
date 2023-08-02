@@ -4,7 +4,7 @@ from omegaconf import OmegaConf as oc
 from typing import Dict
 from scabha import schema_utils
 from scabha.cargo import Parameter
-from config_classes import BaseConfigSection, POST_INIT_MAP
+from .config_classes import BaseConfigSection, POST_INIT_MAP
 
 base_schema = gain_schema = None
 
