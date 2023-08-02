@@ -20,7 +20,7 @@ cabs:
     image: ${vars.cult-cargo.registry}/quartical:base-cc${vars.cult-cargo.version}
     command: goquartical-backup
     info: QuartiCal column backup script
-    
+
     policies:
       positional: true
 
@@ -38,4 +38,28 @@ cabs:
               zarr that will be created, e.g. path/to/dir.
       column:
         dtype: str
-        info: Name of column to be backed up.    
+        info: Name of column to be backed up.
+
+  quartical-restore:
+    name: quartical-restore
+    image: ${vars.cult-cargo.registry}/quartical:base-cc${vars.cult-cargo.version}
+    command: goquartical-backup
+    info: QuartiCal column restoring script
+
+    policies:
+      positional: true
+
+    inputs:
+      zarr_path:
+        dtype: Directory
+        must_exist: true
+        info: Path to backup zarr column e.g. path/to/dir/20211201-154457-foo.MS-FLAG.bkp.qc.
+              Also accepts valid s3 urls.
+      ms_path:
+        dtype: Directory
+        must_exist: true
+        info: Path to measurement set, e.g. path/to/dir/foo.MS. Also accepts valid s3 urls.
+      column_name:
+        dtype: str
+        info: Name of column to populate using the backup.
+              Note that this does not have to be the same column as was used to create the backup.
