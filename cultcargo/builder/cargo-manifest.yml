@@ -115,7 +115,7 @@ images:
   quartical:
     versions:
       base:
-        package: git+https://github.com/ratt-ru/QuartiCal@main
+        package: git+https://github.com/ratt-ru/QuartiCal@v0.2.1-envvar
 
   cubical:
     versions:

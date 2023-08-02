@@ -43,7 +43,7 @@ cabs:
   quartical-restore:
     name: quartical-restore
     image: ${vars.cult-cargo.registry}/quartical:base-cc${vars.cult-cargo.version}
-    command: goquartical-backup
+    command: goquartical-restore
     info: QuartiCal column restoring script
 
     policies:
