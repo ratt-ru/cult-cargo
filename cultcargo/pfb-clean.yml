@@ -3,3 +3,30 @@ _include:
 
 cabs:
   _include: genesis/pfb-clean/latest/stimela_cabs.yaml
+
+  pfb_init:
+    image: ${vars.cult-cargo.registry}/pfb-clean:cc${vars.cult-cargo.version}
+
+  pfb_grid:
+    image: ${vars.cult-cargo.registry}/pfb-clean:cc${vars.cult-cargo.version}
+
+  pfb_degrid:
+    image: ${vars.cult-cargo.registry}/pfb-clean:cc${vars.cult-cargo.version}
+
+  pfb_clean:
+    image: ${vars.cult-cargo.registry}/pfb-clean:cc${vars.cult-cargo.version}
+
+  pfb_restore:
+    image: ${vars.cult-cargo.registry}/pfb-clean:cc${vars.cult-cargo.version}
+
+  pfb_fwdbwd:
+    image: ${vars.cult-cargo.registry}/pfb-clean:cc${vars.cult-cargo.version}
+
+  pfb_forward:
+    image: ${vars.cult-cargo.registry}/pfb-clean:cc${vars.cult-cargo.version}
+
+  pfb_spotless:
+    image: ${vars.cult-cargo.registry}/pfb-clean:cc${vars.cult-cargo.version}
+
+  pfb_model2comps:
+    image: ${vars.cult-cargo.registry}/pfb-clean:cc${vars.cult-cargo.version}
