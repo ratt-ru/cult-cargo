@@ -1,6 +1,6 @@
 _include:
   - genesis/cult-cargo-base.yml
-  - genesis/wsclean/wsclean.yml
+  - genesis/wsclean/wsclean-lib.yml
 
 cabs:
   wsclean:
