@@ -2,7 +2,7 @@ _include:
   - genesis/cult-cargo-base.yml
 
 cabs:
-  _include: genesis/pfb-clean/latest/stimela_cabs.yaml
+  _include: genesis/pfb-clean/latest/uncabbedcabs.yaml
 
   pfb_init:
     image: ${vars.cult-cargo.registry}/pfb-clean:cc${vars.cult-cargo.version}
