@@ -4,7 +4,11 @@ _include:
 cabs:
   tricolour:
     info: Tricolour flagger (https://github.com/ratt-ru/tricolour)
-    image: ${vars.cult-cargo.registry}/tricolour:cc${vars.cult-cargo.version}
+    
+    image: 
+      _use: vars.cult-cargo.images
+      name: tricolour
+
     command: tricolour
 
     inputs:

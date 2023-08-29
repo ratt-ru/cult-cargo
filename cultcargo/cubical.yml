@@ -4,7 +4,9 @@ _include:
 cabs:
   cubical:
     name: cubical
-    image: ${vars.cult-cargo.registry}/cubical:cc${vars.cult-cargo.version}
+    image: 
+      _use: vars.cult-cargo.images
+      name: cubical
     command: gocubical
     info: CubiCal calibration package (https://github.com/ratt-ru/CubiCal)
 

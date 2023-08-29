@@ -4,7 +4,9 @@ _include:
 cabs:
   crystalball:
     name: crystalball
-    image: ${vars.cult-cargo.registry}/crystalball:cc${vars.cult-cargo.version}
+    image: 
+      _use: vars.cult-cargo.images
+      name: crystalball
     command: crystalball
     info: Crystalball visibility predictor
 

@@ -5,7 +5,9 @@ cabs:
   fitstool.stack-freq-cube:
     info: Uses Owlcat fitstool.py (https://github.com/ratt-ru/owlcat) to stack a frequency cube
     command: fitstool.py
-    image: ${vars.cult-cargo.registry}/python-astro:cc${vars.cult-cargo.version}
+    image: 
+      _use: vars.cult-cargo.images
+      name: python-astro
     inputs:
       images:
         dtype: List[File]

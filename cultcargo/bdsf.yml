@@ -5,7 +5,9 @@ cabs:
   bdsf.catalog:
     name: bdsf.catalog
     info: Uses PyBDSF to source-find within an image and write source catalog(s)
-    image: ${vars.cult-cargo.registry}/python-astro:cc${vars.cult-cargo.version}
+    image: 
+      _use: vars.cult-cargo.images
+      name: python-astro
     command: |
       import sys
       import bdsf as bdsm

@@ -17,7 +17,10 @@ cabs:
 
   quartical-backup:
     name: quartical-backup
-    image: ${vars.cult-cargo.registry}/quartical:base-cc${vars.cult-cargo.version}
+    image: 
+      _use: vars.cult-cargo.images
+      name: quartical
+      
     command: goquartical-backup
     info: QuartiCal column backup script
     
