@@ -2,6 +2,11 @@ assign:
   CULT_REGISTRY: quay.io/stimela2
   CULT_VERSION: 0.0.2
 
+  # standard variables used in templated Docker files
+  pre_install: ''
+  post_install: ''
+  extra_deps: ''
+
 images:
   base-cult:
     versions:
@@ -86,8 +91,11 @@ images:
         package: git+https://github.com/caracal-pipeline/crystalball@issue-51
 
   tricolour:
+    # assign:
+    #  pre_install: RUN pip uninstall -y bokeh # bokeh causes deps conflict with numpy pin in tricolour
+    #   extra_deps: numpy\<1.20 numba==0.54.0 bokeh\<3 psutil
     versions:
-      '0.1.8':
+      '0.1.8.1':
         package: tricolour==0.1.8
       latest: 
         package: tricolour

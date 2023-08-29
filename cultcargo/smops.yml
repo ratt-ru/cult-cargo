@@ -6,8 +6,7 @@ cabs:
     name: smops
     image: 
       _use: vars.cult-cargo.images
-      name: python-astro
-      image: smops
+      name: smops
       
     command: smops
     info: "Smooth Operator: frequency axis upsampling for WSClean-derived model images"

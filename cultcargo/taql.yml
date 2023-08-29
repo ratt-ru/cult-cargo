@@ -8,6 +8,7 @@ cabs:
     image: 
       _use: vars.cult-cargo.images
       name: python-astro
+      
     command: taql update
 
     policies:
