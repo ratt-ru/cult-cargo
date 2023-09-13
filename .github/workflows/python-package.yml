@@ -42,4 +42,4 @@ jobs:
     - name: Test command
       run: |
         poetry run stimela --help
-        poetry stimela doc test-recipe.yml
+        poetry run stimela doc test-recipe.yml
