@@ -21,3 +21,5 @@ RUN apt-get update && apt-get -y upgrade && \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt/archives 
 
+RUN mkdir -m 777 /.casa
+
