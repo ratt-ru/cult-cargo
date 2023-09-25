@@ -129,3 +129,28 @@ images:
     versions:
       base:
         package: git+https://github.com/ratt-ru/CubiCal@noxcal
+
+  mosaic-queen:
+    assign:
+      pre_install: RUN apt update && apt install -y montage
+    versions:
+      '1.1.1':
+        package: mosaic-queen==1.1.1
+      latest:
+        package: mosaic-queen
+      master:
+        package: git+https://github.com/caracal-pipeline/MosaicQueen
+
+  spimple:
+    versions:
+      master:
+        package: git+https://github.com/landmanbester/spimple.git
+      base:
+        package: git+https://github.com/landmanbester/spimple.git@dropzweights
+
+  aimfast:
+    versions:
+      '1.3.4':
+        package: aimfast==1.3.4
+      base:
+        package: git+https://github.com/Athanaseus/aimfast.git

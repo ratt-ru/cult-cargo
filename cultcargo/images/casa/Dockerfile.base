@@ -22,3 +22,5 @@ RUN apt-get update && apt-get -y upgrade && \
     && rm -rf /var/cache/apt/archives 
 
 RUN mkdir -m 777 /.casa /.matplotlib
+
+ENV LD_PRELOAD=/usr/lib/libnss_wrapper.so
