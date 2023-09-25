@@ -103,6 +103,10 @@ lib:
           dtype: int
         parallel-gridding:
           dtype: int
+        parallel-reordering:
+          dtype: int
+        no-reorder:
+          dtype: bool
         predict:
           dtype: bool
         no-update-model-required:
