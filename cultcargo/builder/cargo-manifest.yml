@@ -132,7 +132,7 @@ images:
 
   mosaic-queen:
     assign:
-      pre_install: RUN apt update && apt install -y montage
+      pre_install: RUN apt update && apt install -y montage && rm -rf /var/lib/apt/lists/* && rm -rf /var/cache/apt/archives
     versions:
       '1.1.1':
         package: mosaic-queen==1.1.1
