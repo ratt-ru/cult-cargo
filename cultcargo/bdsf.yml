@@ -100,7 +100,7 @@ cabs:
       rms_map:
         dtype: bool
         required: false
-       advanced_opts:
+      advanced_opts:
         dtype: bool
         default: false
       polarisation_do:
