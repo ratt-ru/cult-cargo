@@ -1,0 +1,42 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  aimfast:
+    info: Astronomical image fidelity assessment tool (https://github.com/Athanaseus/aimfast)
+    command: aimfast
+    image:
+      _use: vars.cult-cargo.images
+      name: aimfast
+    policies:
+      prefix: '--'
+      replace: {'_': '-'}
+    inputs:
+      html_prefix:
+        dtype: str
+      restored_image:
+        dtype: File
+      residual_image:
+        dtype: File
+      mask_image:
+        dtype: File
+      tigger_model:
+        dtype: File
+      input_regions:
+        dtype: File
+      compare_models:
+        dtype: List[File]
+      compare_images:
+        dtype: List[File]
+      compare_online:
+        dtype: List[File]
+      compare_residuals:
+        dtype: List[File]
+      tolerance:
+        dtype: float
+      all_source:
+        dtype: bool
+        default: False
+    outputs:
+      outfile:
+        dtype: File
