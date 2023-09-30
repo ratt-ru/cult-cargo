@@ -25,6 +25,10 @@ lib:
         deconvolution-channels:
           info: Channels to use in deconvolution
           dtype: int
+        channel-range:
+          dtype: List[int]
+          policies:
+            repeat: ' '
         pol: 
           choices: [I, IQ, IV, IQUV]
           default: I
@@ -55,6 +59,12 @@ lib:
             format_list_scalar: ["{0}", "{0}"]
         multiscale:
           dtype: bool
+        multiscale-scales:
+          dtype: List[int]
+          policies:
+            repeat: ','
+        multiscale-scale-bias:
+          dtype: float
         scale:
           info: Angular pixel size
           dtype: Union[str, float]

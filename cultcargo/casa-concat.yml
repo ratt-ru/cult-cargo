@@ -1,0 +1,33 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  casa.concat:
+    info: Uses CASA concat to merge list of ms 
+    command: concat
+    flavour: casa-task
+    image: 
+      _use: vars.cult-cargo.images
+      name: casa
+    inputs:
+      vis:
+        dtype: List[MS]
+        required: true
+      timesort:
+        dtype: bool  
+      freqtol:
+        dtype: str
+      dirtol:
+        dtype: str
+      respectname:
+        dtype: bool
+      copypointing:
+        dtype: bool
+      visweightscale:
+        dtype: List[float]
+      forcesingleephemfield:
+        dtype: List[str]
+    outputs:
+      concatvis:
+        dtype: MS
+        required: true

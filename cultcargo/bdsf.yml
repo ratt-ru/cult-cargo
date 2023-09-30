@@ -100,6 +100,16 @@ cabs:
       rms_map:
         dtype: bool
         required: false
+      advanced_opts:
+        dtype: bool
+        default: false
+      polarisation_do:
+        dtype: bool
+        default: false
+      src_ra_dec:
+        dtype: List[Tuple]
+      src_radius_pix:
+        dtype: int
     outputs:
       outfile_gaul:
         dtype: File

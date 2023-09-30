@@ -1,0 +1,36 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  spimple-spifit:
+    info: Spectral index fitting made simple (https://github.com/landmanbester/spimple)
+    command: spimple-spifit
+    image:
+      _use: vars.cult-cargo.images
+      name: spimple
+    policies:
+      prefix: '--'
+      replace: {'_': '-'}
+    inputs:
+      model:
+        dtype: List[File]
+        policies:
+          repeat: list
+      residual:
+        dtype: List[File]
+        policies:
+          repeat: list
+      threshold:
+        dtype: float
+      output_filename:
+        dtype: str
+      band:
+        dtype: str
+        default: "l"
+      beam_model:
+        dtype: str
+        default: "JimBeam"
+    outputs:
+      outfile:
+        dtype: List[File]
+        implicit: =GLOB("{current.output_filename}*")

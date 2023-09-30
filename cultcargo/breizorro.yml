@@ -41,6 +41,8 @@ cabs:
         dtype: bool
       make-binary:
         dtype: bool
+      boxsize:
+        dtype: int
     outputs:
       mask:
         dtype: File
