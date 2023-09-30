@@ -11,6 +11,7 @@ def img_output(imagetype, desc, path, glob=True, must_exist=False):
     return Parameter(
         info=f"{imagetype.capitalize()} {desc}",
         dtype="List[File]" if glob else "File",
+        mkdir=True,
         implicit=implicit,
         must_exist=must_exist)   
 
