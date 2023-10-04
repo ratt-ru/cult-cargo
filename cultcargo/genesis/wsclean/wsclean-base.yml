@@ -34,6 +34,8 @@ lib:
           default: I
         join-polarizations:
           dtype: bool
+        link-polarizations:
+          choices: [I, Q, U, V, IQ, IU, QU, IV]
         intervals-out:
           dtype: int
         threads:
