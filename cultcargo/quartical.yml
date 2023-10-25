@@ -4,7 +4,7 @@ _include:
 cabs:
   quartical:
     name: quartical
-    image: 
+    image:
       _use: vars.cult-cargo.images
       name: quartical
     command: goquartical
@@ -19,7 +19,7 @@ cabs:
 
   quartical-backup:
     name: quartical-backup
-    image: 
+    image:
       _use: vars.cult-cargo.images
       name: quartical
 
@@ -47,7 +47,10 @@ cabs:
 
   quartical-restore:
     name: quartical-restore
-    image: ${vars.cult-cargo.registry}/quartical:base-cc${vars.cult-cargo.version}
+    image:
+      _use: vars.cult-cargo.images
+      name: quartical
+      # version: # Optionally.
     command: goquartical-restore
     info: QuartiCal column restoring script
 
