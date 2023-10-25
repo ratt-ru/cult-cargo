@@ -6,7 +6,9 @@ cabs:
     info: Copies one MS column to another. See https://github.com/SpheMakh/msutils
     flavour: python
     command: MSUtils.msutils.copycol
-    image: ${vars.cult-cargo.registry}/python-astro:cc${vars.cult-cargo.version}
+    image: 
+      _use: vars.cult-cargo.images
+      name: python-astro
     inputs:
       msname: 
         dtype: MS
@@ -22,7 +24,9 @@ cabs:
     info: Adds an MS column. See https://github.com/SpheMakh/msutils
     flavour: python
     command: MSUtils.msutils.addcol
-    image: ${vars.cult-cargo.registry}/python-astro:cc${vars.cult-cargo.version}
+    image: 
+      _use: vars.cult-cargo.images
+      name: python-astro
     inputs:
       msname: 
         dtype: MS

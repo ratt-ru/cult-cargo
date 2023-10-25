@@ -6,7 +6,9 @@ cabs:
     info: Uses CASA flagmanager to save/restore/list flagversions 
     command: flagmanager
     flavour: casa-task
-    image: ${vars.cult-cargo.registry}/casa:cc${vars.cult-cargo.version}
+    image: 
+      _use: vars.cult-cargo.images
+      name: casa
     inputs:
       ms: 
         dtype: MS
@@ -22,7 +24,9 @@ cabs:
     info: Uses CASA flagdata to obtain a flag summary
     command: flagdata
     flavour: casa-task
-    image: ${vars.cult-cargo.registry}/casa:cc${vars.cult-cargo.version}
+    image: 
+      _use: vars.cult-cargo.images
+      name: casa
     inputs:
       ms: 
         dtype: MS

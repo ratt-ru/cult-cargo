@@ -6,7 +6,11 @@ cabs:
     name: tigger.convert
     info: Interface to the tigger-convert command (https://github.com/ratt-ru/tigger-lsm)
     command: tigger-convert
-    image: ${vars.cult-cargo.registry}/python-astro:cc${vars.cult-cargo.version}
+
+    image: 
+      _use: vars.cult-cargo.images
+      name: python-astro
+
     inputs:
       src:
         dtype: File

@@ -25,11 +25,17 @@ lib:
         deconvolution-channels:
           info: Channels to use in deconvolution
           dtype: int
+        channel-range:
+          dtype: List[int]
+          policies:
+            repeat: ' '
         pol: 
           choices: [I, IQ, IV, IQUV]
           default: I
         join-polarizations:
           dtype: bool
+        link-polarizations:
+          choices: [I, Q, U, V, IQ, IU, QU, IV]
         intervals-out:
           dtype: int
         threads:
@@ -55,6 +61,12 @@ lib:
             format_list_scalar: ["{0}", "{0}"]
         multiscale:
           dtype: bool
+        multiscale-scales:
+          dtype: List[int]
+          policies:
+            repeat: ','
+        multiscale-scale-bias:
+          dtype: float
         scale:
           info: Angular pixel size
           dtype: Union[str, float]
@@ -103,6 +115,10 @@ lib:
           dtype: int
         parallel-gridding:
           dtype: int
+        parallel-reordering:
+          dtype: int
+        no-reorder:
+          dtype: bool
         predict:
           dtype: bool
         no-update-model-required:

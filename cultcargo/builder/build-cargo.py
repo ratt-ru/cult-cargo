@@ -99,6 +99,7 @@ def build_cargo(manifest: str, build=False, push=False, all=False, rebuild=False
         latest = None
 
         for version in versions:
+            version = version.format(**image_vars)
             version_info = image_info.versions[version]
             version_info.setdefault('VERSION', version)
 

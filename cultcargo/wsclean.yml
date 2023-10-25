@@ -1,11 +1,19 @@
 _include:
   - genesis/cult-cargo-base.yml
+<<<<<<< HEAD
   - genesis/wsclean/wsclean-lib.yml
+=======
+  - genesis/wsclean/wsclean-base.yml
+>>>>>>> genesis
 
 cabs:
   wsclean:
     name: wsclean
-    image: ${vars.cult-cargo.registry}/wsclean:cc${vars.cult-cargo.version}
+
+    image: 
+      _use: vars.cult-cargo.images
+      name: wsclean
+      
     command: wsclean
     dynamic_schema: cultcargo.genesis.wsclean.make_stimela_schema
 

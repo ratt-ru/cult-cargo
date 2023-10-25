@@ -5,7 +5,10 @@ cabs:
   taql.update:
     name: taql.update 
     info: "interface to taql update (https://manpages.ubuntu.com/manpages/impish/man1/taql.1.html)"
-    image: ${vars.cult-cargo.registry}/python-astro:cc${vars.cult-cargo.version}
+    image: 
+      _use: vars.cult-cargo.images
+      name: python-astro
+      
     command: taql update
 
     policies:

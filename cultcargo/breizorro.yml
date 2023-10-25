@@ -4,7 +4,11 @@ _include:
 cabs:
   breizorro:
     command: breizorro
-    image: ${vars.cult-cargo.registry}/breizorro:cc${vars.cult-cargo.version}
+    
+    image: 
+      _use: vars.cult-cargo.images
+      name: breizorro
+
     policies:
       replace: {'_': '-'}
     inputs:
@@ -37,6 +41,8 @@ cabs:
         dtype: bool
       make-binary:
         dtype: bool
+      boxsize:
+        dtype: int
     outputs:
       mask:
         dtype: File

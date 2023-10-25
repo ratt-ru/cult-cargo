@@ -4,7 +4,10 @@ _include:
 cabs:
   smops:
     name: smops
-    image: ${vars.cult-cargo.registry}/smops:cc${vars.cult-cargo.version}
+    image: 
+      _use: vars.cult-cargo.images
+      name: smops
+      
     command: smops
     info: "Smooth Operator: frequency axis upsampling for WSClean-derived model images"
 
