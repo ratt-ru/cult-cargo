@@ -98,7 +98,7 @@ input_ms:
 input_model:
     recipe:
       dtype: str
-      required: true
+      required: false
       info:
         Input model recipe. This is a string which describes how the model
         data should be constructed. Currently, measurement set columns and
