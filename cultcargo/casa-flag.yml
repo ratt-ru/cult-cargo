@@ -1,0 +1,48 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  casa.flagman:
+    info: Uses CASA flagmanager to save/restore/list flagversions 
+    command: flagmanager
+    flavour: casa-task
+    image: 
+      _use: vars.cult-cargo.images
+      name: casa
+    inputs:
+      ms: 
+        dtype: MS
+        required: true
+        nom_de_guerre: vis
+      versionname:
+        info: "flag version name"
+      mode: 
+        choices: [save, restore, list]
+        required: true
+
+  casa.flagsummary:
+    info: Uses CASA flagdata to obtain a flag summary
+    command: flagdata
+    flavour: casa-task
+    image: 
+      _use: vars.cult-cargo.images
+      name: casa
+    inputs:
+      ms: 
+        dtype: MS
+        required: true
+        nom_de_guerre: vis
+      spw:
+        dtype: str
+        default: ""
+      mode:
+        implicit: 'summary'
+    outputs:
+      percentage:
+        dtype: float
+    management:
+      wranglers:
+        'Total Flagged: .* Total Counts: .* \((?P<percentage>[\d.]+)%\)':
+          - PARSE_OUTPUT:percentage:float
+          - HIGHLIGHT:bold green
+

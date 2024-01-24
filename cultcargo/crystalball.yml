@@ -1,0 +1,29 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  crystalball:
+    name: crystalball
+    image: 
+      _use: vars.cult-cargo.images
+      name: crystalball
+    command: crystalball
+    info: Crystalball visibility predictor
+
+    inputs:
+      ms:
+        dtype: MS
+        writable: true
+        required: true
+        policies:
+          positional: true
+      output-column:
+        dtype: str
+        required: true
+      sky-model:
+        dtype: File
+        required: true
+      within:
+        dtype: File
+      num-sources:
+        dtype: int

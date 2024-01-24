@@ -1,0 +1,118 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  bdsf.catalog:
+    name: bdsf.catalog
+    info: Uses PyBDSF to source-find within an image and write source catalog(s)
+    image: 
+      _use: vars.cult-cargo.images
+      name: python-astro
+    command: |
+      import sys
+      import bdsf as bdsm
+      # these arguments belong to write_catalog() -- this gives their names -- the rest are used by process_image()
+      WRITE_CATALOG_ARGS = dict(catalog_format='format')
+      outfile_gaul = args.pop('outfile_gaul', None)
+      outfile_srl = args.pop('outfile_srl', None)
+      if not outfile_gaul and not outfile_srl:
+          raise RutimeError("at least one of 'outfile_gaul' or 'outfile_srl' needs to be supplied")
+
+      # enforce type conversions
+      ARG_TYPES = dict(rms_box=tuple)
+
+      # form args for process_image
+      process_image_args = dict(
+          print_timing=True,
+          quiet=True,
+          # for some reason process_image locks up unless this is set to True. Something to do with the progress bar filling up buffers on stdout?
+          #verbose_fitting=True,
+      )
+      image_name = args.pop('image')
+      for arg, value in args.items():
+          if arg not in WRITE_CATALOG_ARGS:
+              if arg in ARG_TYPES:
+                  value = ARG_TYPES[arg](value)
+              process_image_args[arg] = value
+
+      print(f"process_image arguments: {image_name} {process_image_args}")
+      sys.stdout.flush()
+
+      print(f"calling process_image")
+      sys.stdout.flush()
+      img = bdsm.process_image(image_name, **process_image_args)
+
+      print(f"calling write_catalog")
+      sys.stdout.flush()
+      # form args for write_catalog
+      write_catalog_args = dict(clobber=True)
+      for arg, value in args.items():
+          if arg in WRITE_CATALOG_ARGS:
+              if arg in ARG_TYPES:
+                  value = ARG_TYPES[arg](value)
+              write_catalog_args[WRITE_CATALOG_ARGS[arg]] = value
+      print(f"write_catalog arguments: {write_catalog_args}")
+      sys.stdout.flush()
+      if outfile_gaul:
+          print(f"calling write_catalog('{outfile_gaul}',...)")
+          sys.stdout.flush()
+          img.write_catalog(outfile=outfile_gaul, catalog_type='gaul', **write_catalog_args)
+      if outfile_srl:
+          print(f"calling write_catalog('{outfile_srl}',...)")
+          sys.stdout.flush()
+          img.write_catalog(outfile=outfile_srl, catalog_type='srl', **write_catalog_args)
+
+      print(f"finished")
+      sys.stdout.flush()
+
+    flavour:
+      kind: python-code
+      input_vars: false
+      input_dict: args
+    inputs:
+      image:
+        dtype: File
+        required: true
+      detection_image:
+        dtype: File
+        required: false
+      spectralindex_do:
+        dtype: bool
+        default: false
+      flagging_opts:
+        dtype: bool
+        default: false
+      flag_maxsize_bm:
+        dtype: float
+        required: false
+      rms_box:
+        required: false
+        dtype: Tuple[int, int]
+      thresh_isl:
+        dtype: float
+        default: 3
+      thresh_pix:
+        dtype: float
+        default: 5
+      catalog_format:
+        choices: [bbs, ds9, fits, star, kvis, ascii, csv, casabox, sagecal]
+        default: ascii
+      rms_map:
+        dtype: bool
+        required: false
+      advanced_opts:
+        dtype: bool
+        default: false
+      polarisation_do:
+        dtype: bool
+        default: false
+      src_ra_dec:
+        dtype: List[Tuple]
+      src_radius_pix:
+        dtype: int
+    outputs:
+      outfile_gaul:
+        dtype: File
+      outfile_srl:
+        dtype: File
+

@@ -1,0 +1,49 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  fitstool.stack-freq-cube:
+    info: Uses Owlcat fitstool.py (https://github.com/ratt-ru/owlcat) to stack a frequency cube
+    command: fitstool.py
+    image: 
+      _use: vars.cult-cargo.images
+      name: python-astro
+    inputs:
+      images:
+        dtype: List[File]
+        required: true
+        policies:
+          positional: true
+          repeat: repeat
+    outputs:
+      cube:
+        dtype: File
+        policies:
+          positional: true
+          format: '--stack={0}:FREQ'
+
+  fitstool:
+    info: Generic interface to Owlcat fitstool.py (https://github.com/ratt-ru/owlcat)
+    command: fitstool.py
+    image: 
+      _use: vars.cult-cargo.images
+      name: python-astro
+    inputs:
+      images:
+        dtype: List[File]
+        required: true
+        policies:
+          positional: true
+          repeat: repeat
+      mean:
+        dtype: bool
+      diff:
+        dtype: bool
+      prod:
+        dtype: bool
+      force:
+        dtype: bool
+        default: true
+    outputs:
+      output:
+        dtype: File

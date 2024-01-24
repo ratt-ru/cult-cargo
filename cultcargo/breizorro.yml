@@ -1,0 +1,50 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  breizorro:
+    command: breizorro
+    
+    image: 
+      _use: vars.cult-cargo.images
+      name: breizorro
+
+    policies:
+      replace: {'_': '-'}
+    inputs:
+      restored-image:
+        dtype: File
+      mask-image:
+        dtype: File
+      merge:
+        dtype: Union[str, List[str]]
+      subtract:
+        dtype: Union[str, List[str]]
+      threshold:
+        dtype: float
+        default: 6.5
+      dilate:
+        dtype: int
+      number-islands:
+        dtype: bool
+      extract-islands:
+        dtype: List[str]
+        policies:
+          repeat: list
+      remove-islands:
+        dtype: List[str]
+        policies:
+          repeat: list
+      ignore-missing-islands:
+        dtype: bool
+      invert:
+        dtype: bool
+      make-binary:
+        dtype: bool
+      boxsize:
+        dtype: int
+    outputs:
+      mask:
+        dtype: File
+        nom_de_guerre: outfile
+        required: true 

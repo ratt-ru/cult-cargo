@@ -1,0 +1,43 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  smops:
+    name: smops
+    image: 
+      _use: vars.cult-cargo.images
+      name: smops
+      
+    command: smops
+    info: "Smooth Operator: frequency axis upsampling for WSClean-derived model images"
+
+    policies:
+      prefix: '--'
+
+    inputs:
+      output-prefix:
+        dtype: str
+        required: true
+        mkdir: true
+      num-threads:
+        dtype: int
+      stokes:
+        dtype: str
+        default: I
+      ms:
+        dtype: MS
+      input-prefix:
+        required: true
+        dtype: str
+      channels-out:
+        required: true
+        dtype: int
+      polynomial-order:
+        dtype: int
+        required: true
+
+    outputs:
+      model:
+        dtype: List[File]
+        implicit: =GLOB("{current.output-prefix}*model*fits")
+

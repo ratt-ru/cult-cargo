@@ -1,0 +1,83 @@
+_include:
+  - genesis/cult-cargo-base.yml
+  - genesis/wsclean/wsclean-base.yml
+
+cabs:
+  wsclean:
+    name: wsclean
+
+    image: 
+      _use: vars.cult-cargo.images
+      name: wsclean
+      
+    command: wsclean
+    dynamic_schema: cultcargo.genesis.wsclean.make_stimela_schema
+
+    info: WSClean imager (https://wsclean.readthedocs.io)
+
+    extra_info:
+      See also: https://wsclean.readthedocs.io
+      Structured implicit outputs: |
+        The structure of the output images is hierarchical, and will depend on the combination of 
+        **nchan**, **pol**, and **intervals-out** settings. Depending on mode, one or more of the following implicit outputs
+        are generated:
+
+        * **IMG**: single wideband image (single channel, single interval imaging)
+        
+        * **IMG.per-band**: list of per-band images (multi-channel mode)
+       
+        * **IMG.mfs**: MFS image (multi-channel mode)
+
+        * **IMG.per-interval**: list of wideband per-interval images (multi-interval mode)
+
+        * **IMG.per-interval.per-band**: list of per-band, per-interval images (multi-channel + multi-interval)
+
+        * **IMG.per-interval.mfs**: list of MFS per-interval images (multi-channel + multi-interval)
+
+        Here, **IMG** is one of **dirty**, **restored**, **residual** and **model**, when 
+        imaging Stokes I only. When imaging multiple Stokes components, this becomes 
+        **dirty.i**, **dirty.q**, etc.
+
+        Stimela will usually infer the mode automatically, barring any ambiguity caused by some weird
+        formula or substitution. In such rare cases, the **multi.foo** inputs (see above, "obscure" 
+        category) can be used to disambiguate.
+
+    defaults:
+      column: DATA
+
+    policies:
+      positional: false
+      prefix: "-"
+      replace: { '_': '-' }
+
+    inputs:
+      _use: lib.params.wsclean.base-inputs
+
+      multi:
+        chan:
+          info: 
+            Forces output schema to use multi-channel mode. Stimela will normally infer this
+            from the nchan setting, but you can set this parameter to override.
+          dtype: bool
+          category: Obscure
+          policies:
+            skip: true
+        pol:
+          info: 
+            Forces output schema to use multi-Stokes mode. Stimela will normally infer this
+            from the pol setting, but you can set  this parameter to override.
+          dtype: bool
+          category: Obscure
+          policies:
+            skip: true
+        interval:
+          info:
+            Forces output schema to use multi-interval mode. Stimela will normally infer this
+            from the intervals-out setting -- use this parameter to override.
+          dtype: bool
+          category: Obscure
+          policies:
+            skip: true
+
+    outputs:
+      _use: lib.params.wsclean.base-outputs

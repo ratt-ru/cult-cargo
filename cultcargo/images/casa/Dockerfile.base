@@ -1,0 +1,26 @@
+FROM {CULT_REGISTRY}/base-cult:base-cc{CULT_VERSION}
+
+RUN apt-get update && apt-get -y upgrade && \
+    apt-get -y install libfreetype6 \
+        libsm6 \
+        libxi6 \
+        libxrender1 \
+        libxrandr2 \
+        libxfixes3 \
+        libxcursor1 \
+        libxinerama1 \
+        libfontconfig1 \
+        libxslt1.1 \
+        xauth \
+        xvfb \
+        dbus-x11 \
+        python3-tk \
+        apt-utils \
+        locales \
+        python3 python3-pip wget libnss-wrapper \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/cache/apt/archives 
+
+RUN mkdir -m 777 /.casa /.matplotlib
+
+ENV LD_PRELOAD=/usr/lib/libnss_wrapper.so

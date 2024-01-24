@@ -1,0 +1,40 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  mosaic-queen:
+    info: mosaicking commands from montage, that also does primary-beam correction (https://github.com/caracal-pipeline/MosaicQueen)
+    command: mosaic-queen
+    image: 
+      _use: vars.cult-cargo.images
+      name: mosaic-queen
+    policies:
+      prefix: '--'
+      replace: {'_': '-'}
+    inputs:
+      target_images:
+        info: The filenames of each target/pointing image to be mosaicked. A suffix of 'image.fits' is expected, and this is replaced by 'pb.fits' in order to locate the corresponding beams
+        dtype: List[str]
+        policies:
+          repeat: list
+      input:
+        info: The directory that contains the (2D or 3D) images and beams
+        dtype: Directory
+      output:
+        info: The directory for all output files
+        dtype: Directory
+      regrid:
+        info: Use montage for regridding the images and beams. It will first check whether regridded files already exist. If they are found, regridding will pass.
+        dtype: bool
+        default: True
+      force-regrid:
+        info: If the user wants newly-regridded files, this '--force-regrid' argument should be enabled.
+        dtype: bool
+        default: False
+      name:
+        info: The prefix to be used for output files
+        dtype: str 
+    outputs:
+      outfile:
+        dtype: List[File]
+        implicit: =GLOB("{current.name}*")

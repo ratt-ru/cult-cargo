@@ -1,0 +1,46 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  quartical:
+    name: quartical
+    image: 
+      _use: vars.cult-cargo.images
+      name: quartical
+    command: goquartical
+    info: QuartiCal calibration package (https://github.com/ratt-ru/QuartiCal)
+    policies:
+      key_value: true
+      repeat: '[]'
+      prefix: ''
+    inputs:
+      _include: genesis/quartical/argument_schema.yaml
+    dynamic_schema: cultcargo.genesis.quartical.external.make_stimela_schema
+
+  quartical-backup:
+    name: quartical-backup
+    image: 
+      _use: vars.cult-cargo.images
+      name: quartical
+
+    command: goquartical-backup
+    info: QuartiCal column backup script
+    
+    policies:
+      positional: true
+
+    inputs:
+      ms_path:
+        dtype: Directory
+        must_exist: true
+        info: 'Path to input measurement set, e.g. path/to/dir/foo.MS.'
+      zarr_dir:
+        dtype: Directory
+        mkdir: true
+        must_exist: false
+        info: Path to desired backup location. Note that this only allows
+              the user to specify a directory and not the name of the backup
+              zarr that will be created, e.g. path/to/dir.
+      column:
+        dtype: str
+        info: Name of column to be backed up.    

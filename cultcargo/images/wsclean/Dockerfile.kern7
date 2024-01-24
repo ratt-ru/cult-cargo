@@ -1,0 +1,6 @@
+FROM kernsuite/base:7
+
+RUN docker-apt-install wsclean
+
+CMD wsclean
+
