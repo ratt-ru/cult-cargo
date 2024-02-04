@@ -132,6 +132,7 @@ lib:
         temp-dir:
           dtype: Directory
           skip_freshness_checks: true
+          writable: true
         log-time:
           dtype: bool
         interval:

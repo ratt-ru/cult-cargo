@@ -13,6 +13,7 @@ cabs:
       msname: 
         dtype: MS
         required: true
+        writable: true
       fromcol:
         dtype: str
         required: true
@@ -31,6 +32,7 @@ cabs:
       msname: 
         dtype: MS
         required: true
+        writable: true
       colname:
         dtype: str
         required: true
