@@ -18,6 +18,7 @@ cabs:
           positional: true
       config:
         dtype: File
+        access_parent_dir: true
       ignore-flags:
         dtype: bool
       flagging-strategy:
