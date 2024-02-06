@@ -16,6 +16,7 @@ cabs:
         dtype: MS
         policies:
           positional: true
+        writable: true
       config:
         dtype: File
       ignore-flags:
