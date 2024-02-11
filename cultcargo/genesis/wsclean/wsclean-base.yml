@@ -30,12 +30,11 @@ lib:
           policies:
             repeat: ' '
         pol: 
-          choices: [I, IQ, IV, IQUV]
           default: I
         join-polarizations:
           dtype: bool
         link-polarizations:
-          choices: [I, Q, U, V, IQ, IU, QU, IV]
+          dtype: str
         intervals-out:
           dtype: int
         threads:

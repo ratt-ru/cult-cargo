@@ -1,6 +1,6 @@
 assign:
   CULT_REGISTRY: quay.io/stimela2
-  CULT_VERSION: 0.0.2
+  CULT_VERSION: 0.1.0
 
   # standard variables used in templated Docker files
   pre_install: ''
