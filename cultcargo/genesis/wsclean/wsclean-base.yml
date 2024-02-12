@@ -30,11 +30,16 @@ lib:
           policies:
             repeat: ' '
         pol: 
+          dtype: Union[str, List[str]]
           default: I
+          element_choices: I,Q,U,V,QU,QUV,IQ,IV,IQU,IQUV,XX,XY,YX,YY,LL,LR,RL,RR
+          repeat: ","
         join-polarizations:
           dtype: bool
         link-polarizations:
-          dtype: str
+          dtype: Union[str, List[str]]
+          element_choices: I,Q,U,V,QU,QUV,IQ,IV,IQU,IQUV,XX,XY,YX,YY,LL,LR,RL,RR
+          repeat: ","
         intervals-out:
           dtype: int
         threads:
