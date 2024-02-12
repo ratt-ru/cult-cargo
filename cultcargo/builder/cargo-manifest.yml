@@ -83,12 +83,10 @@ images:
     versions:
       # '0.3.0':
       #   package: crystalball==0.3.0
-      # latest: 
-      #   package: crystalball
+#      latest: 
+#         package: crystalball  # doesn't work?
       master:
         package: git+https://github.com/caracal-pipeline/crystalball
-      issue-51:
-        package: git+https://github.com/caracal-pipeline/crystalball@issue-51
 
   tricolour:
     # assign:
@@ -128,7 +126,12 @@ images:
   cubical:
     versions:
       base:
-        package: git+https://github.com/ratt-ru/CubiCal@noxcal
+        package: git+https://github.com/ratt-ru/CubiCal@noxcal-prepare-release
+      stimelation:
+        package: git+https://github.com/ratt-ru/CubiCal@stimelation
+      latest:
+        package: git+https://github.com/ratt-ru/CubiCal@noxcal-prepare-release
+
 
   mosaic-queen:
     assign:
