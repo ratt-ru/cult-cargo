@@ -126,11 +126,7 @@ images:
   cubical:
     versions:
       base:
-        package: git+https://github.com/ratt-ru/CubiCal@noxcal-prepare-release
-      stimelation:
-        package: git+https://github.com/ratt-ru/CubiCal@stimelation
-      latest:
-        package: git+https://github.com/ratt-ru/CubiCal@noxcal-prepare-release
+        package: git+https://github.com/ratt-ru/CubiCal
 
 
   mosaic-queen:
