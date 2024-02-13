@@ -38,8 +38,9 @@ cabs:
         dtype: int
         info: Number of cpu to use when generating summary stats
       summary_options:
-        dtype: List[str]
+        dtype: Union[str, List[str]]
         info: Flag stats to determine
+        element_choices: [ant,corr,scan,freq]
         default: [ant,corr]
         policies:
           repeat: list
