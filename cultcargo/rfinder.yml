@@ -11,18 +11,20 @@ cabs:
     policies:
       prefix: '--'
     inputs:
-      input:
+      ms:
         dtype: MS
         info: input Measuremnt Set file
+        nom_de_guerre: input
       input_dir:
         dtype: Directory
         info: select working directory (MS file assumed to be here)
+        default: './'
       output_dir:
         dtype: Directory
         info: select output directory
       label:
         dtype: str
-        info: ouput folder is called - rfi_<polarization>_<label>
+        info: "ouput folder is called - rfi_<polarization>_<label>"
       field:
         dtype: int
         info: select field ID of MS file to analyze
@@ -36,10 +38,11 @@ cabs:
         dtype: int
         info: Number of cpu to use when generating summary stats
       summary_options:
-        dtype: Union[str, List[str]]
-        element_choices: [ant, scan, freq, corr]
+        dtype: List[str]
         info: Flag stats to determine
-        defaults: [ant,corr]
+        default: [ant,corr]
+        policies:
+          repeat: list
       freq_bin:
         dtype: int
         info: Number of frequencies to bin into a single channel
@@ -58,3 +61,4 @@ cabs:
     outputs:
       outfile:
         dtype: Directory
+        implicit: =GLOB("rfi*{current.label}")
