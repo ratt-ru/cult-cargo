@@ -22,7 +22,7 @@ cabs:
         info: select output directory
       label:
         dtype: str
-        info: ouput folder is called: rfi_<polarization>_<label>
+        info: ouput folder is called - rfi_<polarization>_<label>
       field:
         dtype: int
         info: select field ID of MS file to analyze
@@ -36,10 +36,10 @@ cabs:
         dtype: int
         info: Number of cpu to use when generating summary stats
       summary_options:
-        dtype: List[str]
-        choices: [ant, scan, freq, corr]
+        dtype: Union[str, List[str]]
+        element_choices: [ant, scan, freq, corr]
         info: Flag stats to determine
-        default: [ant, corr]
+        defaults: [ant,corr]
       freq_bin:
         dtype: int
         info: Number of frequencies to bin into a single channel
@@ -54,7 +54,7 @@ cabs:
       rfimode:
         dtype: str
         choices: [use_flags, rms_clip]
-        info:  use_flags
+        info: use_flags
     outputs:
       outfile:
         dtype: Directory
