@@ -154,3 +154,8 @@ images:
         package: aimfast==1.3.4
       base:
         package: git+https://github.com/Athanaseus/aimfast.git
+
+  rfinder:
+    versions:
+      master:
+        package: git+https://github.com/caracal-pipeline/RFInder.git
