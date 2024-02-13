@@ -1,6 +1,6 @@
 assign:
   CULT_REGISTRY: quay.io/stimela2
-  CULT_VERSION: 0.0.2
+  CULT_VERSION: 0.1.0
 
   # standard variables used in templated Docker files
   pre_install: ''
@@ -83,12 +83,10 @@ images:
     versions:
       # '0.3.0':
       #   package: crystalball==0.3.0
-      # latest: 
-      #   package: crystalball
+#      latest: 
+#         package: crystalball  # doesn't work?
       master:
         package: git+https://github.com/caracal-pipeline/crystalball
-      issue-51:
-        package: git+https://github.com/caracal-pipeline/crystalball@issue-51
 
   tricolour:
     # assign:
@@ -128,7 +126,8 @@ images:
   cubical:
     versions:
       base:
-        package: git+https://github.com/ratt-ru/CubiCal@noxcal
+        package: git+https://github.com/ratt-ru/CubiCal
+
 
   mosaic-queen:
     assign:
