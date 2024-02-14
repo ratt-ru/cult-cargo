@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir \
     owlcat dask-ms scipy omegaconf bdsf msutils
 
 # change this to master or release version when ready
-RUN pip install --no-cache-dir git+https://github.com/caracal-pipeline/stimela@cc-{CULT_VERSION}
+RUN pip install --no-cache-dir git+https://github.com/caracal-pipeline/stimela@2.0rc10
 
 RUN ln -s /usr/bin/python{VERSION} /usr/bin/python
 
