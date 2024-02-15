@@ -17,7 +17,7 @@ def img_output(imagetype, desc, path, glob=True, must_exist=False):
 
 
 def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], outputs: Dict[str, Parameter]):
-    """Augments a schema for stimela based on solver.terms"""
+    """Augments a schema for stimela based on wsclean settings"""
 
     # predict mode has no outputs
     if params.get('predict'):
@@ -29,12 +29,21 @@ def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], ou
     nchan  = params.get('nchan', 1)
     multichan = params.get('multi.chan', not isinstance(nchan, int) or nchan > 1)
     
-    stokes = params.get('pol', "I").upper()
+    stokes = params.get('pol', "I")
+
+    if isinstance(stokes, str):
+        stokes = stokes.upper()
+        # if just IQUV characters, break apart into list
+        if all(p in "IQUV" for p in stokes):
+            stokes = list(stokes)
+        else:
+            stokes = [stokes]
     # multi.stokes can be set explicitly
-    multistokes = params.get('multi.stokes', stokes != "I")
-    # if explicitly multi-pol, set Stokes list to "IQUV" if it's not explicitly set to something else
-    if multistokes and stokes == "I":
-        stokes = "IQUV"
+    multistokes = params.get('multi.stokes', False) or len(stokes) > 1
+    # if multi.stokes was set, set default pol to IQUV
+
+    if multistokes and 'pol' not in params:
+        stokes = list("IQUV")
 
     # ntime -- if not an integer, assume runtime evaluation and >=2 then
     ntime  = params.get('intervals-out', 1)
