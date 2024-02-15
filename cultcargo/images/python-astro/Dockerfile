@@ -1,24 +1,25 @@
-FROM {CULT_REGISTRY}/base-cult:base-cc{CULT_VERSION}
+FROM {REGISTRY}/base-cult:base-{BUNDLE_VERSION}
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install apt-utils && \
-    apt-get install -y casacore-data casacore-tools python{VERSION} python3-pip python3-matplotlib \
+    apt-get install -y casacore-data casacore-tools python{VERSION} \
+    python3-pip python3-matplotlib \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt/archives 
 
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python{VERSION} 1
+
 # upgrade pip
-RUN pip install --no-cache-dir -U pip setuptools wheel 
+RUN python{VERSION} -mpip install --no-cache-dir -U pip setuptools wheel 
 
 # add useful astro stuff
-RUN pip install --no-cache-dir \
+RUN python{VERSION} -mpip install --no-cache-dir \
     python-casacore astropy astroplan regions astro-tigger-lsm \
     owlcat dask-ms scipy omegaconf bdsf msutils
 
-# change this to master or release version when ready
-RUN pip install --no-cache-dir git+https://github.com/caracal-pipeline/stimela@2.0rc10
-
-RUN ln -s /usr/bin/python{VERSION} /usr/bin/python
+# add stimela -- useful for scabha.schema_utils
+RUN python{VERSION} -mpip install --no-cache-dir git+https://github.com/caracal-pipeline/stimela@2.0rc10
 
 CMD /usr/bin/python{VERSION}
 

@@ -1,17 +1,22 @@
 #!/usr/bin/env python
-
+import json
 import sys
 import click
+import requests
 import os.path
+import re
 import subprocess
 from typing import List, Dict, Optional, Any
 from dataclasses import dataclass
 from omegaconf import OmegaConf
-from rich import print
+from rich.console import Console
+from rich.rule import Rule
+import importlib
+import importlib.metadata
+
 
 DEFAULT_MANIFEST = os.path.join(os.path.dirname(__file__), "cargo-manifest.yml")
 
-BASE_IMAGES = os.path.join(os.path.dirname(os.path.dirname(__file__)), "images")
 
 @dataclass
 class ImageInfo(object):
@@ -22,8 +27,18 @@ class ImageInfo(object):
 
 @dataclass
 class Manifest(object):
-    registry: str
-    assign: Optional[Dict[str, Any]]
+    @dataclass
+    class Metadata(object):
+        PACKAGE: str
+        REGISTRY: str
+        BUNDLE_VERSION: str
+        BUNDLE_VERSION_PREFIX: str = ""
+        BASE_IMAGE_PATH: str = "images"
+        PACKAGE_VERSION: str = "auto"
+        GITHUB_REPOSITORY: str = ""
+
+    metadata: Metadata
+    assign: Dict[str, Any] 
     images: Dict[str, ImageInfo]
 
 
@@ -36,24 +51,98 @@ def run(command, cwd=None, input=None):
         sys.exit(1)
     return 0
 
+console = Console(highlight=False)
+print = console.print
+
 
 @click.command()
 @click.option('-m', '--manifest', type=click.Path(exists=True), 
                 default=DEFAULT_MANIFEST, 
                 help=f'Cargo manifest. Default is {DEFAULT_MANIFEST}.')
+@click.option('--list', 'do_list', is_flag=True, help='Build only, do not push.')
 @click.option('-b', '--build', is_flag=True, help='Build only, do not push.')
 @click.option('-p', '--push', is_flag=True, help='Push only, do not build.')
 @click.option('-r', '--rebuild', is_flag=True, help='Ignore docker image caches (i.e. rebuild).')
 @click.option('-a', '--all', is_flag=True, help='Build and/or push all images in manifest.')
+@click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
 @click.argument('imagenames', type=str, nargs=-1)
-def build_cargo(manifest: str, build=False, push=False, all=False, rebuild=False, imagenames: List[str] = []):
+def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, verbose=False, imagenames: List[str] = []):
     if not (build or push):
         build = push = True
 
-    print(f"Loading manifest {manifest}")
+    print(Rule(f"Loading manifest {manifest}"))
 
     conf = OmegaConf.load(manifest)
     conf = OmegaConf.merge(OmegaConf.structured(Manifest), conf)
+
+    # get package version
+    if conf.metadata.PACKAGE_VERSION == "auto":
+        conf.metadata.PACKAGE_VERSION = importlib.metadata.version(conf.metadata.PACKAGE)
+
+    print(f"Package is {conf.metadata.PACKAGE}=={conf.metadata.PACKAGE_VERSION}")
+    is_candidate_release = re.match(".*rc(\d+)", conf.metadata.PACKAGE_VERSION)
+    if is_candidate_release:
+        print("  (this is a release candidate)")
+
+    package_releases = {}
+    current_release = None
+
+    # check release version
+    if not conf.metadata.GITHUB_REPOSITORY:
+        print("[yellow]GITHUB_REPOSITORY not set in manifest -- disabling release version checks[/yellow]")
+    else:
+        print(f"Checking github releases for {conf.metadata.GITHUB_REPOSITORY}")
+        url = f'https://api.github.com/repos/{conf.metadata.GITHUB_REPOSITORY}/releases'
+        # Make the GET request
+        response = requests.get(url)
+        # Check if the request was successful
+        if response.status_code == 200:
+            releases = response.json()  # Parse the JSON response
+            for release in releases:
+                package_releases[release['tag_name']] = release
+            print(f"  Available releases: {' '.join(sorted(package_releases.keys()))}")
+            current_release = package_releases.get(conf.metadata.PACKAGE_VERSION)
+            if current_release:
+                if is_candidate_release:
+                    print("  [green]Working with a public release candidate, build/push allowed.[/green]")
+                else:
+                    print("  [red]Working with a public release. Build/push restricted to new images only.[/red]")
+            else:
+                print("  [green]Working with an unreleased version, build/push allowed.[/green]")
+        else:
+            print("  [yellow]Failed to fetch release info: {response.status_code}[/yellow]")
+            sys.exit(1)
+
+
+    # get registry
+    def resolve_config_reference(value):
+        comps =  value.split("::")
+        if len(comps) == 3:
+            module = importlib.import_module(comps[0])
+            container = OmegaConf.load(f"{os.path.dirname(module.__file__)}/{comps[1]}")
+            try:
+                for key in comps[2].split('.'):
+                    container = container[key]
+            except:
+                raise KeyError(f"{comps[2]} not found in {comps[1]}")
+            return container
+        return value
+            
+    conf.metadata.REGISTRY = resolve_config_reference(conf.metadata.REGISTRY)
+    conf.metadata.BUNDLE_VERSION = resolve_config_reference(conf.metadata.BUNDLE_VERSION)
+    print(f"Registry is {conf.metadata.REGISTRY}, bundle is '{conf.metadata.BUNDLE_VERSION}', prefix '{conf.metadata.BUNDLE_VERSION_PREFIX}'")
+    if not conf.metadata.BUNDLE_VERSION.startswith(conf.metadata.BUNDLE_VERSION_PREFIX):
+        print("Inconsistent manifest metadata: BUNDLE_VERSION must start with BUNDLE_VERSION_PREFIX")
+        return 1
+    
+    unprefixed_image_version = conf.metadata.BUNDLE_VERSION[len(conf.metadata.BUNDLE_VERSION_PREFIX):]
+    
+    if '::' in conf.metadata.BASE_IMAGE_PATH:
+        modname, path = conf.metadata.BASE_IMAGE_PATH.split('::', 1)
+        pkg_path = os.path.dirname(importlib.import_module(modname).__file__)
+        conf.metadata.BASE_IMAGE_PATH = os.path.join(pkg_path, path)
+
+    print(f"Base image path is {conf.metadata.BASE_IMAGE_PATH}")
 
     print(f"Loaded {len(conf.images)} image entries")
 
@@ -66,6 +155,7 @@ def build_cargo(manifest: str, build=False, push=False, all=False, rebuild=False
         print(f"Nothing to be done. Please specify some image names, or run with -a/-all.")
         return 0
     
+    
     for image in imagenames:
         version = None
         if ':' in image:
@@ -77,11 +167,12 @@ def build_cargo(manifest: str, build=False, push=False, all=False, rebuild=False
             print(f"Unknown image '{image}:{version}'")
             return 1
         
-    global_vars = conf.assign or {}
-    registry = global_vars.get('CULT_REGISTRY', 'quay.io/stimela2')
-    CULT_VERSION = global_vars.get('CULT_VERSION')
+    global_vars = OmegaConf.merge(dict(**conf.metadata), conf.assign)
+    registry = global_vars.REGISTRY
+    BUNDLE_VERSION = global_vars.BUNDLE_VERSION
 
     for image in imagenames:
+        print(Rule(f"Processing image {image}"))
         if ':' in image:
             image, version = image.split(":", 1)
             versions = [version]
@@ -95,8 +186,9 @@ def build_cargo(manifest: str, build=False, push=False, all=False, rebuild=False
         image_vars.update(IMAGE=image, **(image_info.assign or {}))
         image_vars.setdefault("CMD", image)
 
-        path = os.path.join(BASE_IMAGES, image).format(**image_vars)
+        path = os.path.join(global_vars.BASE_IMAGE_PATH, image).format(**image_vars)
         latest = None
+        built_or_pushed_versions = set()
 
         for version in versions:
             version = version.format(**image_vars)
@@ -110,31 +202,81 @@ def build_cargo(manifest: str, build=False, push=False, all=False, rebuild=False
             dockerfile = dockerfile.format(**version_vars)
             image_version = version_info.VERSION.format(**version_vars)
             if image_version == "latest":
-                latest = image_version = f"cc{CULT_VERSION}"
+                latest = image_version = f"{BUNDLE_VERSION}"
             else:
-                image_version += f"-cc{CULT_VERSION}"
+                image_version += f"-{BUNDLE_VERSION}"
+            full_image = f"{registry}/{image}:{image_version}"
+            remote_image_exists = True
 
+            # find Dockerfile for this image
             dockerpath = os.path.join(path, dockerfile)
-            print(f"[bold green]{image}:{image_version}[/bold green] defined by {dockerpath}")
+            print(f"[bold]{image}:{image_version}[/bold] defined by {dockerpath}")
             if not os.path.exists(dockerpath):
                 print(f"  {dockerpath} doesn't exist")
                 return 1
-            # go build
             build_dir = os.path.dirname(dockerpath)
-            full_image = f"{registry}/{image}:{image_version}"
+
+            # check if remote image exists
+            if push or build:
+                print(f"Checking if registry already contains {full_image}")
+                cmd = ['docker', 'manifest', 'inspect', full_image]
+                try:
+                    print(f"  [bold]$ {' '.join(cmd)}[/bold]", highlight=False)
+                    # Execute the command
+                    subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+                    print(f"  Manifest returned for {full_image}")
+                except subprocess.CalledProcessError as e:
+                    output = e.stderr.strip() 
+                    if "no such manifest" in output or "was deleted" in output:
+                        print(f"  {output}")
+                        print(f"  [green]No manifest returned for {full_image}, ok to build/push[/green]")
+                        remote_image_exists = False
+                    else:
+                        print(f"  Error inspecting manifest: {e.stderr}")
+                        sys.exit(1)
+
+                # check for build protection
+                if remote_image_exists:
+                    if unprefixed_image_version != conf.metadata.PACKAGE_VERSION:
+                        print(f"  [red]Package version doesn't match image version, and image already exists. Refusing to rebuild/push this image.[/red]")
+                        continue
+                    if current_release:
+                        if not is_candidate_release:
+                            print(f"  [red]Package released, and image already exists. Refusing to rebuild/push this image.[/red]")
+                            continue
+                        else:
+                            print(f"  Package is a release candidate, ok to rebuild/push image")
+                    else:
+                        print(f"  Package unreleased, ok to rebuild/push image")
+
+                    cmd = ['docker', 'pull', full_image]
+                    try:
+                        print(f"  [bold]$ {' '.join(cmd)}[/bold]")
+                        # Execute the command
+                        result = subprocess.run(cmd, stderr=subprocess.PIPE, text=True, check=True)
+                    except subprocess.CalledProcessError as e:
+                        print(f"  Error pulling image: {e.stderr}")
+                        sys.exit(1)
+            
+            # go build
             if build:
                 content = open(dockerpath, "rt").read().format(**version_vars)
+                print(f"Dockerfile:", style="bold")
+                print(f"{content}", highlight=True)
                 run(f"docker build {no_cache} -t {full_image} -", cwd=build_dir, input=content)
+                built_or_pushed_versions.add(version)
             if push:
                 run(f"docker push {full_image}", cwd=path)
+                built_or_pushed_versions.add(version)
 
-        if all_versions and versions:
+        # apply :latest tag to images
+        if all_versions and built_or_pushed_versions:
             if latest is None:
                 latest = image_version  # use last version from loop above
-                run(f"docker tag {registry}/{image}:{latest} {registry}/{image}:cc{CULT_VERSION}", cwd=build_dir)
+                run(f"docker tag {registry}/{image}:{latest} {registry}/{image}:{BUNDLE_VERSION}", cwd=build_dir)
                 if push:
-                    run(f"docker push {registry}/{image}:cc{CULT_VERSION}", cwd=path)
-            run(f"docker tag {registry}/{image}:cc{CULT_VERSION} {registry}/{image}:latest", cwd=build_dir)
+                    run(f"docker push {registry}/{image}:{BUNDLE_VERSION}", cwd=path)
+            run(f"docker tag {registry}/{image}:{BUNDLE_VERSION} {registry}/{image}:latest", cwd=build_dir)
             if push:
                 run(f"docker push {registry}/{image}:latest", cwd=path)
 
