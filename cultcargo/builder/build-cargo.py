@@ -298,8 +298,8 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 run(f"docker tag {registry}/{image}:{BUNDLE_VERSION} {registry}/{image}:latest", cwd=build_dir)
                 if push:
                     run(f"docker push {registry}/{image}:latest", cwd=path)
-                    
-        print("Success!", style="green")
+
+    print("Success!", style="green")
 
 
 if __name__ == '__main__':
