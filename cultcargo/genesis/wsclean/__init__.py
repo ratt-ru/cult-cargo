@@ -81,6 +81,11 @@ def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], ou
                         f"{st_desc} MFS image",
                         f"-MFS{st_fname}", glob=False,
                         must_exist=must_exist)
+                elif (stokes=="RR" or stokes=="LL"): # Handle case where we aren't interested in stokes I at all. Just want to image the specified polarization. eg TART data with only pol=RR.
+                    outputs[f"{imagetype}{st_name1}"] = img_output(imagetype,
+                        f"{st_desc} image",
+                        "", glob=False,
+                        must_exist=must_exist)
                 else:
                     outputs[f"{imagetype}{st_name1}"] = img_output(imagetype,
                         f"{st_desc} image",
