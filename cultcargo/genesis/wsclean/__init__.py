@@ -29,9 +29,11 @@ def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], ou
     nchan  = params.get('nchan', 1)
     multichan = params.get('multi.chan', not isinstance(nchan, int) or nchan > 1)
     
-    stokes = params.get('pol', "I")
+    stokes = params.get('pol')
 
-    if isinstance(stokes, str):
+    if stokes is None:
+        stokes = ["I"]  # shouldn't matter, multistokes will be False unless explicit
+    elif isinstance(stokes, str):
         stokes = stokes.upper()
         # if just IQUV characters, break apart into list
         if all(p in "IQUV" for p in stokes):
@@ -40,10 +42,6 @@ def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], ou
             stokes = [stokes]
     # multi.stokes can be set explicitly
     multistokes = params.get('multi.stokes', False) or len(stokes) > 1
-    # if multi.stokes was set, set default pol to IQUV
-
-    if multistokes and 'pol' not in params:
-        stokes = list("IQUV")
 
     # ntime -- if not an integer, assume runtime evaluation and >=2 then
     ntime  = params.get('intervals-out', 1)
