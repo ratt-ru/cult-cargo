@@ -1,20 +1,18 @@
 metadata:
-  # name of python package containing schemas
+  # name of python package 
   PACKAGE: cult-cargo
+  # its repository
   GITHUB_REPOSITORY: caracal-pipeline/cult-cargo
-  # registry to use. Use module::filename.yml::variable format to pull from a config file inside the python package 
+  # registry to use. Use module::filename.yml::variable format to pull from a config file inside a python module 
   REGISTRY: cultcargo.genesis::cult-cargo-base.yml::vars.cult-cargo.images.registry
-  # image version. Use module::filename.yml::variable format to pull from a config file inside the python package 
+  # image bundle ersion. Use module::filename.yml::variable format to pull from a config file inside a python module 
   BUNDLE_VERSION: cultcargo.genesis::cult-cargo-base.yml::vars.cult-cargo.images.version
   # prefix to be removed from image version when comparing to python package version
   BUNDLE_VERSION_PREFIX: cc
-  # path to images, relative to package path
+  # path to images. Use module::filename to refer to content of module
   BASE_IMAGE_PATH: cultcargo::images
 
 assign:
-  # CULT_REGISTRY: quay.io/stimela2
-  # CULT_VERSION: 0.1.1
-
   # standard variables used in templated Docker files
   pre_install: ''
   post_install: ''

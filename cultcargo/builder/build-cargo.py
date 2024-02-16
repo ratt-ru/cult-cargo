@@ -60,7 +60,7 @@ print = console.print
 @click.option('-m', '--manifest', type=click.Path(exists=True), 
                 default=DEFAULT_MANIFEST, 
                 help=f'Cargo manifest. Default is {DEFAULT_MANIFEST}.')
-@click.option('--list', 'do_list', is_flag=True, help='Build only, do not push.')
+@click.option('-l', '--list', 'do_list', is_flag=True, help='List only, do not push or build. Returns error if images are missing.')
 @click.option('-b', '--build', is_flag=True, help='Build only, do not push.')
 @click.option('-p', '--push', is_flag=True, help='Push only, do not build.')
 @click.option('-r', '--rebuild', is_flag=True, help='Ignore docker image caches (i.e. rebuild).')
@@ -68,7 +68,7 @@ print = console.print
 @click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
 @click.argument('imagenames', type=str, nargs=-1)
 def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, verbose=False, imagenames: List[str] = []):
-    if not (build or push):
+    if not (build or push or do_list):
         build = push = True
 
     with Progress(
@@ -90,9 +90,12 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             conf.metadata.PACKAGE_VERSION = importlib.metadata.version(conf.metadata.PACKAGE)
 
         print(f"Package is {conf.metadata.PACKAGE}=={conf.metadata.PACKAGE_VERSION}")
-        is_candidate_release = re.match(".*rc(\d+)", conf.metadata.PACKAGE_VERSION)
-        if is_candidate_release:
+        match = re.fullmatch("(.*)rc(\d+)", conf.metadata.PACKAGE_VERSION)
+        if match:
             print("  (this is a release candidate)")
+            candidate_base, candidate_release = match.groups()
+        else:
+            candidate_base = candidate_release = None
 
         package_releases = {}
         current_release = None
@@ -113,14 +116,14 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 print(f"  Available releases: {' '.join(sorted(package_releases.keys()))}")
                 current_release = package_releases.get(conf.metadata.PACKAGE_VERSION)
                 if current_release:
-                    if is_candidate_release:
-                        print("  [green]Working with a public release candidate, build/push allowed.[/green]")
+                    if candidate_release:
+                        print("  [green]Working with a public release candidate, push allowed.[/green]")
                     else:
-                        print("  [red]Working with a public release. Build/push restricted to new images only.[/red]")
+                        print("  [red]Working with a public release. Push restricted to new images only.[/red]")
                 else:
-                    print("  [green]Working with an unreleased version, build/push allowed.[/green]")
+                    print("  [green]Working with an unreleased version, push allowed.[/green]")
             else:
-                print("  [yellow]Failed to fetch release info: {response.status_code}[/yellow]")
+                print(f"  [red]Failed to fetch release info: {response.status_code}[/yellow]")
                 sys.exit(1)
 
 
@@ -156,8 +159,40 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
 
         print(f"Loaded {len(conf.images)} image entries")
 
+        global_vars = OmegaConf.merge(dict(**conf.metadata), conf.assign)
+        registry = global_vars.REGISTRY
+        BUNDLE_VERSION = global_vars.BUNDLE_VERSION
+
         if all:
             imagenames = list(conf.images.keys())
+
+        # Check latest versions in manifest for consistency
+        # Each version's image is tagged VERSION-BUNDLE_VERSION (e.g. wsclean:3.0-cc0.1.2), and there also is an official
+        # default/latest version tagged simlpy BUNDLE_VERSION. Three scenarios:
+        # (a) The latest version can be defined explicitly, by calling it "latest".
+        # (b) The image.latest field can be specified to tag a specific version as latest.
+        # (c) The last version listed is tagged as latest.
+        # In cases (b) and (c), an additional tag operation needs to be done, so the tag_latest
+        # dict below is populated with the versions that need to be tagged.
+        tag_latest = {}
+        for image, image_info in conf.images.items():
+            versions = list(image_info.versions.keys())
+            if not versions:
+                print(f"No versions defined for {image}")
+                sys.exit(1)
+            # figure out latest version - this will be tagged as BUNDLE_VERSION
+            # explicitly specified?
+            latest = image_info.latest
+            if latest: # case (a)
+                if "latest" in versions:
+                    print("Image {image}: both 'latest' version and a latest tag defined, can't have both")
+                    sys.exit(1)
+                if latest not in versions:
+                    print("Image {image}: latest tag refers to unknown version '{latest}'")
+                    sys.exit(1)
+                tag_latest[image] = f"{latest}-{BUNDLE_VERSION}"  # case (b)
+            elif "latest" not in versions:
+                tag_latest[image] = f"{versions[-1]}-{BUNDLE_VERSION}"  # case (c)
 
         no_cache = "--no-cache" if rebuild else ""
 
@@ -176,9 +211,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 print(f"Unknown image '{image}:{version}'")
                 return 1
             
-        global_vars = OmegaConf.merge(dict(**conf.metadata), conf.assign)
-        registry = global_vars.REGISTRY
-        BUNDLE_VERSION = global_vars.BUNDLE_VERSION
+        remote_images_exist = {}
 
         for i_image,image in enumerate(imagenames):
             progress.update(progress_task, description=f"image [bold]{image}[/bold] [{i_image}/{len(imagenames)}]")
@@ -187,10 +220,8 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             if ':' in image:
                 image, version = image.split(":", 1)
                 versions = [version]
-                all_versions = False
             else:
                 versions = conf.images[image].versions.keys()
-                all_versions = True
 
             image_info = conf.images[image]
             image_vars = global_vars.copy()
@@ -198,28 +229,26 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             image_vars.setdefault("CMD", image)
 
             path = os.path.join(global_vars.BASE_IMAGE_PATH, image).format(**image_vars)
-            latest = None
-            built_or_pushed_versions = set()
 
             for i_version, version in enumerate(versions):
                 progress.update(progress_task, description=
                     f"image [bold]{image}[/bold] [{i_image}/{len(imagenames)}]: "
                     f"version [bold]{version}[/bold] [{i_version}/{len(versions)}]")
-
-                version = version.format(**image_vars)
+                
+                if version == "latest":
+                    image_version = BUNDLE_VERSION
+                else: 
+                    version = version.format(**image_vars)
+                    image_version = f"{version}-{BUNDLE_VERSION}"
+                
                 version_info = image_info.versions[version]
-                version_info.setdefault('VERSION', version)
-
                 version_vars = image_vars.copy()
                 version_vars.update(**version_info)
+                version_vars["VERSION"] = version
+                version_vars["IMAGE_VERSION"] = image_version
                 
                 dockerfile = version_info.get('dockerfile') or image_info.dockerfile or 'Dockerfile'
                 dockerfile = dockerfile.format(**version_vars)
-                image_version = version_info.VERSION.format(**version_vars)
-                if image_version == "latest":
-                    latest = image_version = f"{BUNDLE_VERSION}"
-                else:
-                    image_version += f"-{BUNDLE_VERSION}"
                 full_image = f"{registry}/{image}:{image_version}"
                 remote_image_exists = True
 
@@ -232,11 +261,11 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 build_dir = os.path.dirname(dockerpath)
 
                 # check if remote image exists
-                if push or build:
+                if push or build or do_list:
                     print(f"Checking if registry already contains {full_image}")
                     cmd = ['docker', 'manifest', 'inspect', full_image]
                     try:
-                        print(f"  [bold]$ {' '.join(cmd)}[/bold]", highlight=False)
+                        print(f"  [bold].$ {' '.join(cmd)}[/bold]", highlight=False)
                         # Execute the command
                         subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
                         print(f"  Manifest returned for {full_image}")
@@ -244,60 +273,82 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                         output = e.stderr.strip() 
                         if "no such manifest" in output or "was deleted" in output:
                             print(f"  {output}")
-                            print(f"  [green]No manifest returned for {full_image}, ok to build/push[/green]")
+                            print(f"  [green]No manifest returned for {full_image}[/green]")
                             remote_image_exists = False
                         else:
                             print(f"  Error inspecting manifest: {e.stderr}")
                             sys.exit(1)
+                    remote_images_exist.setdefault(image, {})[image_version] = remote_image_exists
 
-                    # check for build protection
-                    if remote_image_exists:
-                        if unprefixed_image_version != conf.metadata.PACKAGE_VERSION:
-                            print(f"  [red]Package version doesn't match image version, and image already exists. Refusing to rebuild/push this image.[/red]")
-                            continue
-                        if current_release:
-                            if not is_candidate_release:
-                                print(f"  [red]Package released, and image already exists. Refusing to rebuild/push this image.[/red]")
-                                continue
-                            else:
-                                print(f"  Package is a release candidate, ok to rebuild/push image")
-                        else:
-                            print(f"  Package unreleased, ok to rebuild/push image")
-
-                        cmd = ['docker', 'pull', full_image]
-                        try:
-                            print(f"  [bold]$ {' '.join(cmd)}[/bold]")
-                            # Execute the command
-                            result = subprocess.run(cmd, stderr=subprocess.PIPE, text=True, check=True)
-                        except subprocess.CalledProcessError as e:
-                            print(f"  Error pulling image: {e.stderr}")
-                            sys.exit(1)
-                
                 # go build
                 if build:
+                    if remote_image_exists and not no_cache:
+                        print(f"Pulling {full_image} from registry")
+                        run(f"docker pull {full_image}")
+                    # substitute Dockerfile and build
                     content = open(dockerpath, "rt").read().format(**version_vars)
                     if verbose:
                         print(f"Dockerfile:", style="bold")
                         print(f"{content}", style="dim", highlight=True)
                     run(f"docker build {no_cache} -t {full_image} -", cwd=build_dir, input=content)
-                    built_or_pushed_versions.add(version)
+                    # is this the latest version that needs to be tagged
+                    if image_version == tag_latest[image]:
+                        run(f"docker tag {registry}/{image}:{image_version} {registry}/{image}:{BUNDLE_VERSION}")
+
+                # go push
                 if push:
+                    if remote_image_exists:
+                        # version mismatch
+                        if unprefixed_image_version != conf.metadata.PACKAGE_VERSION:
+                            if unprefixed_image_version == candidate_base:
+                                print(f"  Image exists but package is a release candidate for image version: ok to push.")
+                            else:
+                                print(f"  [red]Image exists and package version doesn't match image version: won't push.[/red]")
+                                continue
+                        elif current_release:
+                            if not candidate_release:
+                                print(f"  [red]Image exists and package released: won't push.[/red]")
+                                continue
+                            else:
+                                print(f"  Image exists, but package is a release candidate: ok to push.")
+                        else:
+                            print(f"  Image exists, but package unreleased, ok push.")
                     run(f"docker push {full_image}", cwd=path)
-                    built_or_pushed_versions.add(version)
+                    if image_version == tag_latest[image]:
+                        run(f"docker psuh {registry}/{image}:{BUNDLE_VERSION}")
                     
             progress.update(progress_task, description=
                 f"image [bold]{image}[/bold] [{i_image}/{len(imagenames)}]: tagging latest version")
 
-            # apply :latest tag to images
-            if all_versions and built_or_pushed_versions:
-                if latest is None:
-                    latest = image_version  # use last version from loop above
-                    run(f"docker tag {registry}/{image}:{latest} {registry}/{image}:{BUNDLE_VERSION}", cwd=build_dir)
-                    if push:
-                        run(f"docker push {registry}/{image}:{BUNDLE_VERSION}", cwd=path)
-                run(f"docker tag {registry}/{image}:{BUNDLE_VERSION} {registry}/{image}:latest", cwd=build_dir)
-                if push:
-                    run(f"docker push {registry}/{image}:latest", cwd=path)
+            # # apply :latest tag to images
+            # if all_versions and built_or_pushed_versions:
+            #     if latest is None:
+            #         latest = image_version  # use last version from loop above
+            #         run(f"docker tag {registry}/{image}:{latest} {registry}/{image}:{BUNDLE_VERSION}", cwd=build_dir)
+            #         if push:
+            #             run(f"docker push {registry}/{image}:{BUNDLE_VERSION}", cwd=path)
+            #     run(f"docker tag {registry}/{image}:{BUNDLE_VERSION} {registry}/{image}:latest", cwd=build_dir)
+            #     if push:
+            #         run(f"docker push {registry}/{image}:latest", cwd=path)
+
+    if do_list:
+        print(Rule(f"Image list follows"))
+        any_not_found = False
+        for image in imagenames:
+            found = [version for version, exists in remote_images_exist[image].items() if exists]
+            not_found = [version for version, exists in remote_images_exist[image].items() if not exists]
+            messages = [f"[green]{' '.join(found)}[/green] found"] if found else []
+            if not_found:
+                messages.append(f"[red]{' '.join(not_found)}[/red] not found")
+                any_not_found = True
+            if not messages:
+                print(f"[bold]{image}[/bold]: no versions defined")
+            else:
+                print(f"[bold]{image}[/bold]: {', '.join(messages)}")
+        if any_not_found:
+            print("One or more image versions not found", style="red")
+            sys.exit(1)
+
 
     print("Success!", style="green")
 
