@@ -1,4 +1,4 @@
-FROM {CULT_REGISTRY}/casa:_base-cc{CULT_VERSION}
+FROM {REGISTRY}/casa:_base-{BUNDLE_VERSION}
 
 RUN wget -nv {url}/{tarball} && tar zxf {tarball} && rm {tarball}
 

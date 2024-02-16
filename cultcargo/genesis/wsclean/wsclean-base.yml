@@ -31,7 +31,6 @@ lib:
             repeat: ' '
         pol:
           dtype: Union[str, List[str]]
-          default: I
           element_choices: [I,Q,U,V,QU,QUV,IQ,IV,IQU,IQUV,XX,XY,YX,YY,LL,LR,RL,RR]
           policies:
             repeat: ","
