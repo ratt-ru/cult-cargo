@@ -19,7 +19,7 @@ RUN python{VERSION} -mpip install --no-cache-dir \
     owlcat dask-ms scipy omegaconf bdsf msutils
 
 # add stimela -- useful for scabha.schema_utils
-RUN python{VERSION} -mpip install --no-cache-dir git+https://github.com/caracal-pipeline/stimela@2.0rc10
+RUN python{VERSION} -mpip install --no-cache-dir git+https://github.com/caracal-pipeline/stimela@2.0rc12
 
 CMD /usr/bin/python{VERSION}
 
