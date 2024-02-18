@@ -43,6 +43,9 @@ jobs:
       run: |
         poetry run stimela --help
         poetry run stimela doc tests/test-recipe.yml
+    - name: Install builder deps
+      run: |
+        poetry install --with builder --no-interaction
     - name: List all quay.io images
       run: |
         poetry run cultcargo/builder/build-cargo.py -a -l
