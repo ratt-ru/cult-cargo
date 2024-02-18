@@ -13,7 +13,11 @@ from rich.console import Console
 from rich.rule import Rule
 from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn
 import importlib
-import importlib.metadata
+try:
+    from importlib import metadata
+except ImportError: # for Python<3.8
+    import importlib_metadata as metadata
+
 
 
 DEFAULT_MANIFEST = os.path.join(os.path.dirname(__file__), "cargo-manifest.yml")
@@ -87,7 +91,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
 
         # get package version
         if conf.metadata.PACKAGE_VERSION == "auto":
-            conf.metadata.PACKAGE_VERSION = importlib.metadata.version(conf.metadata.PACKAGE)
+            conf.metadata.PACKAGE_VERSION = metadata.version(conf.metadata.PACKAGE)
 
         print(f"Package is {conf.metadata.PACKAGE}=={conf.metadata.PACKAGE_VERSION}")
         match = re.fullmatch("(.*)rc(\d+)", conf.metadata.PACKAGE_VERSION)
