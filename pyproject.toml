@@ -8,6 +8,7 @@ readme = "README.md"
 packages = [{include = "cultcargo"}]
 
 [tool.poetry.dependencies]
+importlib-metadata = "^7.0.0"
 python = "^3.7"
 requests = "^2.30.0"
 stimela = "^2.0rc12"
