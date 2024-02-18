@@ -45,4 +45,4 @@ jobs:
         poetry run stimela doc tests/test-recipe.yml
     - name: List all quay.io images
       run: |
-        ./cultcargo/builder/build-cargo.py -a -l
+        poetry run cultcargo/builder/build-cargo.py -a -l
