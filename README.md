@@ -1,15 +1,13 @@
 # cult-cargo
-Curated Stimela2 cargo for popular radio astronomy software
+Curated Stimela2 cargo for popular radio astronomy software.
 
 ## Regular userland install
-
-PyPI package coming soon, then you can do
 
 ```
 pip install cult-cargo
 ```
 
-...to install both Stimela2 and cult-cargo.
+This installs both cult-cargo and the required version of stimela.
 
 ## Poweruser install
 
@@ -27,7 +25,7 @@ $ cd cult-cargo
 $ poetry install
 ```
 
-Sample recipe:
+## Sample recipe
 
 ```yml
 #!/usr/bin/env -S stimela run -l
@@ -47,10 +45,10 @@ dummy-recipe:
 $ poetry install --with builder
 ```
 
-This makes the ``builder/build-cargo.py`` script available. The script is configured with ``builder/cargo-manifest.yml``, which describes the images that must be built.
+This makes the ``build-cargo.py`` script available. The script is preconfigured to read ``cultcargo/builder/cargo-manifest.yml``, which describes the images that must be built.
 
-``build-cargo.py -a`` will build and push all images, or specify an image name to build a particular one. Use ``-b`` to build but not push, or ``-p`` for push-only.
+``build-cargo.py -a`` will build and push all images, or specify an image name to build a particular one. Use ``-b`` to build but not push, or ``-p`` for push-only. Use ``-l`` to list available images.
 
-The ``cultcargo`` folder contains yml files with cab definitions.
+The ``cultcargo`` folder contains YaML files with cab definitions.
 
-If you would like to maintain your own image collection, write your own manifest and Dockerfiles following the cult-cargo example, then use the ``build-cargo.py`` script to build your images.
+If you would like to maintain your own image collection, write your own manifest and Dockerfiles following the cult-cargo example, and use the ``build-cargo.py`` script to build your images.

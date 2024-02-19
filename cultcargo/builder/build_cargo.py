@@ -127,7 +127,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 else:
                     print("  [green]Working with an unreleased version, push allowed.[/green]")
             else:
-                print(f"  [red]Failed to fetch release info: {response.status_code}[/yellow]")
+                print(f"  [red]Failed to fetch release info: {response.status_code}[/red]")
                 sys.exit(1)
 
 
