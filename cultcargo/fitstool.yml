@@ -39,6 +39,8 @@ cabs:
         dtype: bool
       diff:
         dtype: bool
+      prod:
+        dtype: bool
       force:
         dtype: bool
         default: true

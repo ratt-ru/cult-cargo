@@ -1,0 +1,65 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  rfinder:
+    info: Tool for identify the presence of RFI in an observation, flagging and visualisation (https://github.com/caracal-pipeline/RFInder.git)
+    command: rfinder
+    image:
+      _use: vars.cult-cargo.images
+      name: rfinder
+    policies:
+      prefix: '--'
+    inputs:
+      ms:
+        dtype: MS
+        info: input Measuremnt Set file
+        nom_de_guerre: input
+      input_dir:
+        dtype: Directory
+        info: select working directory (MS file assumed to be here)
+        default: './'
+      output_dir:
+        dtype: Directory
+        info: select output directory
+      label:
+        dtype: str
+        info: "ouput folder is called - rfi_<polarization>_<label>"
+      field:
+        dtype: int
+        info: select field ID of MS file to analyze
+        default: 0
+      polarization:
+        dtype: str
+        choices: [xx, yy, xy, yx, q]
+        default: q
+        info: select stokes parameter to determine rfi presence
+      ncpu:
+        dtype: int
+        info: Number of cpu to use when generating summary stats
+      summary_options:
+        dtype: Union[str, List[str]]
+        info: Flag stats to determine
+        element_choices: [ant,corr,scan,freq]
+        default: [ant,corr]
+        policies:
+          repeat: list
+      freq_bin:
+        dtype: int
+        info: Number of frequencies to bin into a single channel
+      plot_summary:
+        dtype: bool
+        info: plot percentage of RFI
+        default: true
+      plot_details:
+        dtype: bool
+        info: plot percentage of RFI, 'rfi', or noise, 'noise', or factor of noise increase
+        default: false
+      rfimode:
+        dtype: str
+        choices: [use_flags, rms_clip]
+        info: use_flags
+    outputs:
+      outfile:
+        dtype: Directory
+        implicit: =GLOB("rfi*{current.label}")

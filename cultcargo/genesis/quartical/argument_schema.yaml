@@ -1,7 +1,8 @@
 input_ms:
   path:
     required: true
-    dtype: str
+    dtype: URI
+    writable: true
     info:
       Path to input measurement set.
 

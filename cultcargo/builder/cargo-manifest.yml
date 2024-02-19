@@ -1,17 +1,32 @@
-assign:
-  CULT_REGISTRY: quay.io/stimela2
-  CULT_VERSION: 0.0.2
+metadata:
+  # name of python package 
+  PACKAGE: cult-cargo
+  # its repository
+  GITHUB_REPOSITORY: caracal-pipeline/cult-cargo
+  # registry to use. Use module::filename.yml::variable format to pull from a config file inside a python module 
+  REGISTRY: cultcargo.genesis::cult-cargo-base.yml::vars.cult-cargo.images.registry
+  # image bundle ersion. Use module::filename.yml::variable format to pull from a config file inside a python module 
+  BUNDLE_VERSION: cultcargo.genesis::cult-cargo-base.yml::vars.cult-cargo.images.version
+  # prefix to be removed from image version when comparing to python package version
+  BUNDLE_VERSION_PREFIX: cc
+  # path to images. Use module::filename to refer to content of module
+  BASE_IMAGE_PATH: cultcargo::images
 
+assign:
   # standard variables used in templated Docker files
   pre_install: ''
   post_install: ''
   extra_deps: ''
+  
+  # base image for generic Python-based packages
+  base_python_image: python-astro:3.9
+  # corresponding python binary
+  python: python3.9
 
 images:
   base-cult:
     versions:
-      base:
-        version: '{CULT_VERSION}'
+      base: {}
 
   wsclean:
     versions:
@@ -39,7 +54,6 @@ images:
 
   python-astro:
     versions:
-      '3.10': {}
       '3.9': {}
       '3.8': {}
 
@@ -83,12 +97,10 @@ images:
     versions:
       # '0.3.0':
       #   package: crystalball==0.3.0
-      # latest:
-      #   package: crystalball
+#      latest: 
+#         package: crystalball  # doesn't work?
       master:
         package: git+https://github.com/caracal-pipeline/crystalball
-      issue-51:
-        package: git+https://github.com/caracal-pipeline/crystalball@issue-51
 
   tricolour:
     # assign:
@@ -122,15 +134,21 @@ images:
 
   quartical:
     versions:
-      base:
-        package: git+https://github.com/ratt-ru/QuartiCal@v0.2.1-dev
-      # experimental:
-      #   package: git+https://github.com/ratt-ru/QuartiCal@v0.2.1-experimental-dask-ms
+      '0.2.2': 
+        package: quartical==0.2.2
+      latest: 
+        package: quartical
+      master:
+        package: git+https://github.com/ratt-ru/QuartiCal
 
   cubical:
     versions:
-      base:
-        package: git+https://github.com/ratt-ru/CubiCal@noxcal
+      '1.6.4':
+        package: cubical==1.6.4
+      latest:
+        package: cubical
+      master:
+        package: git+https://github.com/ratt-ru/CubiCal
 
   pfb-clean:
     versions:
@@ -161,3 +179,8 @@ images:
         package: aimfast==1.3.4
       base:
         package: git+https://github.com/Athanaseus/aimfast.git
+
+  rfinder:
+    versions:
+      master:
+        package: git+https://github.com/caracal-pipeline/RFInder.git

@@ -1,4 +1,4 @@
-FROM {CULT_REGISTRY}/python:3.8
+FROM {REGISTRY}/base-cult:{BUNDLE_VERSION}
 
 RUN pip install --no-cache-dir casatools=={wheel_version} casatasks=={wheel_version}
 

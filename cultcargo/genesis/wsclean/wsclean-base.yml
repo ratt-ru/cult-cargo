@@ -29,13 +29,18 @@ lib:
           dtype: List[int]
           policies:
             repeat: ' '
-        pol: 
-          choices: [I, IQ, IV, IQUV]
-          default: I
+        pol:
+          dtype: Union[str, List[str]]
+          element_choices: [I,Q,U,V,QU,QUV,IQ,IV,IQU,IQUV,XX,XY,YX,YY,LL,LR,RL,RR]
+          policies:
+            repeat: ","
         join-polarizations:
           dtype: bool
         link-polarizations:
-          choices: [I, Q, U, V, IQ, IU, QU, IV]
+          dtype: Union[str, List[str]]
+          element_choices: [I,Q,U,V,QU,QUV,IQ,IV,IQU,IQUV,XX,XY,YX,YY,LL,LR,RL,RR]
+          policies:
+            repeat: ","
         intervals-out:
           dtype: int
         threads:
@@ -132,6 +137,7 @@ lib:
         temp-dir:
           dtype: Directory
           skip_freshness_checks: true
+          writable: true
         log-time:
           dtype: bool
         interval:

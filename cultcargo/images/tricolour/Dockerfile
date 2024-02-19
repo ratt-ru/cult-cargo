@@ -1,4 +1,4 @@
-FROM {CULT_REGISTRY}/base-cult:base-cc{CULT_VERSION}
+FROM {REGISTRY}/base-cult:base-{BUNDLE_VERSION}
 
 RUN pip install -U pip setuptools wheel
 
