@@ -70,8 +70,9 @@ print = console.print
 @click.option('-r', '--rebuild', is_flag=True, help='Ignore docker image caches (i.e. rebuild).')
 @click.option('-a', '--all', is_flag=True, help='Build and/or push all images in manifest.')
 @click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
+@click.option('-b', '--boring', is_flag=True, help='Be boring -- no progress bar.')
 @click.argument('imagenames', type=str, nargs=-1)
-def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, verbose=False, imagenames: List[str] = []):
+def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False, verbose=False, imagenames: List[str] = []):
     if not (build or push or do_list):
         build = push = True
 
@@ -79,7 +80,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             TimeElapsedColumn(),
             SpinnerColumn(),
             "{task.description}",
-            console=console) as progress:
+            console=console, disable=boring) as progress:
         print = progress.console.print
 
         progress_task = progress.add_task("loading manifest")
@@ -127,7 +128,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 else:
                     print("  [green]Working with an unreleased version, push allowed.[/green]")
             else:
-                print(f"  [red]Failed to fetch release info: {response.status_code}[/yellow]")
+                print(f"  [red]Failed to fetch release info: {response.status_code}[/red]")
                 sys.exit(1)
 
 
@@ -296,7 +297,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                         print(f"{content}", style="dim", highlight=True)
                     run(f"docker build {no_cache} -t {full_image} -", cwd=build_dir, input=content)
                     # is this the latest version that needs to be tagged
-                    if image_version == tag_latest[image]:
+                    if image_version == tag_latest.get(image):
                         run(f"docker tag {registry}/{image}:{image_version} {registry}/{image}:{BUNDLE_VERSION}")
 
                 # go push
@@ -318,8 +319,8 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                         else:
                             print(f"  Image exists, but package unreleased, ok push.")
                     run(f"docker push {full_image}", cwd=path)
-                    if image_version == tag_latest[image]:
-                        run(f"docker psuh {registry}/{image}:{BUNDLE_VERSION}")
+                    if image_version == tag_latest.get(image):
+                        run(f"docker push {registry}/{image}:{BUNDLE_VERSION}")
 
             progress.update(progress_task, description=
                 f"image [bold]{image}[/bold] [{i_image}/{len(imagenames)}]: tagging latest version")
@@ -356,6 +357,5 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
 
     print("Success!", style="green")
 
-
-if __name__ == '__main__':
+def driver():
     build_cargo()
