@@ -43,7 +43,7 @@ class Manifest(object):
         GITHUB_REPOSITORY: str = ""
 
     metadata: Metadata
-    assign: Dict[str, Any] 
+    assign: Dict[str, Any]
     images: Dict[str, ImageInfo]
 
 
@@ -61,8 +61,8 @@ print = console.print
 
 
 @click.command()
-@click.option('-m', '--manifest', type=click.Path(exists=True), 
-                default=DEFAULT_MANIFEST, 
+@click.option('-m', '--manifest', type=click.Path(exists=True),
+                default=DEFAULT_MANIFEST,
                 help=f'Cargo manifest. Default is {DEFAULT_MANIFEST}.')
 @click.option('-l', '--list', 'do_list', is_flag=True, help='List only, do not push or build. Returns error if images are missing.')
 @click.option('-b', '--build', is_flag=True, help='Build only, do not push.')
@@ -144,16 +144,16 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                     raise KeyError(f"{comps[2]} not found in {comps[1]}")
                 return container
             return value
-                
+
         conf.metadata.REGISTRY = resolve_config_reference(conf.metadata.REGISTRY)
         conf.metadata.BUNDLE_VERSION = resolve_config_reference(conf.metadata.BUNDLE_VERSION)
         print(f"Registry is {conf.metadata.REGISTRY}, bundle is '{conf.metadata.BUNDLE_VERSION}', prefix '{conf.metadata.BUNDLE_VERSION_PREFIX}'")
         if not conf.metadata.BUNDLE_VERSION.startswith(conf.metadata.BUNDLE_VERSION_PREFIX):
             print("Inconsistent manifest metadata: BUNDLE_VERSION must start with BUNDLE_VERSION_PREFIX")
             return 1
-        
+
         unprefixed_image_version = conf.metadata.BUNDLE_VERSION[len(conf.metadata.BUNDLE_VERSION_PREFIX):]
-        
+
         if '::' in conf.metadata.BASE_IMAGE_PATH:
             modname, path = conf.metadata.BASE_IMAGE_PATH.split('::', 1)
             pkg_path = os.path.dirname(importlib.import_module(modname).__file__)
@@ -203,7 +203,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
         if not imagenames:
             print(f"Nothing to be done. Please specify some image names, or run with -a/-all.")
             return 0
-        
+
         for image in imagenames:
             version = None
             if ':' in image:
@@ -214,7 +214,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             if version is not None and version not in conf.images[image].versions:
                 print(f"Unknown image '{image}:{version}'")
                 return 1
-            
+
         remote_images_exist = {}
 
         for i_image,image in enumerate(imagenames):
@@ -238,19 +238,19 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 progress.update(progress_task, description=
                     f"image [bold]{image}[/bold] [{i_image}/{len(imagenames)}]: "
                     f"version [bold]{version}[/bold] [{i_version}/{len(versions)}]")
-                
+
                 if version == "latest":
                     image_version = BUNDLE_VERSION
-                else: 
+                else:
                     version = version.format(**image_vars)
                     image_version = f"{version}-{BUNDLE_VERSION}"
-                
+
                 version_info = image_info.versions[version]
                 version_vars = image_vars.copy()
                 version_vars.update(**version_info)
                 version_vars["VERSION"] = version
                 version_vars["IMAGE_VERSION"] = image_version
-                
+
                 dockerfile = version_info.get('dockerfile') or image_info.dockerfile or 'Dockerfile'
                 dockerfile = dockerfile.format(**version_vars)
                 full_image = f"{registry}/{image}:{image_version}"
@@ -274,7 +274,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                         subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
                         print(f"  Manifest returned for {full_image}")
                     except subprocess.CalledProcessError as e:
-                        output = e.stderr.strip() 
+                        output = e.stderr.strip()
                         if "no such manifest" in output or "was deleted" in output:
                             print(f"  {output}")
                             print(f"  [green]No manifest returned for {full_image}[/green]")
@@ -320,7 +320,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                     run(f"docker push {full_image}", cwd=path)
                     if image_version == tag_latest[image]:
                         run(f"docker psuh {registry}/{image}:{BUNDLE_VERSION}")
-                    
+
             progress.update(progress_task, description=
                 f"image [bold]{image}[/bold] [{i_image}/{len(imagenames)}]: tagging latest version")
 

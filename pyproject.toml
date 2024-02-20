@@ -9,7 +9,6 @@ packages = [{include = "cultcargo"}]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-#{git = "https://github.com/caracal-pipeline/stimela", branch = "FIASCO3-hlb"}
 stimela = "^2.0rc12"
 
 [tool.poetry.group.builder]

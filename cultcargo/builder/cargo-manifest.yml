@@ -1,11 +1,11 @@
 metadata:
-  # name of python package 
+  # name of python package
   PACKAGE: cult-cargo
   # its repository
   GITHUB_REPOSITORY: caracal-pipeline/cult-cargo
-  # registry to use. Use module::filename.yml::variable format to pull from a config file inside a python module 
+  # registry to use. Use module::filename.yml::variable format to pull from a config file inside a python module
   REGISTRY: cultcargo.genesis::cult-cargo-base.yml::vars.cult-cargo.images.registry
-  # image bundle ersion. Use module::filename.yml::variable format to pull from a config file inside a python module 
+  # image bundle ersion. Use module::filename.yml::variable format to pull from a config file inside a python module
   BUNDLE_VERSION: cultcargo.genesis::cult-cargo-base.yml::vars.cult-cargo.images.version
   # prefix to be removed from image version when comparing to python package version
   BUNDLE_VERSION_PREFIX: cc
@@ -17,7 +17,7 @@ assign:
   pre_install: ''
   post_install: ''
   extra_deps: ''
-  
+
   # base image for generic Python-based packages
   base_python_image: python-astro:3.9
   # corresponding python binary
@@ -97,7 +97,7 @@ images:
     versions:
       # '0.3.0':
       #   package: crystalball==0.3.0
-#      latest: 
+#      latest:
 #         package: crystalball  # doesn't work?
       master:
         package: git+https://github.com/caracal-pipeline/crystalball
@@ -134,9 +134,9 @@ images:
 
   quartical:
     versions:
-      '0.2.2': 
+      '0.2.2':
         package: quartical==0.2.2
-      latest: 
+      latest:
         package: quartical
       master:
         package: git+https://github.com/ratt-ru/QuartiCal
