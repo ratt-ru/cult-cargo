@@ -319,7 +319,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                             print(f"  Image exists, but package unreleased, ok push.")
                     run(f"docker push {full_image}", cwd=path)
                     if image_version == tag_latest[image]:
-                        run(f"docker psuh {registry}/{image}:{BUNDLE_VERSION}")
+                        run(f"docker push {registry}/{image}:{BUNDLE_VERSION}")
                     
             progress.update(progress_task, description=
                 f"image [bold]{image}[/bold] [{i_image}/{len(imagenames)}]: tagging latest version")
