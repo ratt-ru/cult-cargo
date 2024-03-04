@@ -1,6 +1,7 @@
 include LICENSE
 include README.md
 include CHANGES.md
+include cultcargo/stimela.conf
 
 recursive-include cabs/ *.yml *.yaml
 recursive-include cabs/recipe/ *.yaml *.yml
