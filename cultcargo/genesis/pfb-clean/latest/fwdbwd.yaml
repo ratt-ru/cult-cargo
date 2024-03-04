@@ -6,7 +6,7 @@ inputs:
     - cgopts.yml
     - dist.yml
     - out.yml
-  model_name:
+  model-name:
     dtype: str
     abbreviation: mname
     default: MODEL
@@ -44,7 +44,7 @@ inputs:
     dtype: float
     abbreviation: sig21
     info: Wavelet thresholding level
-  l1reweight_from:
+  l1reweight-from:
     dtype: int
     default: 5
     info: Start doing l1reweights after this many iterations
@@ -75,15 +75,15 @@ inputs:
     default: 1e-5
     info: Tolerance at which to terminate algorithm. Will stop when norm(x-xp)/norm(x)
       < tol
-  fits_mfs:
+  fits-mfs:
     dtype: bool
     default: true
     info: Output MFS fits files
-  fits_cubes:
+  fits-cubes:
     dtype: bool
     default: false
     info: Output fits cubes
-  memory_greedy:
+  memory-greedy:
     dtype: bool
     default: false
     info: Holds data in memory if set

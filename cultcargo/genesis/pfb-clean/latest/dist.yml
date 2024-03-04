@@ -1,4 +1,4 @@
-host_address:
+host-address:
   dtype: str
   abbreviation: ha
   info: Address where the distributed client lives. Uses LocalCluster if no address
@@ -8,7 +8,7 @@ nworkers:
   default: 1
   abbreviation: nw
   info: Number of worker processes. Use with distributed scheduler.
-nthreads_dask:
+nthreads-dask:
   dtype: int
   default: 1
   abbreviation: ntd
