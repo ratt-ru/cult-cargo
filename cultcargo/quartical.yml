@@ -27,23 +27,44 @@ cabs:
     info: QuartiCal column backup script
 
     policies:
-      positional: true
+      prefix: '--'
 
     inputs:
       ms_path:
-        dtype: Directory
+        dtype: URI
         must_exist: true
+        required: true
+        policies:
+          positional: true
         info: 'Path to input measurement set, e.g. path/to/dir/foo.MS.'
       zarr_dir:
-        dtype: Directory
+        dtype: URI
         mkdir: true
         must_exist: false
+        required: true
+        policies:
+          positional: true
         info: Path to desired backup location. Note that this only allows
               the user to specify a directory and not the name of the backup
               zarr that will be created, e.g. path/to/dir.
       column:
         dtype: str
+        required: true
+        policies:
+          positional: true
         info: Name of column to be backed up.
+      label:
+        dtype: str
+        info: An explicit label to include in the backup name. Defaults to
+              datetime at which the backup was created. Full name will be
+              given by [label]-[msname]-[column].bkp.qc.
+      nthread:
+        dtype: int
+        info: Number of threads to use.
+      field-id:
+        dtype: int
+        info: Field ID to back up.
+
 
   quartical-restore:
     name: quartical-restore
@@ -55,19 +76,31 @@ cabs:
     info: QuartiCal column restoring script
 
     policies:
-      positional: true
+      prefix: '--'
 
     inputs:
       zarr_path:
-        dtype: Directory
+        dtype: URI
         must_exist: true
+        required: true
+        policies:
+          positional: true
         info: Path to backup zarr column e.g. path/to/dir/20211201-154457-foo.MS-FLAG.bkp.qc.
               Also accepts valid s3 urls.
       ms_path:
-        dtype: Directory
+        dtype: URI
         must_exist: true
+        required: true
+        policies:
+          positional: true
         info: Path to measurement set, e.g. path/to/dir/foo.MS. Also accepts valid s3 urls.
       column_name:
         dtype: str
+        required: True
+        policies:
+          positional: true
         info: Name of column to populate using the backup.
               Note that this does not have to be the same column as was used to create the backup.
+      nthread:
+        dtype: int
+        info: Number of threads to use.
