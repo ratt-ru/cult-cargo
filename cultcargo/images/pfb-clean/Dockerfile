@@ -1,1 +1,1 @@
-cultcargo/images/Dockerfile.generic.pip
+../Dockerfile.generic.pip
