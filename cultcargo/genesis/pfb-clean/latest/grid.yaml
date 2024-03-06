@@ -1,0 +1,106 @@
+inputs:
+  xds:
+    info: Optional explicit path to xds. Set using output-filename and postfix by
+      default.
+  nband:
+    dtype: int
+    required: true
+    abbreviation: nb
+    info: Number of imaging bands
+  postfix:
+    dtype: str
+    default: main
+    info: Can be used to specify a custom name for the image space data products
+  concat-row:
+    dtype: bool
+    default: true
+    info: Concatenate datasets by row
+  overwrite:
+    dtype: bool
+    default: false
+    info: Allow overwriting of image space data products. Specify postfix to create
+      a new data set.
+  transfer-model-from:
+    dtype: str
+    abbreviation: tmf
+    info: Name of dataset to use for model initialisation
+  robustness:
+    dtype: float
+    abbreviation: rob
+    info: Robustness factor for Briggs weighting. None means natural
+  fits-mfs:
+    dtype: bool
+    default: true
+    info: Output MFS fits files
+  fits-cubes:
+    dtype: bool
+    default: false
+    info: Output fits cubes
+  dirty:
+    dtype: bool
+    default: true
+    info: Compute the dirty image
+  psf:
+    dtype: bool
+    default: true
+    info: Compute the PSF
+  psf-oversize:
+    dtype: float
+    default: 2.0
+    abbreviation: psfo
+    info: Size of PSF relative to dirty image
+  weight:
+    dtype: bool
+    default: true
+    info: Compute effectve image space weights
+  residual:
+    dtype: bool
+    default: false
+    info: Compute the residual image
+  field-of-view:
+    dtype: float
+    abbreviation: fov
+    info: Field of view in degrees
+    metavar: DEG
+  super-resolution-factor:
+    dtype: float
+    default: 2
+    abbreviation: srf
+    info: Will over-sample Nyquist by this factor at max frequency
+  cell-size:
+    dtype: float
+    info: Cell size in arc-seconds
+  nx:
+    dtype: int
+    info: Number of x pixels
+  ny:
+    dtype: int
+    info: Number of y pixels
+  filter-extreme-counts:
+    dtype: bool
+    default: false
+    info: Replace extreme outliers in the weighting grid by their local mean
+  filter-nbox:
+    dtype: int
+    default: 16
+    info: The size of the box to compute local mean over
+  filter-level:
+    dtype: float
+    default: 10
+    info: The level above local mean that renders a grid weight extreme
+  target:
+    dtype: str
+    info: This can be predefined celestial objects known to astropy or a string in
+      the format 'HH:MM:SS,DD:MM:SS' (note the , delimiter)
+  l2reweight-dof:
+    dtype: float
+    info: The degrees of freedom parameter for L2 reweighting. The default (None)
+      means no reweighting. A sensible value for this parameter depends on the level
+      of RFI in the data. Small values (eg. 2) result in aggressive reweighting and
+      should be avoided if the model is still incomplete.
+  _include:
+    - (.)gridding.yml
+    - (.)dist.yml
+    - (.)out.yml
+
+outputs: {}

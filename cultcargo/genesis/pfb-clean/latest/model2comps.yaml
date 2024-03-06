@@ -1,0 +1,44 @@
+inputs:
+  overwrite:
+    dtype: bool
+    default: false
+    info: Allow overwrite of existing model
+  nbasisf:
+    dtype: int
+    default: 4
+    info: Order of interpolating polynomial for frequency axis
+  nbasist:
+    dtype: int
+    info: Order of interpolating polynomial for frequency axis
+  fit-mode:
+    dtype: str
+    default: Legendre
+  min-val:
+    dtype: float
+    info: Only fit components above this flux level
+  postfix:
+    dtype: str
+    default: main
+    info: Can be used to specify a custom name for the image space data products
+  model-name:
+    dtype: str
+    default: MODEL
+    abbreviation: mname
+    info: Name of model in mds
+  model-fits:
+    dtype: str
+    info: Specify to degrid from a fits file
+  use-wsum:
+    dtype: bool
+    default: true
+    info: Use wsum as weights during fit
+  sigmasq:
+    dtype: float
+    default: 1e-10
+    info: Multiple of the identity to add to the hessian for stability
+
+  _include:
+    - (.)dist.yml
+    - (.)out.yml
+
+outputs: {}
