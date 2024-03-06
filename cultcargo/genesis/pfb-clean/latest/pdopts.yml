@@ -13,7 +13,7 @@ pd-verbose:
   default: 1
   info: Verbosity of primal dual algorithm. Set to > 1 for \ debugging, 0 for silence
   abbreviation: pdverb
-pd-report_freq:
+pd-report-freq:
   dtype: int
   default: 10
   info: Report frequency of primal dual algorithm

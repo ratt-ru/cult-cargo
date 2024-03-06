@@ -90,7 +90,7 @@ inputs:
     info: Average this number if channels together
 
   _include:
-    - dist.yml
-    - out.yml
+    - (.)dist.yml
+    - (.)out.yml
 
 outputs: {}
