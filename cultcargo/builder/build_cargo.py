@@ -321,7 +321,6 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                     run(f"docker push {full_image}", cwd=path)
                     if image_version == tag_latest.get(image):
                         run(f"docker push {registry}/{image}:{BUNDLE_VERSION}")
-
             progress.update(progress_task, description=
                 f"image [bold]{image}[/bold] [{i_image}/{len(imagenames)}]: tagging latest version")
 
