@@ -14,15 +14,12 @@ This installs both cult-cargo and the required version of stimela.
 To work off the repo versions:
 
 ```
-# activate virtualenv
-$ pip install poetry
+# activate your virtualenv
+$ pip install -U pip
 $ gh repo clone caracal-pipeline/stimela
-$ cd stimela
-$ poetry install
-$ cd ..
 $ gh repo clone caracal-pipeline/cult-cargo
-$ cd cult-cargo
-$ poetry install
+$ pip install -e stimela
+$ pip install -e cult-cargo
 ```
 
 ## Sample recipe
