@@ -1,0 +1,49 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+
+vars:
+  cult-cargo:
+    pfb-clean:
+      image:
+        _use: vars.cult-cargo.images
+        name: pfb-clean
+
+cabs:
+  _include: genesis/pfb-clean/latest/uncabbedcabs.yml
+
+  pfb-init:
+    image:
+      _use: vars.cult-cargo.pfb-clean.image
+
+  pfb-grid:
+    image:
+      _use: vars.cult-cargo.pfb-clean.image
+
+  pfb-degrid:
+    image:
+      _use: vars.cult-cargo.pfb-clean.image
+
+  pfb-clean:
+    image:
+      _use: vars.cult-cargo.pfb-clean.image
+
+  pfb-restore:
+    image:
+      _use: vars.cult-cargo.pfb-clean.image
+
+  pfb-fwdbwd:
+    image:
+      _use: vars.cult-cargo.pfb-clean.image
+
+  pfb-forward:
+    image:
+      _use: vars.cult-cargo.pfb-clean.image
+
+  pfb-spotless:
+    image:
+      _use: vars.cult-cargo.pfb-clean.image
+
+  pfb-model2comps:
+    image:
+      _use: vars.cult-cargo.pfb-clean.image
