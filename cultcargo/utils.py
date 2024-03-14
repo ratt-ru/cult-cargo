@@ -1,5 +1,6 @@
 from typing import Dict, List, Union, Optional, Callable, Any
-from scabha.cargo import Parameter, _UNSET_DEFAULT, EmptyDictDefault, ParameterPolicies
+from scabha.cargo import Parameter, _UNSET_DEFAULT, EmptyListDefault
+from scabha.cargo import EmptyDictDefault, ParameterPolicies, Cargo
 from scabha.basetypes import  File, Directory
 from scabha.validate import validate_parameters
 from dataclasses import dataclass
@@ -10,22 +11,46 @@ from pydoc import locate
 @dataclass
 class OldParameter:
     name: str 
-    dtype: str
+    dtype: Any
     info: str
     default: Any = None
     required: bool = False
-    choices: List[Any] = None
-    io: str = None
-    mapping: str = None
+    choices: Optional[List[Any]] = None
+    io: Optional[str] = ""
+    mapping: Optional[str] = ""
     check_io: bool = False
     deprecated: bool = False
     positional: bool = False
 
 
 @dataclass
+class OldCab:
+    task: str
+    base: str
+    version: List[str]
+    binary: str = ""
+    description: str = "<documentation>"
+    prefix: str = "--"
+    parameters: Optional[List[Dict]] = None
+    tag: Optional[List[str]] = None
+    junk: Optional[List[str]] = None
+    msdir: bool = False
+    wranglers: Optional[List[str]] = None
+
 class SimpleCab:
-    inputs: Dict[str, Any] = EmptyDictDefault()
-    outputs: Dict[str, Any] = EmptyDictDefault()
+    def __init__(self, oldfile: File):
+        self.oldfile = oldfile
+        cab_strct = OmegaConf.structured(OldCab)
+        param_strct = OmegaConf.structured(OldParameter)
+        _oldcab = OmegaConf.load(oldfile)
+        self.oldcab = OmegaConf.merge(cab_strct,
+                                    OmegaConf.load(oldfile))
+        self.parameters = []
+        for param in _oldcab.parameters:
+            pardict = OmegaConf.merge(param_strct, param)
+            self.parameters.append(pardict)
+            
+        
     
     def __to_new_dtype(self, param:OldParameter) -> str:
         new_dtype = []
@@ -58,27 +83,31 @@ class SimpleCab:
             return "Union[" + ",".join(new_dtype) + "]"
         else:
             return new_dtype[0]
+        
     
-    def init_from_old_cab(self, oldcab_file: File):
+    def to_new_params(self, set_inputs=True):
         """AI is creating summary for init_from_old_cab
 
         Args:
             oldcab (File): [description]
         """
-        oldcab = OmegaConf.load(oldcab_file)
-        
-        self.inputs = {}
-        self.outputs = {}
-        for param in oldcab.parameters:
+        param_struct = OmegaConf.structured(Parameter)
+        params = {}
+        for param in self.parameters:
             dtype = self.__to_new_dtype(param)
-            oldparam = OldParameter(**param)
             
-            policies = ParameterPolicies(positional=oldparam.positional)
+            policies = ParameterPolicies(positional=param.positional)
             
-            self.inputs[param.name] = Parameter(info=oldparam.info, dtype=dtype, policies=policies,
-                                                nom_de_guerre=oldparam.mapping,
-                                                must_exist=oldparam.check_io)
-            
+            params[param.name] = OmegaConf.merge(param_struct,
+                            dict(info=param.info, dtype=dtype, policies=policies,
+                                nom_de_guerre=param.mapping,
+                                must_exist=param.check_io))
+            if set_inputs:
+                self.inputs = params
+                self.outputs = {}
+        return OmegaConf.create(params)
+    
+    
     def save(self, path: str):
         """_summary_
 
@@ -88,6 +117,7 @@ class SimpleCab:
         Returns:
             _type_: _description_
         """
+        
         outdict = OmegaConf.create({"inputs": self.inputs,
                                     "outputs": self.outputs,
                                     })
