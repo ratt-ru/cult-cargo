@@ -73,7 +73,9 @@ images:
   casa6:
     versions:
       '6.5':
-          wheel_version: 6.5.5.20
+          wheel_version: 6.5.6.22
+      '6.6':
+          wheel_version: 6.6.3.22
 
   breizorro:
     versions:
