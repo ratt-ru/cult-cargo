@@ -17,6 +17,7 @@ cabs:
       ms:
         dtype: MS
         required: true
+        writable: true
       commands:
         dtype: List[str]
         policies:
