@@ -23,7 +23,8 @@ cabs:
         policies:
           repeat: list
 
-    wranglers:
-      'Error in TaQL command:':
-        - ERROR
+    management:
+      wranglers:
+        'Error in TaQL command:':
+          - ERROR
       
