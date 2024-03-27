@@ -8,8 +8,8 @@ readme = "README.md"
 packages = [{include = "cultcargo"}]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-stimela = "^2.0rc14"
+python = "^3.8"
+stimela = "^2.0rc17"
 
 [tool.poetry.scripts]
 build-cargo = "cultcargo.builder.build_cargo:driver"
