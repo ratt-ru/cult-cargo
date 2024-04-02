@@ -5,7 +5,7 @@ metadata:
   GITHUB_REPOSITORY: caracal-pipeline/cult-cargo
   # registry to use. Use module::filename.yml::variable format to pull from a config file inside a python module
   REGISTRY: cultcargo.genesis::cult-cargo-base.yml::vars.cult-cargo.images.registry
-  # image bundle ersion. Use module::filename.yml::variable format to pull from a config file inside a python module
+  # image bundle version. Use module::filename.yml::variable format to pull from a config file inside a python module
   BUNDLE_VERSION: cultcargo.genesis::cult-cargo-base.yml::vars.cult-cargo.images.version
   # prefix to be removed from image version when comparing to python package version
   BUNDLE_VERSION_PREFIX: cc

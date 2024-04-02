@@ -317,7 +317,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                             else:
                                 print(f"  Image exists, but package is a release candidate: ok to push.")
                         else:
-                            print(f"  Image exists, but package unreleased, ok push.")
+                            print(f"  Image exists, but package unreleased, ok to push.")
                     run(f"docker push {full_image}", cwd=path)
                     if image_version == tag_latest.get(image):
                         run(f"docker push {registry}/{image}:{BUNDLE_VERSION}")
