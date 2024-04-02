@@ -69,10 +69,12 @@ print = console.print
 @click.option('-p', '--push', is_flag=True, help='Push only, do not build.')
 @click.option('-r', '--rebuild', is_flag=True, help='Ignore docker image caches (i.e. rebuild).')
 @click.option('-a', '--all', is_flag=True, help='Build and/or push all images in manifest.')
+@click.option('-E', '--experimental', is_flag=True, help='Enable experimental versions.')
 @click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
 @click.option('--boring', is_flag=True, help='Be boring -- no progress bar.')
 @click.argument('imagenames', type=str, nargs=-1)
-def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False, verbose=False, imagenames: List[str] = []):
+def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False, 
+                experimental=False, verbose=False, imagenames: List[str] = []):
     if not (build or push or do_list):
         build = push = True
 
@@ -251,6 +253,20 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 version_vars.update(**version_info)
                 version_vars["VERSION"] = version
                 version_vars["IMAGE_VERSION"] = image_version
+
+                is_exp = version_info.get('experimental') 
+                exp_deps = version_info.get('experimental_dependencies', [])
+
+                if is_exp or exp_deps:
+                    if not experimental:
+                        print(f"[bold]{image}:{image_version}[/bold] is experimental and -E switch not given, skipping")
+                        continue
+                    # check dependencies
+                    print(f"[bold]{image}:{image_version}[/bold] is experimental")
+                    for dep in exp_deps:
+                        if not os.path.exists(dep):
+                            print(f"  [red]ERROR: dependency {dep} doesn't exist[/red]")
+                            return 1
 
                 dockerfile = version_info.get('dockerfile') or image_info.dockerfile or 'Dockerfile'
                 dockerfile = dockerfile.format(**version_vars)

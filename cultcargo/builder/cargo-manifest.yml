@@ -165,8 +165,30 @@ images:
       # corresponding python binary
       python: python3.10
     versions:
-      latest:
-        package: git+https://github.com/saopicc/DDFacet
+      # experimental branch, Oleg only
+      useapp-meerklass:
+        experimental_dependencies:
+          - /home/oms/projects/cult-cargo/cultcargo/images/ddfacet/DDFacet-useapp-meerklass
+        pre_install: ADD DDFacet-useapp-meerklass DDFacet-branch
+        package: -e ./DDFacet-branch
+      '0.8':
+        package: DDFacet==0.8.0.0
+
+  killms:
+    assign:
+      # base image for generic Python-based packages
+      base_python_image: python-astro:3.10
+      # corresponding python binary
+      python: python3.10
+    versions:
+      # experimental branch, Oleg only
+      useapp-meerklass:
+        experimental_dependencies:
+          - /home/oms/projects/cult-cargo/cultcargo/images/killms/killMS-useapp-meerklass
+        pre_install: ADD killMS-useapp-meerklass killMS-branch
+        package: -e ./killMS-branch
+      '3.2':
+        package: killMS==3.2.0
 
   mosaic-queen:
     assign:
