@@ -10,6 +10,7 @@ packages = [{include = "cultcargo"}]
 [tool.poetry.dependencies]
 python = "^3.8"
 stimela = "^2.0rc17"
+requests = "^2.0"
 
 [tool.poetry.scripts]
 build-cargo = "cultcargo.builder.build_cargo:driver"
