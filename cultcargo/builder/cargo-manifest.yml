@@ -54,6 +54,7 @@ images:
 
   python-astro:
     versions:
+      '3.10': {}
       '3.9': {}
       '3.8': {}
 
@@ -156,6 +157,16 @@ images:
     versions:
       latest:
         package: git+https://github.com/ratt-ru/pfb-clean@awskube
+
+  ddfacet:
+    assign:
+      # base image for generic Python-based packages
+      base_python_image: python-astro:3.10
+      # corresponding python binary
+      python: python3.10
+    versions:
+      latest:
+        package: git+https://github.com/saopicc/DDFacet
 
   mosaic-queen:
     assign:

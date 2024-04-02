@@ -70,7 +70,7 @@ print = console.print
 @click.option('-r', '--rebuild', is_flag=True, help='Ignore docker image caches (i.e. rebuild).')
 @click.option('-a', '--all', is_flag=True, help='Build and/or push all images in manifest.')
 @click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
-@click.option('-b', '--boring', is_flag=True, help='Be boring -- no progress bar.')
+@click.option('--boring', is_flag=True, help='Be boring -- no progress bar.')
 @click.argument('imagenames', type=str, nargs=-1)
 def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False, verbose=False, imagenames: List[str] = []):
     if not (build or push or do_list):
@@ -82,7 +82,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             "{task.description}",
             console=console, disable=boring) as progress:
         print = progress.console.print
-
+    
         progress_task = progress.add_task("loading manifest")
 
         print(Rule(f"Loading manifest {manifest}"))
@@ -295,7 +295,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                     if verbose:
                         print(f"Dockerfile:", style="bold")
                         print(f"{content}", style="dim", highlight=True)
-                    run(f"docker build {no_cache} -t {full_image} -", cwd=build_dir, input=content)
+                    run(f"docker build {no_cache} -t {full_image} -f- {build_dir}", cwd=build_dir, input=content)
                     # is this the latest version that needs to be tagged
                     if image_version == tag_latest.get(image):
                         run(f"docker tag {registry}/{image}:{image_version} {registry}/{image}:{BUNDLE_VERSION}")
