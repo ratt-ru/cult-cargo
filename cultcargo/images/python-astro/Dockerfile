@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install apt-utils && \
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python{VERSION} 1
 
-# upgrade pip
+# needed to upgrade pip properly -- sometimes it gets stuck and is unable to upgrade itself
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python{VERSION}
+
 RUN python{VERSION} -mpip install --no-cache-dir -U pip setuptools wheel 
 
 # add useful astro stuff
@@ -19,7 +21,7 @@ RUN python{VERSION} -mpip install --no-cache-dir \
     owlcat dask-ms scipy omegaconf bdsf msutils
 
 # add stimela -- useful for scabha.schema_utils
-RUN python{VERSION} -mpip install --no-cache-dir git+https://github.com/caracal-pipeline/stimela@2.0rc12
+RUN python{VERSION} -mpip install --no-cache-dir "stimela>=2.0rc17"
 
 CMD /usr/bin/python{VERSION}
 
