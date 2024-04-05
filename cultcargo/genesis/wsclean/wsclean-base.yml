@@ -124,6 +124,8 @@ lib:
           dtype: int
         no-reorder:
           dtype: bool
+        reorder:
+          dtype: bool
         predict:
           dtype: bool
         no-update-model-required:
