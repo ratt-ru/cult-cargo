@@ -49,3 +49,14 @@ This makes the ``build-cargo.py`` script available. The script is preconfigured 
 The ``cultcargo`` folder contains YaML files with cab definitions.
 
 If you would like to maintain your own image collection, write your own manifest and Dockerfiles following the cult-cargo example, and use the ``build-cargo.py`` script to build your images.
+
+## Using cult-cargo as a standalone image repository
+
+You don't even need to run stimela (or indeed install anything) to take advantage of the images packaged with cult-cargo. Take a look at the image repository on https://quay.io/organization/stimela2 to see what's available.
+
+For example, if you want to run a wsclean image, just do:
+
+```
+$ singularity build wsclean-3.3.sif docker:quay.io/stimela2/wsclean:3.3-cc0.1.2
+$ singularity exec wsclean-3.3.sif wsclean 
+```

@@ -73,7 +73,7 @@ print = console.print
 @click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
 @click.option('--boring', is_flag=True, help='Be boring -- no progress bar.')
 @click.argument('imagenames', type=str, nargs=-1)
-def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False, 
+def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False,
                 experimental=False, verbose=False, imagenames: List[str] = []):
     if not (build or push or do_list):
         build = push = True
@@ -84,7 +84,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             "{task.description}",
             console=console, disable=boring) as progress:
         print = progress.console.print
-    
+
         progress_task = progress.add_task("loading manifest")
 
         print(Rule(f"Loading manifest {manifest}"))
@@ -254,7 +254,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 version_vars["VERSION"] = version
                 version_vars["IMAGE_VERSION"] = image_version
 
-                is_exp = version_info.get('experimental') 
+                is_exp = version_info.get('experimental')
                 exp_deps = version_info.get('experimental_dependencies', [])
 
                 if is_exp or exp_deps:
