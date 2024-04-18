@@ -2,9 +2,11 @@ FROM {REGISTRY}/base-cult:base-{BUNDLE_VERSION}
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN apt-add-repository -y ppa:deadsnakes/ppa
+
 RUN apt-get update && apt-get install apt-utils && \
-    apt-get install -y casacore-data casacore-tools python{VERSION}-dev \
-    python3-pip python3-pytest python3-matplotlib \
+    apt-get install -y casacore-data casacore-tools python{VERSION}-dev python{VERSION}-distutils \
+    python3-pip python3-pytest python3-matplotlib curl\
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt/archives 
 

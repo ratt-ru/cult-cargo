@@ -54,6 +54,7 @@ images:
 
   python-astro:
     versions:
+      '3.10': {}
       '3.9': {}
       '3.8': {}
 
@@ -156,6 +157,25 @@ images:
     versions:
       latest:
         package: git+https://github.com/ratt-ru/pfb-clean@awskube
+
+  ddfacet:
+    assign:
+      # base image for generic Python-based packages
+      base_python_image: python-astro:3.10
+      # corresponding python binary
+      python: python3.10
+    versions:
+      # experimental branch, Oleg only
+      useapp-meerklass:
+        experimental_dependencies:
+          - /home/oms/projects/cult-cargo/cultcargo/images/ddfacet/DDFacet-useapp-meerklass
+          - /home/oms/projects/cult-cargo/cultcargo/images/ddfacet/killMS-useapp-meerklass
+        pre_install: |
+          ADD DDFacet-useapp-meerklass DDFacet-branch
+          ADD killMS-useapp-meerklass killMS-branch
+        package: -e ./DDFacet-branch ./killMS-branch
+      '0.8':
+        package: DDFacet==0.8.0.0 killMS==3.2.0
 
   mosaic-queen:
     assign:
