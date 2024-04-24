@@ -119,7 +119,10 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             if response.status_code == 200:
                 releases = response.json()  # Parse the JSON response
                 for release in releases:
-                    package_releases[release['tag_name']] = release
+                    release_name = release['tag_name']
+                    if release_name[0] in "rvRV":   # strip of r or v prefix (i.e. from r1.0.2)
+                        release_name = release_name[1:]
+                    package_releases[release_name] = release
                 print(f"  Available releases: {' '.join(sorted(package_releases.keys()))}")
                 current_release = package_releases.get(conf.metadata.PACKAGE_VERSION)
                 if current_release:

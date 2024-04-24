@@ -173,9 +173,9 @@ images:
         pre_install: |
           ADD DDFacet-useapp-meerklass DDFacet-branch
           ADD killMS-useapp-meerklass killMS-branch
-        package: -e ./DDFacet-branch ./killMS-branch
+        package: -e ./DDFacet-branch[fits-beam-support,kms-support,alternate-data-backends] ./killMS-branch
       '0.8':
-        package: DDFacet==0.8.0.0 killMS==3.2.0
+        package: DDFacet[fits-beam-support,kms-support,alternate-data-backends]==0.8.0.0 killMS==3.2.0
 
   mosaic-queen:
     assign:
