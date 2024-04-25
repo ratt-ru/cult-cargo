@@ -169,6 +169,5 @@ lib:
         temp-dir:
           dtype: Directory
           skip_freshness_checks: true
-          writable: true
           mkdir: true
           must_exist: false
