@@ -136,10 +136,6 @@ lib:
           dtype:  bool
         use-wgridder:
           dtype: bool
-        temp-dir:
-          dtype: Directory
-          skip_freshness_checks: true
-          writable: true
         log-time:
           dtype: bool
         interval:
@@ -170,4 +166,10 @@ lib:
           info: Source list
           dtype: File
           implicit: "{current.prefix}-sources.txt"
+          must_exist: false
+        temp-dir:
+          dtype: Directory
+          skip_freshness_checks: true
+          writable: true
+          mkdir: true
           must_exist: false
