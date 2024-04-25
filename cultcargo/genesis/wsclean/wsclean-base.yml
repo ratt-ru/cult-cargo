@@ -14,7 +14,6 @@ lib:
           dtype: str
           nom_de_guerre: name
           required: true
-          mkdir: true
         column:
           dtype: str
           nom_de_guerre: data-column
