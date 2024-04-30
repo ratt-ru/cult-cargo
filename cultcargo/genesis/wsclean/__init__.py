@@ -50,7 +50,7 @@ def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], ou
     for imagetype in "dirty", "restored", "residual", "model":
         if imagetype == "dirty" and not params.get("no-dirty", False):
             must_exist = True
-        elif params.get('niter', 0) > 0:
+        elif imagetype != "dirty" and params.get('niter', 0) > 0:
             must_exist = True
         else:
             must_exist = False
