@@ -48,9 +48,10 @@ def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], ou
     multitime = params.get('multi.intervals', not isinstance(ntime, int) or ntime > 1)
 
     for imagetype in "dirty", "restored", "residual", "model":
-        if imagetype == "dirty" and not params.get("no-dirty", False):
-            must_exist = True
-        elif imagetype != "dirty" and params.get('niter', 0) > 0:
+        if imagetype == "dirty":
+            if params.get("no-dirty", False):
+                continue
+        elif imagetype == 'restored' or params.get('niter', 0) > 0:
             must_exist = True
         else:
             must_exist = False
