@@ -1,13 +1,12 @@
 inputs:
   xds:
-    info: Optional explicit path to xds. Set using output-filename and postfix by
-      default.
+    info: Optional explicit path to xds. Set using output-filename and suffix by default.
   nband:
     dtype: int
     required: true
     abbreviation: nb
     info: Number of imaging bands
-  postfix:
+  suffix:
     dtype: str
     default: main
     info: Can be used to specify a custom name for the image space data products
@@ -18,12 +17,17 @@ inputs:
   overwrite:
     dtype: bool
     default: false
-    info: Allow overwriting of image space data products. Specify postfix to create
+    info: Allow overwriting of image space data products. Specify suffix to create
       a new data set.
   transfer-model-from:
     dtype: str
     abbreviation: tmf
     info: Name of dataset to use for model initialisation
+  use-best-model:
+    dtype: bool
+    default: false
+    info: If this flag is set MODEL_BEST will be used as the model unless transfer-model-from
+      is specified. By default MODEL will be used as the model.
   robustness:
     dtype: float
     abbreviation: rob
@@ -53,10 +57,6 @@ inputs:
     dtype: bool
     default: true
     info: Compute effectve image space weights
-  residual:
-    dtype: bool
-    default: false
-    info: Compute the residual image
   field-of-view:
     dtype: float
     abbreviation: fov
@@ -78,7 +78,7 @@ inputs:
     info: Number of y pixels
   filter-extreme-counts:
     dtype: bool
-    default: false
+    default: true
     info: Replace extreme outliers in the weighting grid by their local mean
   filter-nbox:
     dtype: int
@@ -86,7 +86,7 @@ inputs:
     info: The size of the box to compute local mean over
   filter-level:
     dtype: float
-    default: 10
+    default: 5
     info: The level above local mean that renders a grid weight extreme
   target:
     dtype: str

@@ -9,14 +9,16 @@ inputs:
     info: Order of interpolating polynomial for frequency axis
   nbasist:
     dtype: int
-    info: Order of interpolating polynomial for frequency axis
+    default: 1
+    info: Order of interpolating polynomial for time axis. This is hypothetical for
+      the time being.
   fit-mode:
     dtype: str
     default: Legendre
   min-val:
     dtype: float
     info: Only fit components above this flux level
-  postfix:
+  suffix:
     dtype: str
     default: main
     info: Can be used to specify a custom name for the image space data products
@@ -36,6 +38,17 @@ inputs:
     dtype: float
     default: 1e-10
     info: Multiple of the identity to add to the hessian for stability
+  model-out:
+    dtype: str
+    info: Optional explicit output name. Otherwise the default naming convention is
+      used.
+  out-format:
+    dtype: str
+    default: zarr
+    choices:
+      - zarr
+      - json
+    info: Format to dump model to.
 
   _include:
     - (.)dist.yml
