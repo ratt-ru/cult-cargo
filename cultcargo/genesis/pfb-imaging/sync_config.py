@@ -5,13 +5,13 @@ yaml = YAML()
 yaml.indent(mapping=2, sequence=4, offset=2)
 import cultcargo
 
-mpath = cultcargo.__file__.rstrip('__init__.py') + 'genesis/pfb-clean/latest'
+mpath = cultcargo.__file__.rstrip('__init__.py') + 'genesis/pfb-imaging/latest'
 
 # import ipdb; ipdb.set_trace()
-content_path = 'https://raw.githubusercontent.com/ratt-ru/pfb-clean/awskube/pfb/parser'
+content_path = 'https://raw.githubusercontent.com/ratt-ru/pfb-imaging/band_actors/pfb/parser'
 
 # returns list of files in subfolder
-response = requests.get('https://api.github.com/repos/ratt-ru/pfb-clean/contents/pfb/parser?ref=awskube')
+response = requests.get('https://api.github.com/repos/ratt-ru/pfb-imaging/contents/pfb/parser?ref=band_actors')
 for r in response.json():
     name = r['name']
     print(name)
