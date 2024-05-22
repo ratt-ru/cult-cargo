@@ -4,46 +4,46 @@ _include:
 
 vars:
   cult-cargo:
-    pfb-clean:
+    pfb-imaging:
       image:
         _use: vars.cult-cargo.images
-        name: pfb-clean
+        name: pfb-imaging
 
 cabs:
-  _include: genesis/pfb-clean/latest/uncabbedcabs.yml
+  _include: genesis/pfb-imaging/latest/uncabbedcabs.yml
 
-  pfb-init:
+  pfb.init:
     image:
-      _use: vars.cult-cargo.pfb-clean.image
+      _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb-grid:
+  pfb.grid:
     image:
-      _use: vars.cult-cargo.pfb-clean.image
+      _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb-degrid:
+  pfb.degrid:
     image:
-      _use: vars.cult-cargo.pfb-clean.image
+      _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb-clean:
+  pfb.klean:
     image:
-      _use: vars.cult-cargo.pfb-clean.image
+      _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb-restore:
+  pfb.restore:
     image:
-      _use: vars.cult-cargo.pfb-clean.image
+      _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb-fwdbwd:
+  pfb.fwdbwd:
     image:
-      _use: vars.cult-cargo.pfb-clean.image
+      _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb-forward:
+  pfb.forward:
     image:
-      _use: vars.cult-cargo.pfb-clean.image
+      _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb-spotless:
+  pfb.spotless:
     image:
-      _use: vars.cult-cargo.pfb-clean.image
+      _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb-model2comps:
+  pfb.model2comps:
     image:
-      _use: vars.cult-cargo.pfb-clean.image
+      _use: vars.cult-cargo.pfb-imaging.image
