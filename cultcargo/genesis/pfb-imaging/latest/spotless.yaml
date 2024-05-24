@@ -84,8 +84,8 @@ inputs:
   diverge-count:
     dtype: int
     default: 5
-    info: Will terminate the algorithm if the rms increases this many times.
-          Set to larger than niter to disable this check.
+    info: Will terminate the algorithm if the rms increases this many times. Set to
+      larger than niter to disable this check.
   field-of-view:
     dtype: float
     abbreviation: fov
@@ -134,6 +134,12 @@ inputs:
     default: false
     info: Base the imaging weights on the uniform weights computed over all data instead
       of per band. This ensures that the MFS image can truly be uniformly weighted.
+  l2-reweight-from:
+    dtype: int
+    default: 10
+    info: Start doing L2 reweights from this iteration onwards. L2 reweights will
+      also be triggered if the algorithm converges, L1 reweighting has already kicked
+      in and l2-reweight-dof is set.
   l2-reweight-dof:
     dtype: float
     default: 3.5
