@@ -1,0 +1,75 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  tigger-convert:
+    info: Interface to tigger-convert tool from the tigger-lsm package
+    command: tigger-convert
+
+    image:
+      _use: vars.cult-cargo.images
+      name: python-astro
+    policies:
+      prefix: '--'
+      replace: {'_': '-'}
+
+    inputs:
+      input-model:
+        dtype: File
+        required: yes
+        policies:
+          positional: yes
+      force:
+        dtype: bool
+        default: yes
+      type:
+        dtype: str
+        choices: [Tigger, ASCII, BBS, NEWSTAR, AIPSCC, APSCCFITS, Gaul, auto]
+        default: auto
+      append:
+        dtype: File
+      append-type:
+        dtype: str
+        choices: [Tigger, ASCII, BBS, NEWSTAR, AIPSCC, APSCCFITS, Gaul, auto]
+        default: auto
+      format:
+        dtype: str
+      append-format:
+        dtype: str
+      output-format:
+        dtype: str
+      app-to-int:
+        dtype: yes
+      primary-beam:
+        dtype: str
+      fits-l-axis:
+        dtype: str
+        default: X
+      fits-m-axis:
+        dtype: str
+        default: Y
+      beam-clip:
+        dtype: float
+        default: 0.001
+      beam-spi:
+        dtype: float
+      beam-diag:
+        dtype: bool
+      pa-from-ms:
+        dtype: MS
+      pa:
+        dtype: float
+      pa-range:
+        dtype: str
+      linear-pol:
+        dtype: bool
+        default: yes
+      center:
+        dtype: str
+    outputs:
+      output-model:
+        dtype: File
+        policies:
+          positional: yes
+        
+
