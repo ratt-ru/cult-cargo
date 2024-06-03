@@ -39,7 +39,9 @@ cabs:
       output-format:
         dtype: str
       app-to-int:
-        dtype: yes
+        dtype: bool
+      int-to-app:
+        dtype: bool
       primary-beam:
         dtype: str
       fits-l-axis:
