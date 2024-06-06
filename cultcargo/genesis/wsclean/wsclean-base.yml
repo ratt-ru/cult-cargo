@@ -167,16 +167,16 @@ lib:
           dtype: float
         maxuvw-m:
           dtype: float
-        temp-dir:
-          dtype: Directory
-          skip_freshness_checks: true
-          mkdir: false
-          must_exist: false
 
       base-outputs:
         source-list:
           info: Source list
           dtype: File
           implicit: "{current.prefix}-sources.txt"
+          must_exist: false
+        temp-dir:
+          dtype: Directory
+          skip_freshness_checks: true
+          mkdir: true
           must_exist: false
 
