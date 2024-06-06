@@ -96,8 +96,8 @@ cabs:
         dtype: str
       verbose:
         info: Verbosity level
-        dtype: int
-        default: 1
+        dtype: bool
+        default: yes
     outputs:
       output-model:
         dtype: File
