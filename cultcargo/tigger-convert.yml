@@ -94,6 +94,10 @@ cabs:
       center:
         info: Override coordinates of the nominal field center specified in the input model.
         dtype: str
+      verbose:
+        info: Verbosity level
+        dtype: int
+        default: 1
     outputs:
       output-model:
         dtype: File
