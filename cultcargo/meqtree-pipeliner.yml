@@ -8,6 +8,7 @@ cabs:
     command: |
       import subprocess
       import Cattery
+      from cultcargo.genesis import meqtrees
       import os
       from omegaconf import OmegaConf
 
@@ -39,8 +40,9 @@ cabs:
           f"pybeams_fits.filename_pattern={options.primary_beam_path_pattern}",
       ]
 
-      opts = []
-      for key in "mt config verbose trace memprof".split():
+      config = options.get("config", meqtrees.simconf)
+      opts = [f"--config {config}"]
+      for key in "mt verbose trace memprof".split():
         val = options.get(key, None)
         if val is not None:
           if isinstance(val, bool):
@@ -48,7 +50,7 @@ cabs:
           else:
             opts += [f"--{key} {val}"]
       commands += [f"{turbosim}=_simulate_MS"]
-      subprocess.call(["meqtree-pipeliner.py"] + opts + commands)
+      subprocess.call(["echo", "meqtree-pipeliner.py"] + opts + commands)
 
     image:
       _use: vars.cult-cargo.images
@@ -60,7 +62,6 @@ cabs:
         default: 8
       config:
         dtype: File
-        required: yes
       verbose:
         dtype: str
       trace:

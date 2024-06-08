@@ -28,6 +28,11 @@ images:
     versions:
       base: {}
 
+  meqtrees:
+    versions:
+      kern9:
+        dockerfile: Dockerfile.kern9
+
   wsclean:
     versions:
       kern7:
