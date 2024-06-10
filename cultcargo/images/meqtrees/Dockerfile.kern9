@@ -1,8 +1,6 @@
 FROM kernsuite/base:9
 
-
 ENV DEBIAN_FRONTEND=noninteractive
-
 
 RUN docker-apt-install python3-casacore casacore-dev casacore-data makems casarest \
                        python3-pip git wget cmake libblitz0-dev libqdbm-dev \
@@ -16,8 +14,9 @@ RUN pip install --upgrade --force-reinstall setuptools
 # add useful astro stuff
 RUN pip install --upgrade --force-reinstall --no-cache-dir \
     python-casacore astro-tigger-lsm \
-    owlcat scipy omegaconf msutils "stimela>=2.0" cult-cargo
+    owlcat scipy omegaconf msutils "stimela>=2.0"
 
+RUN pip install git+https://github.com/caracal-pipeline/cult-cargo@meqsim
 
 RUN meqtree-pipeliner.py --help
 
