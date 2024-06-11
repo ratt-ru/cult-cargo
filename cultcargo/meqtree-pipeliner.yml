@@ -3,6 +3,7 @@ cabs:
     info: Runs MeqTrees turbo-sim.py script
     flavour:
       kind: python-code
+      interpreter_binary: python3
       input_vars: false
       input_dict: options
     command: |
@@ -19,7 +20,7 @@ cabs:
       commands = [
         f"@{options.section}",
         f"ms_sel.msname={options.ms}",
-        f"sim_mode={options.mode}",
+        #f"sim_mode={options.mode}",
         f"ms_sel.output_column={options.column}",
         f"me.sky.tiggerskymodel=1",
         f"tiggerlsm.filename={options.skymodel}",
@@ -49,8 +50,10 @@ cabs:
             opts += [f"--{key}"]
           else:
             opts += [f"--{key} {val}"]
-      commands += [f"{turbosim}=_simulate_MS"]
-      subprocess.call(["echo", "meqtree-pipeliner.py"] + opts + commands)
+      cmdline = " ".join(["meqtree-pipeliner.py"] + opts + commands)
+
+      print(cmdline)
+      subprocess.call(cmdline.split() + [turbosim, "=_simulate_MS"])
 
     image:
       _use: vars.cult-cargo.images
