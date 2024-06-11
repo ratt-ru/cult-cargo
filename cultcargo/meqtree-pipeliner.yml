@@ -15,12 +15,17 @@ cabs:
 
       options = OmegaConf.create(options)
 
+      modes = {
+      "simulate":   'sim only',
+      "add":   "add to MS",
+      "subtract":   'subtract from MS',
+      }
+
       cattery_dir = os.path.dirname(os.path.abspath(Cattery.__file__))
       turbosim = os.path.join(cattery_dir, "Siamese/turbo-sim.py")
       commands = [
         f"@{options.section}",
         f"ms_sel.msname={options.ms}",
-        #f"sim_mode={options.mode}",
         f"ms_sel.output_column={options.column}",
         f"me.sky.tiggerskymodel=1",
         f"tiggerlsm.filename={options.skymodel}",
@@ -53,7 +58,7 @@ cabs:
       cmdline = " ".join(["meqtree-pipeliner.py"] + opts + commands)
 
       print(cmdline)
-      subprocess.call(cmdline.split() + [turbosim, "=_simulate_MS"])
+      subprocess.call(cmdline.split() + [f"sim_mode={modes[options.mode]}", turbosim, "=_simulate_MS"])
 
     image:
       _use: vars.cult-cargo.images
