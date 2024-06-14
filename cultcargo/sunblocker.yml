@@ -37,9 +37,6 @@ cabs:
                 dtype: MS
                 required: yes
                 writable: true
-            outset:
-                info: Output MS name
-                dtype: str
             col:
                 info: Column name
                 dtype: str
@@ -143,7 +140,8 @@ cabs:
                 implicit: "*{current.show}"
                 mkdir: true
                 must_exist: false
-            outms:
+            outset:
                 info: Output MS name
                 dtype: MS
-                implicit: "{current.outset}"
+                must_exist: false
+                mkdir: true
