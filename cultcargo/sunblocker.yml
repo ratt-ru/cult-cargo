@@ -12,18 +12,12 @@ cabs:
             input_vars: false
             input_dict: options
         command: |
-            import subprocess
             from sunblocker.sunblocker import Sunblocker
-            from omegaconf import OmegaConf
-           
-            #subprocess.call("pip install matplotlib -U")
             func = options.pop('command')
             run_func = getattr(Sunblocker(), func, None)
             if run_func is None:
                 raise RuntimeError(f"Function {function} is not part of Sunblocker()") 
-            for arg in options.keys():
-                if options[arg] in [None]:
-                    options.pop(arg)
+            options = {key: value for key, value in options.items() if value is not None}
             run_func(**options)
         inputs:
             command:
