@@ -16,14 +16,15 @@ cabs:
             from sunblocker.sunblocker import Sunblocker
             from omegaconf import OmegaConf
            
+            #subprocess.call("pip install matplotlib -U")
             func = options.pop('command')
             run_func = getattr(Sunblocker(), func, None)
             if run_func is None:
                 raise RuntimeError(f"Function {function} is not part of Sunblocker()") 
             for arg in options.keys():
-                if option[arg] in [None]:
+                if options[arg] in [None]:
                     options.pop(arg)
-            run_func(*options)
+            run_func(**options)
         inputs:
             command:
                 info: Sunblocker command to execute
@@ -35,9 +36,11 @@ cabs:
                 info: Input MS name
                 dtype: MS
                 required: yes
+                writable: true
             outset:
                 info: Output MS name
                 dtype: MS
+                writable: true
             col:
                 info: Column name
                 dtype: str
