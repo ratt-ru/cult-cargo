@@ -39,8 +39,7 @@ cabs:
                 writable: true
             outset:
                 info: Output MS name
-                dtype: MS
-                writable: true
+                dtype: str
             col:
                 info: Column name
                 dtype: str
@@ -139,8 +138,12 @@ cabs:
                 dtype: bool
         outputs: 
             outfiles:
-               dtype: List[File]
-               skip_freshness_checks: true
-               implicit: "*{current.show}"
-               mkdir: true
-               must_exist: false
+                dtype: List[File]
+                skip_freshness_checks: true
+                implicit: "*{current.show}"
+                mkdir: true
+                must_exist: false
+            outms:
+                info: Output MS name
+                dtype: MS
+                implicit: "{current.outset}"
