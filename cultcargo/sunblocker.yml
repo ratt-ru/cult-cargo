@@ -1,147 +1,143 @@
-include:
+_include:
   - genesis/cult-cargo-base.yml
 
 cabs:
-  sunblocker:
-    info: A pyrap method to remove solar-like RFI from interferometric data (https://github.com/gigjozsa/sunblocker)
-    command: sunblocker
-    image:
-      _use: vars.cult-cargo.images
-      name: sunblocker
-    flavour:
-      kind: python-code
-      interpreter_binary: python3
-      input_vars: false
-      input_dict: options
-    command: |
-      import subprocess
-      from sunblocker.sunblocker import Sunblocker
-      from omegaconf import OmegaConf
-     
-      function = options.pop('command')
-      run_func = getattr(Sunblocker(), function, None)
-      if run_func is None:
-          raise RuntimeError(f"Function {function} is not part of Sunblocker()") 
-      for arg in options.keys():
-          if arg not in func_args:
-              options.pop(arg, None)
-      run_func(*options)
-    inputs:
-      command:
-        info: Sunblocker command to execute
-        dtype: str
-        required: yes
-        choices: [phazer, vampirisms]
-      inset:
-        info: Input MS name
-        dtype: File
-        required: yes
-      outset:
-        info: Output MS name
-        dtype: File
-        required: no
-      col:
-        info: Column name
-        dtype: str
-      channels:
-        info: bool array with True for channels to base the analysis on 'False' channels will be ignored
-        dtype: List
-      baselines:
-        info: nx2 array with antenna pairs for baselines to base the analysis on
-        dtype: List
-      fields:
-        info: Fields to select or None if all fields should be used
-        dtype: int
-      imsize:
-        info: Size of image in pixels
-        dtype: int
-        default: 512
-      cell:
-        info: Size of cell in arcsec
-        dtype: float
-        default: 2
-      mode:
-        info: Flagging based on 'all' data, repeated per 'antenna', or repeated per 'baseline'
-        dtype: str
-      pol:
-        info: Polarization selection, Stokes 'i', or Stokes 'q'
-        dtype: str
-      threshmode:
-        info: Method to determine sigma, 'fit': fit Gaussian at the max to determine sigma, 'mad': use median and standard deviation as derived using MAD statistics, standard deviation otherwise
-        dtype: str
-        choices: ['fit', 'mad']
-      threshold:
-        info: Distance from average beyond which data are flagged in units of sigma
-        dtype: float
-      radrange:
-        info: Each selected point is expanded in a wedge with this radial range
-        dtype: float
-      angle:
-        info: Each selected point is expanded in a wedge with this angular
-        dtype: float
-      vampirisms:
-        info: Analyse data in phazer only using daytime data as selected using vampirisms
-        dtype: bool
-        default: no
-      flagonlyday:
-        info: Flag only daytime data as identified by using vampirisms
-        dtype: bool
-        default: no
-      show:
-        info: Show histogram and cutoff line in a viewgraph
-        dtype: str
-      showdir:
-        info: Directory to put viewgraphs in (default: current directory)
-        dtype: str
-      dryrun:
-        info: Do not apply flags, but (e.g. produce viewgraphs only)
-        dtype: bool
-        default: no
-      verb:
-        info: Switch commenting on and off
-        dtype: bool
-        default: no
-      lon:
-        info: Longitude of observatory in astropy units (defaults to what is found in the data set)
-        dtype: str
-      lat:
-        info: Latitude of observatory in astropy units (defaults to what is found in the data set)
-        dtype: str
-      hei:
-        info: Elevation of observatory in astropy units (defaults to what is found in the data set)
-        dtype: str
-      avantsoleil:
-        info: Time to be flagged before sunrise in astropy units (defaults to 0)
-        dtype: float
-      apresnuit:
-        info: Time to be flagged after sunrise in astropy units (defaults to 0)
-        dtype: float
-      avantnuit:
-        info: Time to be flagged before sunset in astropy units (defaults to 0)
-        dtype: float
-      apresoleil:
-        info: Time to be flagged after sunset in astropy units (defaults to 0)
-        dtype: float
-      nononsoleil:
-        info: Flag all day time (defaults to True)
-        dtype: bool
-      horizon:
-        info: Height above horizon of the sun to define sunset in astropy units (defaults to -34 arcmin)
-        dtype: str
-      uvmax:
-        info: Restrict analysis to visibilities with a baseline b with uvmax > b > uvmin, in units of wavelengths
-        dtype: float
-      uvmin:
-        info: Restrict analysis to visibilities with a baseline b with uvmax > b > uvmin, in units of wavelengths
-        dtype: float
-       default: 0
-      flinvert:
-        info: Invert flags before applying/returning them (defaults to False)
-        dtype: bool
-    outputs: 
-      outfiles:
-        dtype: List[File]
-        skip_freshness_checks: true
-        implicit: "*{current.show}"
-        mkdir: true
-        must_exist: false
+    sunblocker:
+        info: A pyrap method to remove solar-like RFI from interferometric data (https://github.com/gigjozsa/sunblocker)
+        image:
+            _use: vars.cult-cargo.images
+            name: sunblocker
+        flavour:
+            kind: python-code
+            input_vars: false
+            input_dict: options
+        command: |
+            import subprocess
+            from sunblocker.sunblocker import Sunblocker
+            from omegaconf import OmegaConf
+           
+            func = options.pop('command')
+            run_func = getattr(Sunblocker(), func, None)
+            if run_func is None:
+                raise RuntimeError(f"Function {function} is not part of Sunblocker()") 
+            for arg in options.keys():
+                if option[arg] in [None]:
+                    options.pop(arg)
+            run_func(*options)
+        inputs:
+            command:
+                info: Sunblocker command to execute
+                dtype: str
+                required: yes
+                choices: [phazer, vampirisms]
+                #nom_de_guerre: command
+            inset:
+                info: Input MS name
+                dtype: MS
+                required: yes
+            outset:
+                info: Output MS name
+                dtype: MS
+            col:
+                info: Column name
+                dtype: str
+            channels:
+                info: bool array with True for channels to base the analysis on 'False' channels will be ignored
+                dtype: List[bool]
+            baselines:
+                info: nx2 array with antenna pairs for baselines to base the analysis on
+                dtype: List
+            fields:
+                info: Fields to select or None if all fields should be used
+                dtype: int
+            imsize:
+                info: Size of image in pixels
+                dtype: int
+                default: 512
+            cell:
+                info: Size of cell in arcsec
+                dtype: float
+                default: 1.0
+            mode:
+                info: Flagging based on 'all' data, repeated per 'antenna', or repeated per 'baseline'
+                dtype: str
+            pol:
+                info: Polarization selection, Stokes 'i', or Stokes 'q'
+                dtype: str
+            threshmode:
+                info: Method to determine sigma, 'fit' - fit Gaussian at the max to determine sigma, 'mad' - use median and standard deviation as derived using MAD statistics, standard deviation otherwise
+                dtype: str
+                choices: ['fit', 'mad']
+            threshold:
+                info: Distance from average beyond which data are flagged in units of sigma
+                dtype: float
+            radrange:
+                info: Each selected point is expanded in a wedge with this radial range
+                dtype: float
+            angle:
+                info: Each selected point is expanded in a wedge with this angular
+                dtype: float
+            vampirisms:
+                info: Analyse data in phazer only using daytime data as selected using vampirisms
+                dtype: bool
+                default: false
+            flagonlyday:
+                info: Flag only daytime data as identified by using vampirisms
+                dtype: bool
+                default: false
+            show:
+                info: Show histogram and cutoff line in a viewgraph
+                dtype: str
+            showdir:
+                info: Directory to put viewgraphs in (default is current directory)
+                dtype: str
+            dryrun:
+                info: Do not apply flags, but (e.g. produce viewgraphs only)
+                dtype: bool
+            verb:
+                info: Switch commenting on and off
+                dtype: bool
+            lon:
+                info: Longitude of observatory in astropy units (defaults to what is found in the data set)
+                dtype: str
+            lat:
+                info: Latitude of observatory in astropy units (defaults to what is found in the data set)
+                dtype: str
+            hei:
+                info: Elevation of observatory in astropy units (defaults to what is found in the data set)
+                dtype: str
+            avantsoleil:
+                info: Time to be flagged before sunrise in astropy units (defaults to 0)
+                dtype: float
+            apresnuit:
+                info: Time to be flagged after sunrise in astropy units (defaults to 0)
+                dtype: float
+            avantnuit:
+                info: Time to be flagged before sunset in astropy units (defaults to 0)
+                dtype: float
+            apresoleil:
+                info: Time to be flagged after sunset in astropy units (defaults to 0)
+                dtype: float
+            nononsoleil:
+                info: Flag all day time (defaults to True)
+                dtype: bool
+            horizon:
+                info: Height above horizon of the sun to define sunset in astropy units (defaults to -34 arcmin)
+                dtype: str
+            uvmax:
+                info: Restrict analysis to visibilities with a baseline b with uvmax > b > uvmin, in units of wavelengths
+                dtype: float
+            uvmin:
+                info: Restrict analysis to visibilities with a baseline b with uvmax > b > uvmin, in units of wavelengths
+                dtype: float
+                default: 0
+            flinvert:
+                info: Invert flags before applying/returning them (defaults to False)
+                dtype: bool
+        outputs: 
+            outfiles:
+               dtype: List[File]
+               skip_freshness_checks: true
+               implicit: "*{current.show}"
+               mkdir: true
+               must_exist: false
