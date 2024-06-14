@@ -142,6 +142,7 @@ cabs:
                 must_exist: false
             outset:
                 info: Output MS name
+                default: "{current.inset}"
                 dtype: MS
                 must_exist: false
                 mkdir: true
