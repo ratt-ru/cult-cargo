@@ -25,7 +25,6 @@ cabs:
                 dtype: str
                 required: yes
                 choices: [phazer, vampirisms]
-                #nom_de_guerre: command
             inset:
                 info: Input MS name
                 dtype: MS
