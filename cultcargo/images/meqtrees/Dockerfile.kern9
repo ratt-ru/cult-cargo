@@ -39,7 +39,6 @@ RUN pip install purr \
     python-casacore==3.5.2 \
     numpy==1.21.5 \
     --no-binary 'python-casacore' \
-    git+https://github.com/caracal-pipeline/cult-cargo@meqsim \
     git+https://github.com/ratt-ru/tigger-lsm
 
 
@@ -55,12 +54,14 @@ RUN mkdir /code/build && \
     rm -r /code/build &&  \
     ldconfig
 
-
+RUN pip install omegaconf stimela>=2.0
+ADD . /meqConfs
 
 RUN python -c 'from Timba import mequtils'
 RUN pyxis --help
 RUN meqtree-pipeliner.py --help 
 RUN flag-ms.py --help 
+RUN alias python=python3
 
 CMD meqtree-pipeliner.py --help
 

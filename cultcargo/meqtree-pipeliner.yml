@@ -3,22 +3,21 @@ cabs:
     info: Runs MeqTrees turbo-sim.py script
     flavour:
       kind: python-code
-      interpreter_binary: python3
+        #interpreter_binary: python
       input_vars: false
       input_dict: options
     command: |
       import subprocess
       import Cattery
-      from cultcargo.genesis import meqtrees
       import os
       from omegaconf import OmegaConf
 
       options = OmegaConf.create(options)
 
       modes = {
-      "simulate":   'sim only',
+      "simulate":   "sim only",
       "add":   "add to MS",
-      "subtract":   'subtract from MS',
+      "subtract":   "subtract from MS",
       }
 
       cattery_dir = os.path.dirname(os.path.abspath(Cattery.__file__))
@@ -46,7 +45,7 @@ cabs:
           f"pybeams_fits.filename_pattern={options.primary_beam_path_pattern}",
       ]
 
-      config = options.get("config", meqtrees.simconf)
+      config = options.get("config", "/meqConfs/tdlconf-sim.profiles")
       opts = [f"--config {config}"]
       for key in "mt verbose trace memprof".split():
         val = options.get(key, None)
@@ -55,10 +54,11 @@ cabs:
             opts += [f"--{key}"]
           else:
             opts += [f"--{key} {val}"]
-      cmdline = " ".join(["meqtree-pipeliner.py"] + opts + commands)
+      cmdline = " ".join(["meqtree-pipeliner.py"] + opts + commands + \
+              [f"sim_mode={modes[options.mode]}", turbosim, "=_simulate_MS"])
 
       print(cmdline)
-      subprocess.call(cmdline.split() + [f"sim_mode={modes[options.mode]}", turbosim, "=_simulate_MS"])
+      subprocess.check_call(cmdline.split())
 
     image:
       _use: vars.cult-cargo.images
