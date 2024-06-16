@@ -1,0 +1,118 @@
+cabs:
+  meqsim:
+    info: Runs MeqTrees turbo-sim.py script
+    flavour:
+      kind: python-code
+        #interpreter_binary: python
+      input_vars: false
+      input_dict: options
+    command: |
+      import subprocess
+      import Cattery
+      import os
+      from omegaconf import OmegaConf
+
+      options = OmegaConf.create(options)
+
+      modes = {
+      "simulate":   "sim only",
+      "add":   "add to MS",
+      "subtract":   "subtract from MS",
+      }
+
+      cattery_dir = os.path.dirname(os.path.abspath(Cattery.__file__))
+      turbosim = os.path.join(cattery_dir, "Siamese/turbo-sim.py")
+      commands = [
+        f"@{options.section}",
+        f"ms_sel.msname={options.ms}",
+        f"ms_sel.output_column={options.column}",
+        f"me.sky.tiggerskymodel=1",
+        f"tiggerlsm.filename={options.skymodel}",
+      ]
+
+      if hasattr(options, "input_column"):
+          commands.append(f"ms_sel.input_column={options.input_column}")
+
+      if hasattr(options, "primary_beam_enable"):
+        commands += [
+          "me.e_enable=1",
+          "me.p_enable=1",
+          "me.e_all_stations=1",
+          "me.e_module=Siamese_OMS_pybeams_fits",
+          f"pybeams_fits.sky_rotation={1 if options.primary_beam_pa_rotation else 0}",
+          f"pybeams_fits.l_axis={options.primary_beam_l_axis}",
+          f"pybeams_fits.m_axis={options.primary_beam_m_axis}",
+          f"pybeams_fits.filename_pattern={options.primary_beam_path_pattern}",
+      ]
+
+      config = options.get("config", "/meqConfs/tdlconf-sim.profiles")
+      opts = [f"--config {config}"]
+      for key in "mt verbose trace memprof".split():
+        val = options.get(key, None)
+        if val is not None:
+          if isinstance(val, bool):
+            opts += [f"--{key}"]
+          else:
+            opts += [f"--{key} {val}"]
+      cmdline = " ".join(["meqtree-pipeliner.py"] + opts + commands + \
+              [f"sim_mode={modes[options.mode]}", turbosim, "=_simulate_MS"])
+
+      print(cmdline)
+      subprocess.check_call(cmdline.split())
+
+    image:
+      _use: vars.cult-cargo.images
+      name: meqtrees
+
+    inputs:
+      mt:
+        dtype: int
+        default: 8
+      config:
+        dtype: File
+      verbose:
+        dtype: str
+      trace:
+        dtype: bool
+      memprof:
+        dtype: bool
+      section:
+        dtype: str
+        default: sim
+      ms:
+        info: Measurement Set
+        dtype: MS
+        required: yes
+      column:
+        info: Save simulated visibilities in this column
+        dtype: str
+        default: MODEL_DATA
+      input-column:
+        info: Input column
+        dtype: str
+      mode:
+        info: Simulation mode
+        dtype: str
+        choices: [simulate, subtract, add]
+        default: simulate
+      skymodel:
+        dtype: File
+        required: yes
+      primary-beam-enable:
+        info: Apply primary beam to the sky model
+        dtype: bool
+      primary-beam-pa-rotation:
+        info: Enable primary beam paralactic angle rotation
+        dtype: bool
+      primary-beam-l-axis:
+        info: Primary beam L-axis
+        dtype: str
+        default: X
+      primary-beam-m-axis:
+        info: Primary beam M-axis
+        dtype: str
+        default: "Y"
+      primary-beam-path-pattern:
+        info: Primary beam model expression that points to the path of the FITS model files. For example, 'beam_$(corr)_$(reim).fits'
+        dtype: str
+          

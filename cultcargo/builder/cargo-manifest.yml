@@ -28,6 +28,11 @@ images:
     versions:
       base: {}
 
+  meqtrees:
+    versions:
+      kern9:
+        dockerfile: Dockerfile.kern9
+
   wsclean:
     versions:
       kern7:
@@ -156,7 +161,7 @@ images:
   pfb-clean:
     versions:
       latest:
-        package: git+https://github.com/ratt-ru/pfb-clean@awskube
+        package: git+https://github.com/ratt-ru/pfb-clean
 
   ddfacet:
     assign:
