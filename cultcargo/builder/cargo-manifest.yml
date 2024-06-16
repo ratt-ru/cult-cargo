@@ -28,6 +28,13 @@ images:
     versions:
       base: {}
 
+  aimfast:
+    versions:
+      '1.3.4':
+        package: aimfast==1.3.4
+      master:
+        package: git+https://github.com/Athanaseus/aimfast.git
+
   meqtrees:
     versions:
       kern9:
@@ -200,12 +207,12 @@ images:
       base:
         package: git+https://github.com/landmanbester/spimple.git@dropzweights
 
-  aimfast:
+  sunblocker:
     versions:
-      '1.3.4':
-        package: aimfast==1.3.4
-      base:
-        package: git+https://github.com/Athanaseus/aimfast.git
+      '1.0.1':
+        package: sunblocker==1.0.1
+      master:
+        package: git+https://github.com/gigjozsa/sunblocker.git
 
   rfinder:
     versions:
