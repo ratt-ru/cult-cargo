@@ -88,6 +88,14 @@ cabs:
       rms_box:
         required: false
         dtype: Tuple[int, int]
+      adaptive_rms_box:
+        dtype: bool
+        info: Use adaptive rms_box when determining rms and mean maps
+      src_radius_pix:
+        dtype: int
+      trim_box: 
+        dtype: List[int]
+        info: Do source detection on only a part of the image. Specify as (xmin, xmax, ymin, ymax) in pixels. E.g., trim_box = (120, 840, 15, 895). None => use entire image
       thresh_isl:
         dtype: float
         default: 3
@@ -107,9 +115,7 @@ cabs:
         dtype: bool
         default: false
       src_ra_dec:
-        dtype: List[Tuple]
-      src_radius_pix:
-        dtype: int
+        dtype: List[Tuple[int]]
     outputs:
       outfile_gaul:
         dtype: File
