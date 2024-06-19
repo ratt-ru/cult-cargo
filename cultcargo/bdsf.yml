@@ -115,7 +115,7 @@ cabs:
         dtype: bool
         default: false
       src_ra_dec:
-        dtype: List[Tuple[int]]
+        dtype: List[Tuple[float,float]]
     outputs:
       outfile_gaul:
         dtype: File
