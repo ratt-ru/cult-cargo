@@ -94,7 +94,7 @@ cabs:
       src_radius_pix:
         dtype: int
       trim_box: 
-        dtype: List[int]
+        dtype: Tuple[int, int, int, int]
         info: Do source detection on only a part of the image. Specify as (xmin, xmax, ymin, ymax) in pixels. E.g., trim_box = (120, 840, 15, 895). None => use entire image
       thresh_isl:
         dtype: float
