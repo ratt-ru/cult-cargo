@@ -45,17 +45,20 @@ def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], ou
 
     # ntime -- if not an integer, assume runtime evaluation and >=2 then
     ntime  = params.get('intervals-out', 1)
-    multitime = params.get('multi.intervals', not isinstance(ntime, int) or ntime > 1)
+    multitime = params.get('multi.interval', False) or not isinstance(ntime, int) or ntime > 1
 
     for imagetype in "dirty", "restored", "residual", "model":
         if imagetype == "dirty":
+            # dirty image not part of outputs with no-dirty
             if params.get("no-dirty", False):
                 continue
             must_exist = True
-        elif imagetype == 'restored' or params.get('niter', 0) > 0:
+        # restored image generated always
+        elif imagetype == 'restored':
             must_exist = True
+        # residual and model images only generated when cleaning is done
         else:
-            must_exist = False
+            must_exist = params.get('niter', 0) > 0
         for st in stokes:
             # define name/description/filename components for this Stokes 
             if multistokes:
