@@ -254,6 +254,15 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 version_vars["VERSION"] = version
                 version_vars["IMAGE_VERSION"] = image_version
 
+                # substitute environment variables
+                for key, value in version_vars.items():
+                    if value.startswith("ENV::"):
+                        varname = value[5:]
+                        if varname not in os.environ:
+                            print(f"  [red]ERROR: {value} does not refer to a valid environment variable[/red]")
+                            return 1
+                        version_vars[key] = os.environ[varname]
+
                 is_exp = version_info.get('experimental')
                 exp_deps = version_info.get('experimental_dependencies', [])
 
