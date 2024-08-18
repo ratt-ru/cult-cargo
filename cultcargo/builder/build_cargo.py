@@ -376,4 +376,4 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
     print("Success!", style="green")
 
 def driver():
-    build_cargo()
+    return build_cargo()
