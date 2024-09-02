@@ -256,7 +256,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
 
                 # substitute environment variables
                 for key, value in version_vars.items():
-                    if value.startswith("ENV::"):
+                    if type(value) is str and value.startswith("ENV::"):
                         varname = value[5:]
                         if varname not in os.environ:
                             print(f"  [red]ERROR: {value} does not refer to a valid environment variable[/red]")
