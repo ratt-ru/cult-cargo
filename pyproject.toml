@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cult-cargo"
-version = "0.1.3"
+version = "0.1.4"
 description = "Curated cargo of standard radio astronomy packages for stimela 2.0"
 authors = ["Oleg Smirnov, Sphesihle Makhathini"]
 license = "MIT"
