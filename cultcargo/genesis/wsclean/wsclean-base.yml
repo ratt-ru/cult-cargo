@@ -73,6 +73,9 @@ lib:
         multiscale-max-scales:
           dtype: int
           default: 8
+        multiscale-gain:
+          dtype: float
+          default: 0.15
         multiscale-scale-bias:
           dtype: float
         scale:
