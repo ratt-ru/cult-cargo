@@ -153,7 +153,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
         print(f"Registry is {conf.metadata.REGISTRY}, bundle is '{conf.metadata.BUNDLE_VERSION}', prefix '{conf.metadata.BUNDLE_VERSION_PREFIX}'")
         if not conf.metadata.BUNDLE_VERSION.startswith(conf.metadata.BUNDLE_VERSION_PREFIX):
             print("Inconsistent manifest metadata: BUNDLE_VERSION must start with BUNDLE_VERSION_PREFIX")
-            return 1
+            sys.exit(1)
 
         unprefixed_image_version = conf.metadata.BUNDLE_VERSION[len(conf.metadata.BUNDLE_VERSION_PREFIX):]
 
@@ -213,10 +213,10 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 image, version = image.split(":", 1)
             if image not in conf.images:
                 print(f"Unknown image '{image}'")
-                return 1
+                sys.exit(1)
             if version is not None and version not in conf.images[image].versions:
                 print(f"Unknown image '{image}:{version}'")
-                return 1
+                sys.exit(1)
 
         remote_images_exist = {}
 
@@ -254,6 +254,15 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 version_vars["VERSION"] = version
                 version_vars["IMAGE_VERSION"] = image_version
 
+                # substitute environment variables
+                for key, value in version_vars.items():
+                    if type(value) is str and value.startswith("ENV::"):
+                        varname = value[5:]
+                        if varname not in os.environ:
+                            print(f"  [red]ERROR: {value} does not refer to a valid environment variable[/red]")
+                            sys.exit(1)
+                        version_vars[key] = os.environ[varname]
+
                 is_exp = version_info.get('experimental')
                 exp_deps = version_info.get('experimental_dependencies', [])
 
@@ -266,7 +275,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                     for dep in exp_deps:
                         if not os.path.exists(dep):
                             print(f"  [red]ERROR: dependency {dep} doesn't exist[/red]")
-                            return 1
+                            sys.exit(1)
 
                 dockerfile = version_info.get('dockerfile') or image_info.dockerfile or 'Dockerfile'
                 dockerfile = dockerfile.format(**version_vars)
@@ -278,7 +287,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 print(f"[bold]{image}:{image_version}[/bold] defined by {dockerpath}")
                 if not os.path.exists(dockerpath):
                     print(f"  {dockerpath} doesn't exist")
-                    return 1
+                    sys.exit(1)
                 build_dir = os.path.dirname(dockerpath)
 
                 # check if remote image exists
@@ -373,4 +382,4 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
     print("Success!", style="green")
 
 def driver():
-    build_cargo()
+    return build_cargo()

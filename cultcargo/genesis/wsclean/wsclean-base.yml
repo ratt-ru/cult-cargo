@@ -5,10 +5,11 @@ lib:
         ms:
           info: Measurement set(s)
           writable: true
-          dtype: MS
+          dtype: List[MS]
           required: true
           policies:
             positional: true
+            repeat: list
         prefix:
           info: Prefix of output products
           dtype: str
@@ -91,6 +92,13 @@ lib:
           dtype: float
         auto-mask:
           dtype: float
+        local-rms:
+          dtype: bool
+        local-rms-window:
+          dtype: int
+        local-rms-method:
+          dtype: str
+          choices: [rms, rms-with-min]
         gain:
           dtype: float
         mgain:
@@ -171,3 +179,4 @@ lib:
           skip_freshness_checks: true
           mkdir: true
           must_exist: false
+
