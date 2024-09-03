@@ -1,5 +1,5 @@
 lib:
-  params: 
+  params:
     wsclean:
       base-inputs:
         ms:
@@ -70,6 +70,9 @@ lib:
           dtype: List[int]
           policies:
             repeat: ','
+        multiscale-max-scales:
+          dtype: int
+          default: 8
         multiscale-scale-bias:
           dtype: float
         scale:
