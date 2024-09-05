@@ -16,10 +16,6 @@ cabs:
     image:
       _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb.imit:
-    image:
-      _use: vars.cult-cargo.pfb-imaging.image
-
   pfb.grid:
     image:
       _use: vars.cult-cargo.pfb-imaging.image
@@ -36,7 +32,7 @@ cabs:
     image:
       _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb.fwdbwd:
+  pfb.fluxmop:
     image:
       _use: vars.cult-cargo.pfb-imaging.image
 
@@ -44,6 +40,14 @@ cabs:
     image:
       _use: vars.cult-cargo.pfb-imaging.image
 
+  pfb.sara:
+    image:
+      _use: vars.cult-cargo.pfb-imaging.image
+
   pfb.model2comps:
+    image:
+      _use: vars.cult-cargo.pfb-imaging.image
+
+  pfb.hci:
     image:
       _use: vars.cult-cargo.pfb-imaging.image
