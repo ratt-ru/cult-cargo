@@ -11,7 +11,7 @@ mpath = cultcargo.__file__.rstrip('__init__.py') + 'genesis/pfb-imaging/latest'
 content_path = 'https://raw.githubusercontent.com/ratt-ru/pfb-imaging/band_actors/pfb/parser'
 
 # returns list of files in subfolder
-response = requests.get('https://api.github.com/repos/ratt-ru/pfb-imaging/contents/pfb/parser?ref=band_actors')
+response = requests.get('https://api.github.com/repos/ratt-ru/pfb-imaging/contents/pfb/parser?ref=outputs')
 for r in response.json():
     name = r['name']
     print(name)

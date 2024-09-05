@@ -14,10 +14,15 @@ inputs:
     info: Either path to mask.fits or set to model to construct from model
   zero-model-outside-mask:
     dtype: bool
-    default: true
+    default: false
     info: Make sure the input model is zero outside the mask. Only has an effect if
       an external mask has been passed in. A major cycle will be triggered to recompute
       the residual after zeroing.
+  or-mask-with-model:
+    dtype: bool
+    default: false
+    info: Make a new mask consisting of the union of input mask and where the MFS
+      model is larger than zero.
   min-model:
     dtype: float
     default: 1e-5
@@ -31,6 +36,10 @@ inputs:
     dtype: str
     default: MODEL
     info: Name of the model to update
+  residual-name:
+    dtype: str
+    default: RESIDUAL
+    info: Name of the residual to use
   gamma:
     dtype: float
     default: 0.99
@@ -47,6 +56,10 @@ inputs:
     dtype: bool
     default: false
     info: Output fits cubes
+  memory-greedy:
+    dtype: bool
+    default: false
+    info: Holds data in memory if set
   _include:
     - (.)gridding.yml
     - (.)cgopts.yml

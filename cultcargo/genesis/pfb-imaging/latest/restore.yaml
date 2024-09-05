@@ -29,7 +29,7 @@ inputs:
       cubes.
   overwrite:
     dtype: bool
-    default: false
+    default: true
     info: Allow overwriting fits files
 
 outputs: {}
