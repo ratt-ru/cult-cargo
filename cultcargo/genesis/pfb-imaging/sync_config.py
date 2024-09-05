@@ -7,11 +7,11 @@ import cultcargo
 
 mpath = cultcargo.__file__.rstrip('__init__.py') + 'genesis/pfb-imaging/latest'
 
-# import ipdb; ipdb.set_trace()
-content_path = 'https://raw.githubusercontent.com/ratt-ru/pfb-imaging/band_actors/pfb/parser'
+branch = 'outputs'
+content_path = f'https://raw.githubusercontent.com/ratt-ru/pfb-imaging/{branch}/pfb/parser'
 
 # returns list of files in subfolder
-response = requests.get('https://api.github.com/repos/ratt-ru/pfb-imaging/contents/pfb/parser?ref=outputs')
+response = requests.get(f'https://api.github.com/repos/ratt-ru/pfb-imaging/contents/pfb/parser?ref={branch}')
 for r in response.json():
     name = r['name']
     print(name)

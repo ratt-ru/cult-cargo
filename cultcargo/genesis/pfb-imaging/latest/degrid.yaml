@@ -19,6 +19,10 @@ inputs:
     default: I
     info: Imaging products to degrid. Options are I, Q, U, V. Only single Stokes products
       are currently supported.
+  freq-range:
+    dtype: str
+    info: Frequency range to image in Hz. Specify as a string with colon delimiter
+      eg. '1e9:1.1e9'
   integrations-per-image:
     dtype: int
     default: -1
@@ -38,5 +42,9 @@ inputs:
   _include:
     - (.)gridding.yml
     - (.)dist.yml
+    - (.)out.yml
 
 outputs: {}
+
+policies:
+  pass_missing_as_none: true

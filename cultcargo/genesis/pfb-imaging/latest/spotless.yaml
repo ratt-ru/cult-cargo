@@ -3,17 +3,24 @@ inputs:
     - (.)gridding.yml
     - (.)pdopts.yml
     - (.)pmopts.yml
+    - (.)cgopts.yml
     - (.)dist.yml
     - (.)out.yml
-  nband:
-    dtype: int
-    required: true
-    abbreviation: nb
-    info: Number of imaging bands
+  xds:
+    info: Optional explicit path to xds. Set using output-filename and product by
+      default.
+  mds:
+    info: Optional explicit path to mds. Set using output-filename, product and suffix
+      by default.
   suffix:
     dtype: str
     default: main
     info: Can be used to specify a custom name for the image space data products
+  robustness:
+    dtype: float
+    abbreviation: rob
+    default: 0.5
+    info: Robustness factor for Briggs weighting. None means natural
   bases:
     dtype: str
     info: 'Wavelet bases to use. Give as comma separated str eg. '
@@ -24,15 +31,22 @@ inputs:
     info: Wavelet decomposition level
     default: 3
     abbreviation: nlevels
-  l1reweight-from:
+  l1-reweight-from:
     dtype: int
     default: 5
     info: L1 reweighting will kick in either at convergence or after this many iterations.
       Set to a negative value to disbale L1 reweighting.
-  hessnorm:
+  hess-norm:
     dtype: float
-    abbreviation: hessnorm
+    abbreviation: hess-norm
     info: Spectral norm of hessian approximation
+  hess-approx:
+    dtype: str
+    default: direct
+    abbreviation: hess-approx
+    choices: [wgt, psf, direct]
+    info: Which Hessian approximation to use. Set to wgt for vis space approximation,
+      psf for zero-padded image space approximation and direct for direct inversion.
   rmsfactor:
     dtype: float
     default: 1.0
@@ -49,12 +63,12 @@ inputs:
   positivity:
     dtype: int
     default: 1
-    # choices:
-    #   - 0
-    #   - 1
-    #   - 2
-    info: How to apply positivity constraint 0 -> no positivity, 1 -> normal positivity
-      constraint and 2 -> strong positivity i.e. all pixels in a band > 0
+    # choices: [0,1,2]
+    info: |
+      How to apply positivity constraint
+      0 -> no positivity
+      1 -> normal positivity constraint
+      2 -> strong positivity i.e. all pixels in a band > 0
   niter:
     dtype: int
     default: 10
@@ -65,22 +79,6 @@ inputs:
     default: 5e-4
     info: Tolerance at which to terminate algorithm. Will stop when norm(x-xp)/norm(x)
       < tol
-  fits-mfs:
-    dtype: bool
-    default: true
-    info: Output MFS fits files
-  fits-cubes:
-    dtype: bool
-    default: false
-    info: Output fits cubes
-  memory-greedy:
-    dtype: bool
-    default: false
-    info: Holds data in memory if set
-  init-factor:
-    dtype: float
-    default: 0.5
-    info: Lower the initial rmsfactor by this amount
   diverge-count:
     dtype: int
     default: 5
@@ -105,35 +103,15 @@ inputs:
   ny:
     dtype: int
     info: Number of y pixels
-  robustness:
-    dtype: float
-    default: 0.0
-    abbreviation: rob
-    info: Robustness value for Briggs weighting
   psf-oversize:
     dtype: float
-    default: 2.0
+    default: 1.0
     abbreviation: psfo
     info: Size of PSF relative to dirty image
-  filter-counts-level:
-    dtype: float
-    default: 5.0
-    info: Set minimum counts in the uniform weighting grid to the median divided by
-      this value. This is useful to avoid artificially up-weighting nearly empty uv-cells.
   target:
     dtype: str
     info: This can be predefined celestial objects known to astropy or a string in
       the format 'HH:MM:SS,DD:MM:SS' (note the , delimiter)
-  concat:
-    dtype: bool
-    default: true
-    info: Concatenate datasets by row/time. This will result in a single dirty image,
-      psf and beam per band.
-  mf-weighting:
-    dtype: bool
-    default: false
-    info: Base the imaging weights on the uniform weights computed over all data instead
-      of per band. This ensures that the MFS image can truly be uniformly weighted.
   l2-reweight-from:
     dtype: int
     default: 10
@@ -150,9 +128,16 @@ inputs:
     dtype: int
     default: 5
     info: The maximum number of L2 reweighting steps.
-  reset-cache:
+  overwrite:
     dtype: bool
     default: false
     info: Hard reset the cache
+  sigmainvsq:
+    dtype: float
+    default: 1.0
+    info: Value to add to Hessian to make it invertible
 
 outputs: {}
+
+policies:
+  pass_missing_as_none: true

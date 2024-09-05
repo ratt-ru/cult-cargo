@@ -44,7 +44,7 @@ inputs:
     dtype: float
     abbreviation: sig21
     info: Wavelet thresholding level
-  l1reweight-from:
+  l1-reweight-from:
     dtype: int
     default: 5
     info: Start doing l1reweights after this many iterations
@@ -75,14 +75,6 @@ inputs:
     default: 1e-5
     info: Tolerance at which to terminate algorithm. Will stop when norm(x-xp)/norm(x)
       < tol
-  fits-mfs:
-    dtype: bool
-    default: true
-    info: Output MFS fits files
-  fits-cubes:
-    dtype: bool
-    default: false
-    info: Output fits cubes
   memory-greedy:
     dtype: bool
     default: false
@@ -98,3 +90,6 @@ inputs:
       to the dirty image
 
 outputs: {}
+
+policies:
+  pass_missing_as_none: true

@@ -1,11 +1,6 @@
 inputs:
   xds:
     info: Optional explicit path to xds. Set using output-filename and suffix by default.
-  nband:
-    dtype: int
-    required: true
-    abbreviation: nb
-    info: Number of imaging bands
   suffix:
     dtype: str
     default: main
@@ -32,14 +27,6 @@ inputs:
     dtype: float
     abbreviation: rob
     info: Robustness factor for Briggs weighting. None means natural
-  fits-mfs:
-    dtype: bool
-    default: true
-    info: Output MFS fits files
-  fits-cubes:
-    dtype: bool
-    default: false
-    info: Output fits cubes
   dirty:
     dtype: bool
     default: true
@@ -48,13 +35,17 @@ inputs:
     dtype: bool
     default: true
     info: Compute the PSF
+  residual:
+    dtype: bool
+    default: true
+    info: Compute the residual (only if model is present)
   noise:
     dtype: bool
     default: true
     info: Compute noise map by sampling from weights
   psf-oversize:
     dtype: float
-    default: 2.0
+    default: 1.0
     abbreviation: psfo
     info: Size of PSF relative to dirty image
   weight:
@@ -89,20 +80,19 @@ inputs:
     dtype: str
     info: This can be predefined celestial objects known to astropy or a string in
       the format 'HH:MM:SS,DD:MM:SS' (note the , delimiter)
-  l2reweight-dof:
+  l2-reweight-dof:
     dtype: float
+    abbreviation: dof
     info: The degrees of freedom parameter for L2 reweighting. The default (None)
       means no reweighting. A sensible value for this parameter depends on the level
       of RFI in the data. Small values (eg. 2) result in aggressive reweighting and
       should be avoided if the model is still incomplete.
-  mf-weighting:
-    dtype: bool
-    default: false
-    info: Base the imaging weights on the uniform weights computed over all data instead
-      of per band. This ensures that the MFS image can truly be uniformly weighted.
   _include:
     - (.)gridding.yml
     - (.)dist.yml
     - (.)out.yml
 
 outputs: {}
+
+policies:
+  pass_missing_as_none: true

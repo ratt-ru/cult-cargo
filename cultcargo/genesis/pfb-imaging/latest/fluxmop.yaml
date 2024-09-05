@@ -1,9 +1,4 @@
 inputs:
-  nband:
-    dtype: int
-    required: true
-    abbreviation: nb
-    info: Number of imaging bands
   suffix:
     dtype: str
     default: main
@@ -27,11 +22,15 @@ inputs:
     dtype: float
     default: 1e-5
     info: If using mask to construct model construct it where model > min-model
-  sigmainv:
+  sigmainvsq:
     dtype: float
     default: 1e-5
     abbreviation: sinv
     info: Standard deviation of assumed GRF prior
+  sigma:
+    dtype: float
+    default: 1
+    info: The value that is added to |psfhat| for preconditioning.
   model-name:
     dtype: str
     default: MODEL
@@ -42,20 +41,12 @@ inputs:
     info: Name of the residual to use
   gamma:
     dtype: float
-    default: 0.99
+    default: 1.0
     info: Step size of update
   use-psf:
     dtype: bool
     default: true
     info: Whether to approximate the Hessian as a convolution by the PSF
-  fits-mfs:
-    dtype: bool
-    default: true
-    info: Output MFS fits files
-  fits-cubes:
-    dtype: bool
-    default: false
-    info: Output fits cubes
   memory-greedy:
     dtype: bool
     default: false
@@ -67,3 +58,6 @@ inputs:
     - (.)out.yml
 
 outputs: {}
+
+policies:
+  pass_missing_as_none: true

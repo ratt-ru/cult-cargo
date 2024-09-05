@@ -89,9 +89,8 @@ inputs:
   nthreads:
     dtype: int
     default: 1
-    abbreviation: ntd
-    info: Number of dask threads. This will largely determine the memory footprint.
-      Used as nthreads per worker when using distributed scheduler.
+    abbreviation: nt
+    info: Number of threads.
   # TBD
   field-of-view:
     dtype: float
@@ -130,3 +129,6 @@ inputs:
     info: Constant rate factor for controlling mp4 output quality.
 
 outputs: {}
+
+policies:
+  pass_missing_as_none: true
