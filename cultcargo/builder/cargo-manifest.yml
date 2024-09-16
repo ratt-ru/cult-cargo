@@ -63,6 +63,12 @@ images:
       '3.3':
         dockerfile: Dockerfile.build
         tag: v3.3
+      '3.4':
+        dockerfile: Dockerfile.build
+        tag: v3.4
+      '3.5':
+        dockerfile: Dockerfile.build
+        tag: v3.5
 
   python-astro:
     versions:
