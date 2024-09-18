@@ -117,7 +117,7 @@ inputs:
   output-format:
     default: zarr
     info: zarr or fits output
-  sigmainvsq:
+  eta:
     dtype: float
     default: 1e-5
     info: Value to add to Hessian to make it invertible. Smaller values tend to fit

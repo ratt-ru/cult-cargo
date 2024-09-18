@@ -132,7 +132,7 @@ inputs:
     dtype: bool
     default: false
     info: Hard reset the cache
-  sigmainvsq:
+  eta:
     dtype: float
     default: 1.0
     info: Value to add to Hessian to make it invertible

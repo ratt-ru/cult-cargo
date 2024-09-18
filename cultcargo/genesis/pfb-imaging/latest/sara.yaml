@@ -3,6 +3,7 @@ inputs:
     - (.)gridding.yml
     - (.)pdopts.yml
     - (.)pmopts.yml
+    - (.)cgopts.yml
     - (.)out.yml
   suffix:
     dtype: str
@@ -29,7 +30,7 @@ inputs:
     info: Spectral norm of hessian approximation
   hess-approx:
     dtype: str
-    default: direct
+    default: psf
     abbreviation: hess-approx
     choices: [wgt, psf, direct]
     info: Which Hessian approximation to use. Set to wgt for vis space approximation,
@@ -38,10 +39,10 @@ inputs:
     dtype: float
     default: 1.0
     info: By default will threshold by rmsfactor*rms at every iteration
-  epsfactor:
+  eta:
     dtype: float
     default: 1.0
-    info: Will use epsfactor*wsum to regularise the inversion of the Hessian approximation.
+    info: Will use eta*wsum to regularise the inversion of the Hessian approximation.
   gamma:
     dtype: float
     default: 1.0
