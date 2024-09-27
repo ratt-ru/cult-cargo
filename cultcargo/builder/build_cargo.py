@@ -184,7 +184,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
         # dict below is populated with the versions that need to be tagged.
 
         if imageversion:
-            dynamic_version = dict(image_version)
+            dynamic_version = dict(imageversion)
             print(dynamic_version)
         else:
             dynamic_version = {}
