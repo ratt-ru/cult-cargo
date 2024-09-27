@@ -13,6 +13,7 @@ from rich.console import Console
 from rich.rule import Rule
 from rich.progress import Progress, SpinnerColumn, TimeElapsedColumn
 import importlib
+from collections import defaultdict
 try:
     from importlib import metadata
 except ImportError: # for Python<3.8
@@ -71,7 +72,7 @@ print = console.print
 @click.option('-a', '--all', is_flag=True, help='Build and/or push all images in manifest.')
 @click.option('-E', '--experimental', is_flag=True, help='Enable experimental versions.')
 @click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
-@click.option('-iv', '--imageversion', nargs=2, multiple=True, type=str, help='Build image as specific version. Syntax is -iv image version.')
+@click.option('-iv', '--imageversion', nargs=3, multiple=True, type=str, help='Build image as specific version. Syntax is -iv image version.')
 @click.option('--boring', is_flag=True, help='Be boring -- no progress bar.')
 @click.argument('imagenames', type=str, nargs=-1)
 def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False,
@@ -183,11 +184,10 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
         # In cases (b) and (c), an additional tag operation needs to be done, so the tag_latest
         # dict below is populated with the versions that need to be tagged.
 
-        if imageversion:
-            dynamic_version = dict(imageversion)
-            print(dynamic_version)
-        else:
-            dynamic_version = {}
+        extra_versions = defaultdict(dict)    
+        for image, version, dockerfile in imageversion:
+            extra_versions[image][version] = dict(dockerfile=dockerfile)
+        print(extra_versions)
 
         tag_latest = {}
         for image, image_info in conf.images.items():
@@ -209,6 +209,9 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 tag_latest[image] = f"{latest}-{BUNDLE_VERSION}"  # case (b)
             elif "latest" not in versions:
                 tag_latest[image] = f"{versions[-1]}-{BUNDLE_VERSION}"  # case (c)
+
+            conf.images[image]["versions"].update(extra_versions[image])
+            print(image_info)
 
         no_cache = "--no-cache" if rebuild else ""
 
