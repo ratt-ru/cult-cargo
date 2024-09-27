@@ -187,11 +187,9 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
         extra_versions = defaultdict(dict)    
         for image, version, dockerfile in imageversion:
             extra_versions[image][version] = dict(dockerfile=dockerfile)
-        print(extra_versions)
 
         tag_latest = {}
         for image, image_info in conf.images.items():
-            print(image_info)
             versions = list(image_info.versions.keys())
             if not versions:
                 print(f"No versions defined for {image}")
@@ -210,8 +208,9 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             elif "latest" not in versions:
                 tag_latest[image] = f"{versions[-1]}-{BUNDLE_VERSION}"  # case (c)
 
+            # NOTE(JSKenyon): We don't want dynamically added versions to mess
+            # with the assignment of the latest tag.
             conf.images[image]["versions"].update(extra_versions[image])
-            print(image_info)
 
         no_cache = "--no-cache" if rebuild else ""
 
