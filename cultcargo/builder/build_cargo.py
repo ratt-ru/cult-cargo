@@ -191,6 +191,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
 
         tag_latest = {}
         for image, image_info in conf.images.items():
+            print(image_info)
             versions = list(image_info.versions.keys())
             if not versions:
                 print(f"No versions defined for {image}")
