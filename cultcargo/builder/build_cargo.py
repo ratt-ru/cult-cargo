@@ -72,11 +72,12 @@ print = console.print
 @click.option('-a', '--all', is_flag=True, help='Build and/or push all images in manifest.')
 @click.option('-E', '--experimental', is_flag=True, help='Enable experimental versions.')
 @click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
-@click.option('-iv', '--imageversion', nargs=3, multiple=True, type=str, help='Build image as specific version. Syntax is -iv image version dockerfile')
+@click.option('-ev', '--extraversion', nargs=3, multiple=True, type=str,
+              help='Build an image with additional versions. Syntax is -ev image version dockerfile. Can be specified multiple times.')
 @click.option('--boring', is_flag=True, help='Be boring -- no progress bar.')
 @click.argument('imagenames', type=str, nargs=-1)
 def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False,
-                experimental=False, verbose=False, imageversion=None, imagenames: List[str] = []):
+                experimental=False, verbose=False, extraversion=None, imagenames: List[str] = []):
     if not (build or push or do_list):
         build = push = True
 
@@ -184,8 +185,9 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
         # In cases (b) and (c), an additional tag operation needs to be done, so the tag_latest
         # dict below is populated with the versions that need to be tagged.
 
+        # Turn version specified via the CLI into a dict per image.
         extra_versions = defaultdict(dict)    
-        for image, version, dockerfile in imageversion:
+        for image, version, dockerfile in extraversion:
             extra_versions[image][version] = dict(dockerfile=dockerfile)
 
         tag_latest = {}
