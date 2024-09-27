@@ -71,10 +71,11 @@ print = console.print
 @click.option('-a', '--all', is_flag=True, help='Build and/or push all images in manifest.')
 @click.option('-E', '--experimental', is_flag=True, help='Enable experimental versions.')
 @click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
+@click.option('-iv', '--imageversion', nargs=2, multiple=True, type=str, help='Build image as specific version. Syntax is -iv image version.')
 @click.option('--boring', is_flag=True, help='Be boring -- no progress bar.')
 @click.argument('imagenames', type=str, nargs=-1)
 def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False,
-                experimental=False, verbose=False, imagenames: List[str] = []):
+                experimental=False, verbose=False, imageversion=None, imagenames: List[str] = []):
     if not (build or push or do_list):
         build = push = True
 
@@ -181,6 +182,13 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
         # (c) The last version listed is tagged as latest.
         # In cases (b) and (c), an additional tag operation needs to be done, so the tag_latest
         # dict below is populated with the versions that need to be tagged.
+
+        if imageversion:
+            dynamic_version = dict(image_version)
+            print(dynamic_version)
+        else:
+            dynamic_version = {}
+
         tag_latest = {}
         for image, image_info in conf.images.items():
             versions = list(image_info.versions.keys())
