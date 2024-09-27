@@ -72,7 +72,7 @@ print = console.print
 @click.option('-a', '--all', is_flag=True, help='Build and/or push all images in manifest.')
 @click.option('-E', '--experimental', is_flag=True, help='Enable experimental versions.')
 @click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
-@click.option('-iv', '--imageversion', nargs=3, multiple=True, type=str, help='Build image as specific version. Syntax is -iv image version.')
+@click.option('-iv', '--imageversion', nargs=3, multiple=True, type=str, help='Build image as specific version. Syntax is -iv image version dockerfile')
 @click.option('--boring', is_flag=True, help='Be boring -- no progress bar.')
 @click.argument('imagenames', type=str, nargs=-1)
 def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False,
