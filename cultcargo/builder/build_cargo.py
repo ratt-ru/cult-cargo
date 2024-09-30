@@ -17,6 +17,10 @@ try:
     from importlib import metadata
 except ImportError: # for Python<3.8
     import importlib_metadata as metadata
+from cultcargo.builder.build_utils import (
+    substitute_environment_variables,
+    resolve_version_substitutions
+)
 
 
 
@@ -92,6 +96,13 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
 
         conf = OmegaConf.load(manifest)
         conf = OmegaConf.merge(OmegaConf.structured(Manifest), conf)
+
+        # NOTE(JSKenyon): Replace environment varaibles with values. Currently,
+        # this function does not traverse collections other than dictionaries.
+        conf = substitute_environment_variables(conf)
+        # NOTE(JSKenyon): Resolve versioning substitutions on images to make
+        # manipulating the config more consistent between use-cases.
+        resolve_version_substitutions(conf)
 
         # get package version
         if conf.metadata.PACKAGE_VERSION == "auto":
@@ -239,15 +250,6 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             image_vars.update(IMAGE=image, **(image_info.assign or {}))
             image_vars.setdefault("CMD", image)
 
-            # substitute environment variables
-            for key, value in image_vars.items():
-                if type(value) is str and value.startswith("ENV::"):
-                    varname = value[5:]
-                    if varname not in os.environ:
-                        print(f"  [red]ERROR: {value} does not refer to a valid environment variable[/red]")
-                        sys.exit(1)
-                    image_vars[key] = os.environ[varname]
-
             path = os.path.join(global_vars.BASE_IMAGE_PATH, image).format(**image_vars)
 
             for i_version, version in enumerate(versions):
@@ -255,15 +257,12 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                     f"image [bold]{image}[/bold] [{i_image}/{len(imagenames)}]: "
                     f"version [bold]{version}[/bold] [{i_version}/{len(versions)}]")
 
-                # NOTE(JSKenyon): Grab version info using unformatted key.
-                version_info = image_info.versions[version]
-
                 if version == "latest":
                     image_version = BUNDLE_VERSION
                 else:
-                    version = version.format(**image_vars)
                     image_version = f"{version}-{BUNDLE_VERSION}"
 
+                version_info = image_info.versions[version]
                 version_vars = image_vars.copy()
                 version_vars.update(**version_info)
                 version_vars["VERSION"] = version
