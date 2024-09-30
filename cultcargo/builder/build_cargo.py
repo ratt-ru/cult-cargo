@@ -199,6 +199,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                     sys.exit(1)
                 if latest not in versions:
                     print(f"Image {image}: latest tag refers to unknown version '{latest}'")
+                    print(f"Known versions are: {versions}.")
                     sys.exit(1)
                 tag_latest[image] = f"{latest}-{BUNDLE_VERSION}"  # case (b)
             elif "latest" not in versions:
