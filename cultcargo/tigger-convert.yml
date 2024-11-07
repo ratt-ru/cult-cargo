@@ -1,0 +1,107 @@
+_include:
+  - genesis/cult-cargo-base.yml
+
+cabs:
+  tigger-convert:
+    info: Interface to tigger-convert tool from the tigger-lsm package
+    command: tigger-convert
+
+    image:
+      _use: vars.cult-cargo.images
+      name: python-astro
+    policies:
+      prefix: '--'
+      replace: {'_': '-'}
+
+    inputs:
+      input-model:
+        dtype: File
+        required: yes
+        policies:
+          positional: yes
+      force:
+        info: Overwrite output
+        dtype: bool
+        default: yes
+      type:
+        info: Input model type
+        dtype: str
+        choices: [Tigger, ASCII, BBS, NEWSTAR, AIPSCC, APSCCFITS, Gaul, auto]
+        default: auto
+      output-type:
+        info: Output model type
+        choices: [Tigger, ASCII, BBS, NEWSTAR, AIPSCC, APSCCFITS, Gaul, auto]
+        default: auto
+      append:
+        info: Append another model to input model. May be given multiple times.
+        dtype: List[File]
+        policies:
+          repeat: repeat
+      append-type:
+        info: Append model type
+        dtype: str
+        choices: [Tigger, ASCII, BBS, NEWSTAR, AIPSCC, APSCCFITS, Gaul, auto]
+        default: auto
+      format:
+        info: Input format, for ASCII or BBS tables. For BBS tables, the default format is specified in the file header.
+        dtype: str
+      append-format:
+        info: Append model format
+        dtype: str
+      output-format:
+        info: Output model format
+        dtype: str
+      app-to-int:
+        info: Treat fluxes as apparent, and rescale them into intrinsic using the     supplied primary beam model (see --primary-beam option).
+        dtype: bool
+      int-to-app:
+        info: Treat fluxes as intrinsic, and rescale them into apparent using the     supplied primary beam model (see --primary-beam option).
+        dtype: bool
+      primary-beam:
+        info: "Apply a primary beam expression to estimate apparent fluxes. Any valid Python expression using the variables 'r' and 'fq' is accepted. Use 'refresh' to re-estimate fluxes using the current expression. Example (for the WSRT-like 25m dish PB): cos(min(65*fq*1e-9*r,1.0881))**6"
+        dtype: str
+      fits-l-axis:
+        info: CTYPE for L axis in the FITS PB file. Note that our internal L points East (increasing RA), if the FITS beam axis points the opposite way, prefix the CTYPE with a '-'' character
+        dtype: str
+        default: X
+      fits-m-axis:
+        info: CTYPE for M axis in the FITS PB file. Note that our internal M points North (increasing Dec), if the FITS beam axis points the opposite way, prefix the CTYPE with a '-'' character
+        dtype: str
+        default: Y
+      beam-clip:
+        info: when using a FITS beam, clip (power) beam gains at this level to keep intrinsic source fluxes from blowing up. Sources below this beamgain will be tagged 'nobeam'.
+        dtype: float
+        default: 0.001
+      beam-spi:
+        info: perform a spectral index fit to each source based on a frequency dependent FITS beam, requires --primary-beam option to be used with a FITS file. Apply this spectral index to LSM sources. Must supply a bandwidth (in MHz) (centred on --beam-freq) over which the beam spi is estimated.
+        dtype: float
+      beam-diag:
+        info: Use diagonal Jones terms only for beam mode
+        dtype: bool
+      pa-from-ms:
+        info: Rotate the primary beam pattern through a range of parallactic angles as given by the MS and field ID (default 0) and take the average over time. This is more accurate than --pa-range.
+        dtype: str
+        metavar: "MS1[:FIELD1],MS2:[FIELD2],..."
+      pa:
+        info: Rotate the primary beam pattern through a parallactic angle (in degrees)
+        dtype: float
+      pa-range:
+        info: Rotate the primary beam pattern through a range of parallactic angles (in degrees) and use the average value over PA
+        dtype: str
+      linear-pol:
+        info: Use XY basis correlations for beam filenames and Mueller matrices. Default is RL
+        dtype: bool
+      center:
+        info: Override coordinates of the nominal field center specified in the input model.
+        dtype: str
+      verbose:
+        info: Verbosity level
+        dtype: bool
+        default: yes
+    outputs:
+      output-model:
+        dtype: File
+        policies:
+          positional: yes
+        
+

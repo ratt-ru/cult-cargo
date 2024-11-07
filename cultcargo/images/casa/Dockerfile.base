@@ -1,4 +1,4 @@
-FROM {CULT_REGISTRY}/base-cult:base-cc{CULT_VERSION}
+FROM {REGISTRY}/base-cult:base-{BUNDLE_VERSION}
 
 RUN apt-get update && apt-get -y upgrade && \
     apt-get -y install libfreetype6 \

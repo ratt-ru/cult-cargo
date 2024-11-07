@@ -17,7 +17,7 @@ def img_output(imagetype, desc, path, glob=True, must_exist=False):
 
 
 def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], outputs: Dict[str, Parameter]):
-    """Augments a schema for stimela based on solver.terms"""
+    """Augments a schema for stimela based on wsclean settings"""
 
     # predict mode has no outputs
     if params.get('predict'):
@@ -29,22 +29,36 @@ def make_stimela_schema(params: Dict[str, Any], inputs: Dict[str, Parameter], ou
     nchan  = params.get('nchan', 1)
     multichan = params.get('multi.chan', not isinstance(nchan, int) or nchan > 1)
     
-    stokes = params.get('pol', "I").upper()
+    stokes = params.get('pol')
+
+    if stokes is None:
+        stokes = ["I"]  # shouldn't matter, multistokes will be False unless explicit
+    elif isinstance(stokes, str):
+        stokes = stokes.upper()
+        # if just IQUV characters, break apart into list
+        if all(p in "IQUV" for p in stokes):
+            stokes = list(stokes)
+        else:
+            stokes = [stokes]
     # multi.stokes can be set explicitly
-    multistokes = params.get('multi.stokes', stokes != "I")
-    # if explicitly multi-pol, set Stokes list to "IQUV" if it's not explicitly set to something else
-    if multistokes and stokes == "I":
-        stokes = "IQUV"
+    multistokes = params.get('multi.stokes', False) or len(stokes) > 1
 
     # ntime -- if not an integer, assume runtime evaluation and >=2 then
     ntime  = params.get('intervals-out', 1)
-    multitime = params.get('multi.intervals', not isinstance(ntime, int) or ntime > 1)
+    multitime = params.get('multi.interval', False) or not isinstance(ntime, int) or ntime > 1
 
     for imagetype in "dirty", "restored", "residual", "model":
-        if imagetype == "dirty" or params.get('niter', 0) > 0:
+        if imagetype == "dirty":
+            # dirty image not part of outputs with no-dirty
+            if params.get("no-dirty", False):
+                continue
             must_exist = True
+        # restored image generated always
+        elif imagetype == 'restored':
+            must_exist = True
+        # residual and model images only generated when cleaning is done
         else:
-            must_exist = False
+            must_exist = params.get('niter', 0) > 0
         for st in stokes:
             # define name/description/filename components for this Stokes 
             if multistokes:

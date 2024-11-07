@@ -17,7 +17,14 @@ cabs:
       ms:
         dtype: MS
         required: true
+        writable: true
       commands:
         dtype: List[str]
         policies:
           repeat: list
+
+    management:
+      wranglers:
+        'Error in TaQL command:':
+          - ERROR
+      
