@@ -1,0 +1,49 @@
+_include:
+    - genesis/cult-cargo-base.yml
+
+cabs:
+            
+    casa.split:
+        info:  
+        command: split
+        flavour: casa-task
+        image: 
+            _use: vars.cult-cargo.images
+            name: casa
+        inputs:
+            vis:
+                dtype: MS
+                required: true
+            outputvis:
+                info: Name of output visibility file
+                dtype: str
+                required: true
+            field:
+                info: Select fields using IDs or Names
+                dtype: str 
+                default: ''
+            spw:
+                info: Select spectral windows
+                dtype: str 
+                default: ''
+            uvrange:
+                info: Select data by baseline length
+                dtype: str 
+                default: ''
+            datacolumn:
+                info: Which data column(s) to process
+                dtype: str 
+                choices: 
+                    - data
+                    - corrected
+                    - model
+                default: corrected
+            width:
+                info: Number of channels to average to form one output channel
+                dtype: int 
+                default: 1
+            timebin:
+                info: Bin width for time averaging
+                dtype: str 
+                default: 'O'
+

@@ -1,0 +1,21 @@
+_include:
+    - genesis/cult-cargo-base.yml
+
+cabs:
+    casa.setjy:
+        info: Uses CASA flux density calibration 
+        command: setjy
+        flavour: casa-task
+        image: 
+            _use: vars.cult-cargo.images
+            name: casa
+        inputs:
+            vis:
+                dtype: MS
+                required: true
+            spw:
+                dtype: str 
+                default: ''
+            field:
+                dtype: str 
+                required: true

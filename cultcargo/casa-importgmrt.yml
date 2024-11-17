@@ -1,0 +1,20 @@
+_include:
+    - genesis/cult-cargo-base.yml
+
+cabs:
+    casa.importgmrt:
+        info: Uses CASA import GMRT UVFITS to ms 
+        command: importgmrt
+        flavour: casa-task
+        image: 
+            _use: vars.cult-cargo.images
+            name: casa
+        inputs:
+            fitsfile:
+                dtype: File
+                required: true
+        outputs:
+            vis:
+                dtype: MS
+                required: true
+                mkdir: false
