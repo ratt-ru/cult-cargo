@@ -280,6 +280,7 @@ cabs:
           - data
           - report
           - both
+          - none
         default: 'report'
         dtype: str
       flagbackup:
@@ -319,3 +320,7 @@ cabs:
         info: Bin width for channel average in number of input channels
         default: 1
         dtype: int
+      overwrite:
+        info: Overwrite the existing parameter file given in outfile
+        dtype: bool
+        default: true
