@@ -1,5 +1,6 @@
 _include:
   - genesis/cult-cargo-base.yml
+  - genesis/casa/casa-inputs.yml
 
 cabs:
   casa.flagman:
@@ -10,12 +11,8 @@ cabs:
       _use: vars.cult-cargo.images
       name: casa
     inputs:
-      ms: 
-        dtype: MS
-        required: true
-        nom_de_guerre: vis
-        writable: true
-        write_parent_dir: true
+      _use: lib.params.casa.base-inputs
+      # TODO decide on the write_parent_dir: true
       versionname:
         info: "flag version name"
       mode: 
@@ -30,10 +27,7 @@ cabs:
       _use: vars.cult-cargo.images
       name: casa
     inputs:
-      ms: 
-        dtype: MS
-        required: true
-        nom_de_guerre: vis
+      _use: lib.params.casa.base-inputs
       spw:
         dtype: str
         default: ""
@@ -56,13 +50,8 @@ cabs:
       _use: vars.cult-cargo.images
       name: casa
     inputs:
-      ms: 
-        info: Name of MS file or table
-        dtype: MS
-        required: true
-        nom_de_guerre: vis
-        writable: true
-        write_parent_dir: true
+      _use: lib.params.casa.ms-field-spw-inputs
+      #  write_parent_dir: true
       mode:
         info: Flagging mode
         choices:
@@ -76,13 +65,6 @@ cabs:
           - extend
           - unflag
         default: manual
-        dtype: str
-      field:
-        info: Field names or field index numbers. e.g. '' ==> all, field='0~2,3C286'
-        default: ''
-        dtype: str
-      spw:
-        info: Spectral-window/frequency/channel. e.g. '' ==> all, spw='0:17~19'
         dtype: str
       antenna:
         info: Antenna/baselines. e.g. '' ==> all, antenna ='3,VA04'

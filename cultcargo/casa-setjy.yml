@@ -1,5 +1,6 @@
 _include:
     - genesis/cult-cargo-base.yml
+    - genesis/casa/casa-inputs.yml
 
 cabs:
     casa.setjy:
@@ -10,12 +11,4 @@ cabs:
             _use: vars.cult-cargo.images
             name: casa
         inputs:
-            vis:
-                dtype: MS
-                required: true
-            spw:
-                dtype: str 
-                default: ''
-            field:
-                dtype: str 
-                required: true
+            _use: lib.params.casa.ms-field-spw-inputs

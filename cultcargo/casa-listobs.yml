@@ -1,16 +1,14 @@
 _include:
     - genesis/cult-cargo-base.yml
+    - genesis/casa/casa-inputs.yml
 
 cabs:
-            
     casa.listobs:
         info: Summarize dataset 
         command: listobs
         flavour: casa-task
-        image: 
+        image:
             _use: vars.cult-cargo.images
             name: casa
         inputs:
-            vis:
-                dtype: MS
-                required: true
+            _use: lib.params.casa.base-inputs

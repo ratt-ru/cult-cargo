@@ -11,10 +11,12 @@ cabs:
             name: casa
         inputs:
             fitsfile:
+                info: The INPUT UVFITS file from GMRT 
                 dtype: File
                 required: true
         outputs:
             vis:
+                info: The OUTPUT measurement set.
                 dtype: MS
                 required: true
                 mkdir: false

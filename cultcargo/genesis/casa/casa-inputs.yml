@@ -1,0 +1,26 @@
+#
+#   Sensible common groups of casa-tool inputs
+#   Use ms for the measurement set 
+#   (see https://stimela.readthedocs.io/en/latest/reference/schema_ref.html)
+#
+
+lib:
+    params:
+        casa:
+            base-inputs:
+                ms:
+                    dtype: MS
+                    info: Input measurement set
+                    required: true
+                    nom_de_guerre: vis
+                    writable: true  #  TODO decide on write_parent_dir: true
+            ms-field-spw-inputs:
+                _use: lib.params.casa.base-inputs
+                spw:
+                    info: Select spectral window/channels. e.g. spw='0:17~19'. Default all
+                    dtype: str 
+                    default: ''
+                field:
+                    info: Select field using field id(s) or field name(s) eg, field='0~2,3C286'. Default all fields
+                    dtype: str 
+                    default: ''

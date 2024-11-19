@@ -1,5 +1,6 @@
 _include:
     - genesis/cult-cargo-base.yml
+    - genesis/casa/casa-inputs.yml
 
 cabs:
     casa.applycal:
@@ -10,17 +11,7 @@ cabs:
             _use: vars.cult-cargo.images
             name: casa
         inputs:
-            vis:
-                dtype: MS
-                required: true
-            field:
-                info: Select field using field id(s) or field name(s). Default all fields
-                dtype: str 
-                default: ''
-            spw:
-                info: Select spectral window/channels. Default all
-                dtype: str 
-                default: ''
+            _use: lib.params.casa.ms-field-spw-inputs
             intent:
                 info: Select observing intent
                 dtype: str 
@@ -104,9 +95,7 @@ cabs:
             _use: vars.cult-cargo.images
             name: casa
         inputs:
-            vis:
-                dtype: MS
-                required: true
+            _use: lib.params.casa.base-inputs
             caltable:
                 info: Name of input calibation table
                 dtype: str 
@@ -173,21 +162,11 @@ cabs:
             _use: vars.cult-cargo.images
             name: casa
         inputs:
-            vis:
-                dtype: MS
-                required: true
+            _use: lib.params.casa.ms-field-spw-inputs
             caltable:
                 info: Name of output gain calibration table
                 dtype: str 
                 required: true
-            field:
-                info: Select field using field id(s) or field name(s). Default all fields
-                dtype: str 
-                default: ''
-            spw:
-                info: Select spectral window/channels. Default all
-                dtype: str 
-                default: ''
             intent:
                 info: Select observing intent
                 dtype: str 

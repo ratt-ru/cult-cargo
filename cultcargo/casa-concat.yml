@@ -1,5 +1,6 @@
 _include:
   - genesis/cult-cargo-base.yml
+  - genesis/casa/casa-inputs.yml
 
 cabs:
   casa.concat:
@@ -10,9 +11,7 @@ cabs:
       _use: vars.cult-cargo.images
       name: casa
     inputs:
-      vis:
-        dtype: List[MS]
-        required: true
+      _use: lib.params.casa.base-inputs
       timesort:
         dtype: bool  
       freqtol:
