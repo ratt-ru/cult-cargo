@@ -1,5 +1,6 @@
 _include:
-    - genesis/cult-cargo-base.yml
+    - (cultcargo):
+        - genesis/cult-cargo-base.yml
 
 cabs:
     casa.importgmrt:
@@ -8,7 +9,7 @@ cabs:
         flavour: casa-task
         image: 
             _use: vars.cult-cargo.images
-            name: casa
+            name: casa6
         inputs:
             fitsfile:
                 info: The INPUT UVFITS file from GMRT 

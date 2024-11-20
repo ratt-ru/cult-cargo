@@ -1,6 +1,7 @@
 _include:
-    - genesis/cult-cargo-base.yml
-    - genesis/casa/casa-inputs.yml
+    - (cultcargo):
+        - genesis/cult-cargo-base.yml
+        - genesis/casa/casa-inputs.yml
 
 cabs:
             
@@ -10,9 +11,11 @@ cabs:
         flavour: casa-task
         image: 
             _use: vars.cult-cargo.images
-            name: casa
+            name: casa6
         inputs:
             _use: lib.params.casa.ms-field-spw-inputs
+            ms:
+                writable: false
             outputvis:
                 info: Name of output visibility file
                 dtype: str
