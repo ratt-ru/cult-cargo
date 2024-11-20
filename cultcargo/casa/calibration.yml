@@ -1,6 +1,7 @@
 _include:
-    - genesis/cult-cargo-base.yml
-    - genesis/casa/casa-inputs.yml
+    - (cultcargo):
+        - genesis/cult-cargo-base.yml
+        - genesis/casa/casa-inputs.yml
 
 cabs:
     casa.applycal:
