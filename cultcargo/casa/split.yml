@@ -6,12 +6,9 @@ _include:
 cabs:
             
     casa.split:
-        info:  
-        command: split
-        flavour: casa-task
-        image: 
-            _use: vars.cult-cargo.images
-            name: casa6
+        info: Split casa task. 
+        command: casatasks.split
+        _use: lib.misc.casa6.command-data
         inputs:
             _use: lib.params.casa.ms-field-spw-inputs
             ms:

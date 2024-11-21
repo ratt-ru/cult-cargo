@@ -13,7 +13,7 @@ lib:
                     info: Input measurement set
                     required: true
                     nom_de_guerre: vis
-                    writable: true  #  TODO decide on write_parent_dir: true
+                    writable: true
             ms-field-spw-inputs:
                 _use: lib.params.casa.base-inputs
                 spw:
@@ -24,3 +24,12 @@ lib:
                     info: Select field using field id(s) or field name(s) eg, field='0~2,3C286'. Default all fields
                     dtype: str 
                     default: ''
+    misc:
+        casa6:
+            command-data:
+                flavour:
+                    kind: python
+                    interpreter_binary: python3.8
+                image: 
+                    _use: vars.cult-cargo.images
+                    name: casa6

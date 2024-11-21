@@ -6,10 +6,7 @@ _include:
 cabs:
     casa.listobs:
         info: Summarize dataset 
-        command: listobs
-        flavour: casa-task
-        image:
-            _use: vars.cult-cargo.images
-            name: casa6
+        command: casatasks.listobs
+        _use: lib.misc.casa6.command-data
         inputs:
             _use: lib.params.casa.base-inputs

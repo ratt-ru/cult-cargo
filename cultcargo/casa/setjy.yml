@@ -6,10 +6,7 @@ _include:
 cabs:
     casa.setjy:
         info: Uses CASA flux density calibration 
-        command: setjy
-        flavour: casa-task
-        image: 
-            _use: vars.cult-cargo.images
-            name: casa6
+        command: casatasks.setjy
+        _use: lib.misc.casa6.command-data
         inputs:
             _use: lib.params.casa.ms-field-spw-inputs

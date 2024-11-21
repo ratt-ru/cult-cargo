@@ -6,11 +6,8 @@ _include:
 cabs:
     casa.applycal:
         info: Summarize dataset 
-        command: applycal
-        flavour: casa-task
-        image: 
-            _use: vars.cult-cargo.images
-            name: casa6
+        command: casatasks.applycal
+        _use: lib.misc.casa6.command-data
         inputs:
             _use: lib.params.casa.ms-field-spw-inputs
             intent:
@@ -90,11 +87,8 @@ cabs:
 
     casa.fluxscale:
         info: Bootstrap the flux density scale from standard calibrators 
-        command: fluxscale
-        flavour: casa-task
-        image: 
-            _use: vars.cult-cargo.images
-            name: casa6
+        command: casatasks.fluxscale
+        _use: lib.misc.casa6.command-data
         inputs:
             _use: lib.params.casa.base-inputs
             caltable:
@@ -157,11 +151,8 @@ cabs:
             
     casa.gaincal:
         info: Uses CASA flux density calibration 
-        command: gaincal
-        flavour: casa-task
-        image: 
-            _use: vars.cult-cargo.images
-            name: casa6
+        command: casatasks.gaincal
+        _use: lib.misc.casa6.command-data
         inputs:
             _use: lib.params.casa.ms-field-spw-inputs
             caltable:

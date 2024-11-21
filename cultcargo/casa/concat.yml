@@ -6,11 +6,8 @@ _include:
 cabs:
     casa.concat:
         info: Uses CASA concat to merge list of ms 
-        command: concat
-        flavour: casa-task
-        image: 
-            _use: vars.cult-cargo.images
-            name: casa6
+        command: casatasks.concat
+        _use: lib.misc.casa6.command-data
         inputs:
             _use: lib.params.casa.base-inputs
             timesort:

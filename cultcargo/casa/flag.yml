@@ -4,306 +4,297 @@ _include:
         - genesis/casa/casa-inputs.yml
 
 cabs:
-  casa.flagman:
-    info: Uses CASA flagmanager to save/restore/list flagversions 
-    command: flagmanager
-    flavour: casa-task
-    image: 
-      _use: vars.cult-cargo.images
-      name: casa6
-    inputs:
-      _use: lib.params.casa.base-inputs
-      # TODO decide on the write_parent_dir: true
-      versionname:
-        info: "flag version name"
-      mode: 
-        choices: [save, restore, list]
-        required: true
+    casa.flagman:
+        info: Uses CASA flagmanager to save/restore/list flagversions 
+        command: casatasks.flagmanager
+        _use: lib.misc.casa6.command-data
+        inputs:
+            _use: lib.params.casa.base-inputs
+            # TODO decide on the write_parent_dir: true
+            versionname:
+                info: "flag version name"
+            mode: 
+                choices: [save, restore, list]
+                required: true
 
-  casa.flagsummary:
-    info: Uses CASA flagdata to obtain a flag summary
-    command: flagdata
-    flavour: casa-task
-    image: 
-      _use: vars.cult-cargo.images
-      name: casa6
-    inputs:
-      _use: lib.params.casa.base-inputs
-      spw:
-        dtype: str
-        default: ""
-      mode:
-        implicit: 'summary'
-    outputs:
-      percentage:
-        dtype: float
-    management:
-      wranglers:
-        'Total Flagged: .* Total Counts: .* \((?P<percentage>[\d.]+)%\)':
-          - PARSE_OUTPUT:percentage:float
-          - HIGHLIGHT:bold green
+    casa.flagsummary:
+        info: Uses CASA flagdata to obtain a flag summary
+        command: casatasks.flagdata
+        _use: lib.misc.casa6.command-data
+        inputs:
+            _use: lib.params.casa.base-inputs
+            spw:
+                dtype: str
+                default: ""
+            mode:
+                implicit: 'summary'
+        outputs:
+            percentage:
+                dtype: float
+        management:
+            wranglers:
+                'Total Flagged: .* Total Counts: .* \((?P<percentage>[\d.]+)%\)':
+                    - PARSE_OUTPUT:percentage:float
+                    - HIGHLIGHT:bold green
 
-  casa.flagdata:
-    info: Uses CASA flagdata to perform flagging for different modes.
-    command: flagdata
-    flavour: casa-task
-    image: 
-      _use: vars.cult-cargo.images
-      name: casa6
-    inputs:
-      _use: lib.params.casa.ms-field-spw-inputs
-      #  write_parent_dir: true
-      mode:
-        info: Flagging mode
-        choices:
-          - manual
-          - clip
-          - quack
-          - shadow
-          - elevation
-          - tfcrop
-          - rflag
-          - extend
-          - unflag
-        default: manual
-        dtype: str
-      antenna:
-        info: Antenna/baselines. e.g. '' ==> all, antenna ='3,VA04'
-        dtype: str
-      timerange:
-        info: Time range. e.g. '' ==> all,timerange='09:14:0~09:54:0'
-        dtype: str
-      correlation:
-        info: Correlation. e.g. '' ==> all, correlation='XX,YY'
-        dtype: str
-      scan:
-        info: Scan numbers. e.g. '' ==> all
-        dtype: str
-      intent:
-        info: Observation intent. e.g. '' ==> all, intent='CAL*POINT*'
-        dtype: str
-      array:
-        info: (Sub)array numbers. e.g. '' ==> all
-        dtype: str
-      uvrange:
-        info: UV range. e.g. '' ==> all; uvrange ='0~100klambda', default units=meters
-        dtype: str
-      observation:
-        info: Observation ID. e.g. '' ==> all
-        dtype: str
-      feed:
-        info: Multi-feed numbers. Not yet implemented
-        dtype: str
-      autocorr:
-        info: Flag only the auto-correlations
-        dtype: bool
-      inpfile:
-        info: Input ASCII file, list of files or Python list of strings with flag commands
-        dtype: str
-      datacolumn:
-        info: Data column on which to operate (data,corrected,model,weight,etc.)
-        dtype: str
-      reason:
-        info: Select by REASON types
-        dtype: str
-      tbuff:
-        info: List of time buffers (sec) to pad timerange in flag commands
-        dtype: str
-      clipminmax:
-        info: Range to use for clipping
-        dtype: List[float]
-      clipoutside:
-        info: Clip outside the range, or within it
-        dtype: bool
-      channelavg:
-        info: Average over channels (scalar average)
-        dtype: bool
-      clipzeros:
-        info: Clip zero-value data
-        dtype: bool
-      quackinterval:
-        info: Quack n seconds from scan beginning or end
-        dtype: float
-      quackmode:
-        info: |-
-          Quack mode. 'beg' ==> first n seconds of scan.'endb' ==> last n
-          seconds of scan. 'end' ==> all but first n seconds of scan. 'tail' ==>
-          all but last n seconds of scan.
-        choices:
-          - beg
-          - endb
-          - end
-          - tail
-        default: beg
-        dtype: str
-      quackincrement:
-        info: Flag incrementally in time?
-        dtype: bool
-      tolerance:
-        info: Amount of shadow allowed (in meters)
-        dtype: float
-      addantenna:
-        info: File name or dictionary with additional antenna names, positions and diameters
-        dtype: str
-      lowerlimit:
-        info: Lower limiting elevation (in degrees)
-        dtype: float
-      upperlimit:
-        info: Upper limiting elevation (in degrees)
-        dtype: float
-      ntime:
-        info: Time-range to use for each chunk (in seconds or minutes)
-        default: scan
-        dtype: str
-      combinescans:
-        info: Accumulate data across scans depending on the value of ntime.
-        dtype: bool
-      timecutoff:
-        info: Flagging thresholds in units of deviation from the fit
-        dtype: float
-      freqcutoff:
-        info: Flagging thresholds in units of deviation from the fit
-        dtype: float
-      timefit:
-        info: Fitting function for the time direction (poly/line)
-        choices:
-          - poly
-          - line
-        default: line
-        dtype: str
-      freqfit:
-        info: Fitting function for the frequency direction (poly/line)
-        choices:
-          - poly
-          - line
-        default: poly
-        dtype: str
-      maxnpieces:
-        info: Number of pieces in the polynomial-fits (for 'freqfit' or 'timefit' ='poly')
-        dtype: int
-      flagdimension:
-        info: Dimensions along which to calculate fit
-        choices:
-          - freq
-          - time
-          - freqtime
-          - timefreq
-        default: freqtime
-        dtype: str
-      usewindowstats:
-        info: Calculate additional flags using sliding window statistics
-        choices:
-          - none
-          - sum
-          - std
-          - both
-        default: none
-        dtype: str
-      halfwin:
-        info: Half-width of sliding window to use with 'usewindowstats' (1,2,3).
-        dtype: int
-      extendflags:
-        info: Extend flags along time, frequency and correlation.
-        dtype: bool
-      extendpols:
-        info: If any correlation is flagged, flag all correlations
-        dtype: bool
-      growtime:
-        info: Flag all 'ntime' integrations if more than X% of the timerange is flagged (0-100)
-        dtype: float
-      growfreq:
-        info: Flag all selected channels if more than X% of the frequency range is flagged(0-100)
-        dtype: float
-      growaround:
-        info: Flag data based on surrounding flags
-        dtype: bool
-      flagneartime:
-        info: Flag one timestep before and after a flagged one
-        dtype: bool
-      flagnearfreq:
-        info: Flag one channel before and after a flagged one
-        dtype: bool
-      minrel:
-        info: minimum number of flags (relative)
-        dtype: float
-      maxrel:
-        info: maximum number of flags (relative)
-        dtype: float
-      minabs:
-        info: minimum number of flags (absolute)
-        dtype: int
-      maxabs:
-        info: maximum number of flags (absolute). Use a negative value to indicate infinity.
-        default: -1
-        dtype: int
-      spwchan:
-        info: Print summary of channels per spw
-        dtype: bool
-      spwcorr:
-        info: Print summary of correlation per spw
-        dtype: bool
-      basecnt:
-        info: Print summary counts per baseline
-        dtype: bool
-      name:
-        info: Name of this summary report (key in summary dictionary)
-        default: Summary
-        dtype: str
-      action:
-        info: Action to perform in MS and/or in inpfile
-        choices:
-          - none
-          - apply
-          - calculate
-        default: 'none'
-        dtype: str
-      display:
-        info: Display data and/or end-of-MS reports at runtime
-        choices:
-          - data
-          - report
-          - both
-          - none
-        default: 'report'
-        dtype: str
-      flagbackup:
-        info: Back up the state of flags before the run
-        dtype: bool
-      savepars:
-        info: Save the current parameters to the FLAG_CMD table or to a file
-        dtype: bool
-      cmdreason:
-        info: Reason to save to output file or to FLAG_CMD table.
-        dtype: str
-      outfile:
-        info: Name of output file to save current parameters. If empty, save to FLAG_CMD
-        dtype: str
-      winsize:
-        info: Number of timesteps in the sliding time window
-        dtype: int
-      timedev:
-        info: Time-series noise estimate
-        dtype: str
-      freqdev:
-        info: Spectral noise estimate
-        dtype: str
-      timedevscale:
-        info: Threshold scaling for timedev
-        dtype: float
-      freqdevscale:
-        info: Threshold scaling for freqdev
-        dtype: float
-      spectralmax:
-        info: Flag whole spectrum if freqdev is greater than spectralmax
-        dtype: float
-      spectralmin:
-        info: Flag whole spectrum if freqdev is less than spectralmin
-        dtype: float
-      chanbin:
-        info: Bin width for channel average in number of input channels
-        default: 1
-        dtype: int
-      overwrite:
-        info: Overwrite the existing parameter file given in outfile
-        dtype: bool
-        default: true
+    casa.flagdata:
+        info: Uses CASA flagdata to perform flagging for different modes.
+        command: casatasks.flagdata
+        _use: lib.misc.casa6.command-data
+        inputs:
+            _use: lib.params.casa.ms-field-spw-inputs
+            #    write_parent_dir: true
+            mode:
+                info: Flagging mode
+                choices:
+                    - manual
+                    - clip
+                    - quack
+                    - shadow
+                    - elevation
+                    - tfcrop
+                    - rflag
+                    - extend
+                    - unflag
+                default: manual
+                dtype: str
+            antenna:
+                info: Antenna/baselines. e.g. '' ==> all, antenna ='3,VA04'
+                dtype: str
+            timerange:
+                info: Time range. e.g. '' ==> all,timerange='09:14:0~09:54:0'
+                dtype: str
+            correlation:
+                info: Correlation. e.g. '' ==> all, correlation='XX,YY'
+                dtype: str
+            scan:
+                info: Scan numbers. e.g. '' ==> all
+                dtype: str
+            intent:
+                info: Observation intent. e.g. '' ==> all, intent='CAL*POINT*'
+                dtype: str
+            array:
+                info: (Sub)array numbers. e.g. '' ==> all
+                dtype: str
+            uvrange:
+                info: UV range. e.g. '' ==> all; uvrange ='0~100klambda', default units=meters
+                dtype: str
+            observation:
+                info: Observation ID. e.g. '' ==> all
+                dtype: str
+            feed:
+                info: Multi-feed numbers. Not yet implemented
+                dtype: str
+            autocorr:
+                info: Flag only the auto-correlations
+                dtype: bool
+            inpfile:
+                info: Input ASCII file, list of files or Python list of strings with flag commands
+                dtype: str
+            datacolumn:
+                info: Data column on which to operate (data,corrected,model,weight,etc.)
+                dtype: str
+            reason:
+                info: Select by REASON types
+                dtype: str
+            tbuff:
+                info: List of time buffers (sec) to pad timerange in flag commands
+                dtype: str
+            clipminmax:
+                info: Range to use for clipping
+                dtype: List[float]
+            clipoutside:
+                info: Clip outside the range, or within it
+                dtype: bool
+            channelavg:
+                info: Average over channels (scalar average)
+                dtype: bool
+            clipzeros:
+                info: Clip zero-value data
+                dtype: bool
+            quackinterval:
+                info: Quack n seconds from scan beginning or end
+                dtype: float
+            quackmode:
+                info: |-
+                    Quack mode. 'beg' ==> first n seconds of scan.'endb' ==> last n
+                    seconds of scan. 'end' ==> all but first n seconds of scan. 'tail' ==>
+                    all but last n seconds of scan.
+                choices:
+                    - beg
+                    - endb
+                    - end
+                    - tail
+                default: beg
+                dtype: str
+            quackincrement:
+                info: Flag incrementally in time?
+                dtype: bool
+            tolerance:
+                info: Amount of shadow allowed (in meters)
+                dtype: float
+            addantenna:
+                info: File name or dictionary with additional antenna names, positions and diameters
+                dtype: str
+            lowerlimit:
+                info: Lower limiting elevation (in degrees)
+                dtype: float
+            upperlimit:
+                info: Upper limiting elevation (in degrees)
+                dtype: float
+            ntime:
+                info: Time-range to use for each chunk (in seconds or minutes)
+                default: scan
+                dtype: str
+            combinescans:
+                info: Accumulate data across scans depending on the value of ntime.
+                dtype: bool
+            timecutoff:
+                info: Flagging thresholds in units of deviation from the fit
+                dtype: float
+            freqcutoff:
+                info: Flagging thresholds in units of deviation from the fit
+                dtype: float
+            timefit:
+                info: Fitting function for the time direction (poly/line)
+                choices:
+                    - poly
+                    - line
+                default: line
+                dtype: str
+            freqfit:
+                info: Fitting function for the frequency direction (poly/line)
+                choices:
+                    - poly
+                    - line
+                default: poly
+                dtype: str
+            maxnpieces:
+                info: Number of pieces in the polynomial-fits (for 'freqfit' or 'timefit' ='poly')
+                dtype: int
+            flagdimension:
+                info: Dimensions along which to calculate fit
+                choices:
+                    - freq
+                    - time
+                    - freqtime
+                    - timefreq
+                default: freqtime
+                dtype: str
+            usewindowstats:
+                info: Calculate additional flags using sliding window statistics
+                choices:
+                    - none
+                    - sum
+                    - std
+                    - both
+                default: none
+                dtype: str
+            halfwin:
+                info: Half-width of sliding window to use with 'usewindowstats' (1,2,3).
+                dtype: int
+            extendflags:
+                info: Extend flags along time, frequency and correlation.
+                dtype: bool
+            extendpols:
+                info: If any correlation is flagged, flag all correlations
+                dtype: bool
+            growtime:
+                info: Flag all 'ntime' integrations if more than X% of the timerange is flagged (0-100)
+                dtype: float
+            growfreq:
+                info: Flag all selected channels if more than X% of the frequency range is flagged(0-100)
+                dtype: float
+            growaround:
+                info: Flag data based on surrounding flags
+                dtype: bool
+            flagneartime:
+                info: Flag one timestep before and after a flagged one
+                dtype: bool
+            flagnearfreq:
+                info: Flag one channel before and after a flagged one
+                dtype: bool
+            minrel:
+                info: minimum number of flags (relative)
+                dtype: float
+            maxrel:
+                info: maximum number of flags (relative)
+                dtype: float
+            minabs:
+                info: minimum number of flags (absolute)
+                dtype: int
+            maxabs:
+                info: maximum number of flags (absolute). Use a negative value to indicate infinity.
+                default: -1
+                dtype: int
+            spwchan:
+                info: Print summary of channels per spw
+                dtype: bool
+            spwcorr:
+                info: Print summary of correlation per spw
+                dtype: bool
+            basecnt:
+                info: Print summary counts per baseline
+                dtype: bool
+            name:
+                info: Name of this summary report (key in summary dictionary)
+                default: Summary
+                dtype: str
+            action:
+                info: Action to perform in MS and/or in inpfile
+                choices:
+                    - none
+                    - apply
+                    - calculate
+                default: 'none'
+                dtype: str
+            display:
+                info: Display data and/or end-of-MS reports at runtime
+                choices:
+                    - data
+                    - report
+                    - both
+                    - none
+                default: 'report'
+                dtype: str
+            flagbackup:
+                info: Back up the state of flags before the run
+                dtype: bool
+            savepars:
+                info: Save the current parameters to the FLAG_CMD table or to a file
+                dtype: bool
+            cmdreason:
+                info: Reason to save to output file or to FLAG_CMD table.
+                dtype: str
+            outfile:
+                info: Name of output file to save current parameters. If empty, save to FLAG_CMD
+                dtype: str
+            winsize:
+                info: Number of timesteps in the sliding time window
+                dtype: int
+            timedev:
+                info: Time-series noise estimate
+                dtype: str
+            freqdev:
+                info: Spectral noise estimate
+                dtype: str
+            timedevscale:
+                info: Threshold scaling for timedev
+                dtype: float
+            freqdevscale:
+                info: Threshold scaling for freqdev
+                dtype: float
+            spectralmax:
+                info: Flag whole spectrum if freqdev is greater than spectralmax
+                dtype: float
+            spectralmin:
+                info: Flag whole spectrum if freqdev is less than spectralmin
+                dtype: float
+            chanbin:
+                info: Bin width for channel average in number of input channels
+                default: 1
+                dtype: int
+            overwrite:
+                info: Overwrite the existing parameter file given in outfile
+                dtype: bool
+                default: true
