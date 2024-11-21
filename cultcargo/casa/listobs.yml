@@ -7,6 +7,11 @@ cabs:
     casa.listobs:
         info: Summarize dataset 
         command: casatasks.listobs
-        _use: lib.misc.casa6.command-data
+        flavour:
+            kind: python
+            interpreter_binary: python3.8
+        image: 
+            _use: vars.cult-cargo.images
+            name: casa6
         inputs:
             _use: lib.params.casa.base-inputs

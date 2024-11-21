@@ -6,7 +6,12 @@ cabs:
     casa.importgmrt:
         info: Uses CASA import GMRT UVFITS to ms 
         command: casatasks.importgmrt
-        _use: lib.misc.casa6.command-data
+        flavour:
+            kind: python
+            interpreter_binary: python3.8
+        image: 
+            _use: vars.cult-cargo.images
+            name: casa6
         inputs:
             fitsfile:
                 info: The INPUT UVFITS file from GMRT 

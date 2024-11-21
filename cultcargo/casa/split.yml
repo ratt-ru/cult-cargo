@@ -8,7 +8,12 @@ cabs:
     casa.split:
         info: Split casa task. 
         command: casatasks.split
-        _use: lib.misc.casa6.command-data
+        flavour:
+            kind: python
+            interpreter_binary: python3.8
+        image: 
+            _use: vars.cult-cargo.images
+            name: casa6
         inputs:
             _use: lib.params.casa.ms-field-spw-inputs
             ms:
