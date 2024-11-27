@@ -18,10 +18,6 @@ cabs:
             _use: lib.params.casa.ms-field-spw-inputs
             ms:
                 writable: false
-            outputvis:
-                info: Name of output visibility file
-                dtype: str
-                required: true
             uvrange:
                 info: Select data by baseline length
                 dtype: str 
@@ -37,9 +33,14 @@ cabs:
             width:
                 info: Number of channels to average to form one output channel
                 dtype: int 
-                default: 1
             timebin:
                 info: Bin width for time averaging
                 dtype: str 
-                default: 'O'
+        outputs:
+            output-ms:
+                info: Name of output MS
+                dtype: MS
+                required: true
+                mkdir: false
+                nom_de_guerre: outputvis
 
