@@ -134,14 +134,22 @@ inputs:
     dtype: bool
     default: false
     info: Report worker memory as tasks complete
-
+  check-ants:
+    dtype: bool
+    default: false
+    info: Check that ANTENNA1 and ANTENNA2 tables are consistent with the ANTENNA
+      table.
   _include:
     - (.)gridding.yml
     - (.)out.yml
     - (.)dist.yml
     - (.)cgopts.yml
 
-outputs: {}
+outputs:
+  dir-out:
+    implicit: '{current.output-filename}_{current.product}.fds'
+    dtype: Directory
+    must_exist: false
 
 policies:
   pass_missing_as_none: true

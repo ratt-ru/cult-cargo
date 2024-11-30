@@ -182,7 +182,7 @@ images:
       python: python3.10
     versions:
       latest:
-        package: git+https://github.com/ratt-ru/pfb-imaging@outputs
+        package: git+https://github.com/ratt-ru/pfb-imaging@v0.0.5-dev
 
   ddfacet:
     assign:
