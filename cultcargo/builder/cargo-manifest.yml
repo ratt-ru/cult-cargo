@@ -148,9 +148,18 @@ images:
         package: git+https://github.com/SpheMakh/msutils
 
   quartical:
+    assign:
+      # base image for generic Python-based packages
+      base_python_image: python-astro:3.10
+      # corresponding python binary
+      python: python3.10
     versions:
       '0.2.2':
         package: quartical==0.2.2
+      '0.2.3':
+        package: quartical==0.2.3
+      '0.2.4':
+        package: quartical==0.2.4
       latest:
         package: quartical
       master:
@@ -166,6 +175,11 @@ images:
         package: git+https://github.com/ratt-ru/CubiCal
 
   pfb-imaging:
+    assign:
+      # base image for generic Python-based packages
+      base_python_image: python-astro:3.10
+      # corresponding python binary
+      python: python3.10
     versions:
       latest:
         package: git+https://github.com/ratt-ru/pfb-imaging@outputs
