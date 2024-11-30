@@ -17,6 +17,10 @@ try:
     from importlib import metadata
 except ImportError: # for Python<3.8
     import importlib_metadata as metadata
+from cultcargo.builder.build_utils import (
+    substitute_environment_variables,
+    resolve_version_substitutions
+)
 
 
 
@@ -71,10 +75,11 @@ print = console.print
 @click.option('-a', '--all', is_flag=True, help='Build and/or push all images in manifest.')
 @click.option('-E', '--experimental', is_flag=True, help='Enable experimental versions.')
 @click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
+@click.option('--ignore-latest-tag', is_flag=True, help='Neither require nor apply latest tag.')
 @click.option('--boring', is_flag=True, help='Be boring -- no progress bar.')
 @click.argument('imagenames', type=str, nargs=-1)
 def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False,
-                experimental=False, verbose=False, imagenames: List[str] = []):
+                experimental=False, ignore_latest_tag=False, verbose=False, imagenames: List[str] = []):
     if not (build or push or do_list):
         build = push = True
 
@@ -91,6 +96,13 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
 
         conf = OmegaConf.load(manifest)
         conf = OmegaConf.merge(OmegaConf.structured(Manifest), conf)
+
+        # NOTE(JSKenyon): Replace environment varaibles with values. Currently,
+        # this function does not traverse collections other than dictionaries.
+        conf = substitute_environment_variables(conf)
+        # NOTE(JSKenyon): Resolve versioning substitutions on images to make
+        # manipulating the config more consistent between use-cases.
+        resolve_version_substitutions(conf)
 
         # get package version
         if conf.metadata.PACKAGE_VERSION == "auto":
@@ -190,12 +202,15 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             # figure out latest version - this will be tagged as BUNDLE_VERSION
             # explicitly specified?
             latest = image_info.latest
-            if latest: # case (a)
+            if ignore_latest_tag:  # Skip latest tag logic.
+                tag_latest[image] = None
+            elif latest: # case (a)
                 if "latest" in versions:
-                    print("Image {image}: both 'latest' version and a latest tag defined, can't have both")
+                    print(f"Image {image}: both 'latest' version and a latest tag defined, can't have both")
                     sys.exit(1)
                 if latest not in versions:
-                    print("Image {image}: latest tag refers to unknown version '{latest}'")
+                    print(f"Image {image}: latest tag refers to unknown version '{latest}'")
+                    print(f"Known versions are: {versions}.")
                     sys.exit(1)
                 tag_latest[image] = f"{latest}-{BUNDLE_VERSION}"  # case (b)
             elif "latest" not in versions:
@@ -245,7 +260,6 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 if version == "latest":
                     image_version = BUNDLE_VERSION
                 else:
-                    version = version.format(**image_vars)
                     image_version = f"{version}-{BUNDLE_VERSION}"
 
                 version_info = image_info.versions[version]
@@ -253,15 +267,6 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                 version_vars.update(**version_info)
                 version_vars["VERSION"] = version
                 version_vars["IMAGE_VERSION"] = image_version
-
-                # substitute environment variables
-                for key, value in version_vars.items():
-                    if type(value) is str and value.startswith("ENV::"):
-                        varname = value[5:]
-                        if varname not in os.environ:
-                            print(f"  [red]ERROR: {value} does not refer to a valid environment variable[/red]")
-                            sys.exit(1)
-                        version_vars[key] = os.environ[varname]
 
                 is_exp = version_info.get('experimental')
                 exp_deps = version_info.get('experimental_dependencies', [])
