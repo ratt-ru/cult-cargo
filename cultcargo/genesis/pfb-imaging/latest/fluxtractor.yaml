@@ -25,12 +25,8 @@ inputs:
   eta:
     dtype: float
     default: 1e-5
-    abbreviation: sinv
+    abbreviation: eta
     info: Standard deviation of assumed GRF prior
-  sigma:
-    dtype: float
-    default: 1
-    info: The value that is added to |psfhat| for preconditioning.
   model-name:
     dtype: str
     default: MODEL
@@ -57,7 +53,11 @@ inputs:
     - (.)dist.yml
     - (.)out.yml
 
-outputs: {}
+outputs:
+  dds-out:
+    implicit: '{current.output-filename}_{current.product}_{current.suffix}.dds'
+    dtype: Directory
+    must_exist: false
 
 policies:
   pass_missing_as_none: true

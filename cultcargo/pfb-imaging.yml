@@ -24,7 +24,7 @@ cabs:
     image:
       _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb.klean:
+  pfb.kclean:
     image:
       _use: vars.cult-cargo.pfb-imaging.image
 
@@ -32,7 +32,7 @@ cabs:
     image:
       _use: vars.cult-cargo.pfb-imaging.image
 
-  pfb.fluxmop:
+  pfb.fluxtractor:
     image:
       _use: vars.cult-cargo.pfb-imaging.image
 
@@ -49,5 +49,9 @@ cabs:
       _use: vars.cult-cargo.pfb-imaging.image
 
   pfb.hci:
+    image:
+      _use: vars.cult-cargo.pfb-imaging.image
+    
+  pfb.smoovie:
     image:
       _use: vars.cult-cargo.pfb-imaging.image
