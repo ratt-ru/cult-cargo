@@ -160,6 +160,8 @@ images:
         package: quartical==0.2.3
       '0.2.4':
         package: quartical==0.2.4
+      '0.2.5':
+        package: quartical==0.2.5
       latest:
         package: quartical
       master:
