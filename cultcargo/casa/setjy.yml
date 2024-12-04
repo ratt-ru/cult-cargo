@@ -15,3 +15,12 @@ cabs:
             name: casa6
         inputs:
             _use: lib.params.casa.ms-field-spw-inputs
+            standard:
+                dtype: str 
+                default: 'Perley-Butler 2017'
+                info: Which standard to use 
+            usescratch:
+                dtype: bool
+                default: true
+                info: Will create if necessary and use the MODEL_DATA
+                

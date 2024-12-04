@@ -74,7 +74,7 @@ cabs:
             calwt:
                 info: Calibrate data weights per gaintable.
                 dtype: List[bool]
-                required: true
+                default: [true]
             parang:
                 info: Apply parallactic angle correction
                 dtype: bool 
