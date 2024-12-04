@@ -75,6 +75,10 @@ cabs:
                 info: Reject solutions below this SNR
                 dtype: float
                 default: 3.0
+            poltype:
+                info: Type of instrumental polarization solution
+                dtype: str
+                default: 'D+QU'
             append:
                 info: Append solutions to the (existing) table
                 dtype: bool 
