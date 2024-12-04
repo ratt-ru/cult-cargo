@@ -4,9 +4,9 @@ _include:
         - genesis/casa/casa-inputs.yml
 
 cabs:
-    casa.polcal:
+    casa.bandpass:
         info: Summarize dataset 
-        command: casatasks.polcal
+        command: casatasks.bandpass
         flavour:
             kind: python
             interpreter_binary: python3.8
@@ -59,10 +59,6 @@ cabs:
                 info: Data axes which to combine for solve. Options ‘’,’obs’,’scan’,’spw’,field’, or any comma-separated combination in a single string
                 dtype: str 
                 default: 'obs, scan' 
-            preavg:
-                info: Pre-averaging interval (sec)
-                dtype: float
-                default: 300.0
             refant:
                 info: Reference antenna. You may use any antenna that is working for the whole duration of the observation.
                 dtype: str 
@@ -75,14 +71,49 @@ cabs:
                 info: Reject solutions below this SNR
                 dtype: float
                 default: 3.0
-            poltype:
-                info: Type of instrumental polarization solution
+            bandtype:
+                info: Type of bandpass solution
                 dtype: str
-                default: 'D+QU'
+                choices:
+                    - B
+                    - BPOLY
+                default: B
+            smodel:
+                info: Point source Stokes parameters for source model.
+                dtype: List[float]
+                default: []
+            corrdepflags:
+                info: Respect correlation-dependent flags
+                dtype: bool
+                default: false
             append:
                 info: Append solutions to the (existing) table
                 dtype: bool 
                 default: false
+            fillgaps:
+                info: fillgaps (int=0) - Fill flagged solution channels by interpolation Subparameter of bandtype=’B’ 
+                dtype: int
+                default: 0
+            degamp:
+                info: Polynomial degree for BPOLY amplitude solution
+                dtype: int 
+                default: 3
+            degphase:
+                info: Polynomial degree for BPOLY phase solution
+                dtype: int 
+                default: 3
+            visnorm:
+                info: visnorm (bool=False) - Normalize data prior to BPOLY solution Subparameter of bandtype=’BPOLY’
+                dtype: bool
+                default: false
+            maskcenter:
+                info: Number of channels to avoid in center of each band Subparameter of bandtype=’BPOLY’
+                dtype: int 
+                default: 0
+            maskedge:
+                info: Fraction of channels to avoid at each band edge (in %) Subparameter of bandtype=’BPOLY’
+                dtype: int 
+                default: 5        
             docallib:
                 info: Control means of specifying the caltables
                 dtype: bool 
@@ -95,6 +126,10 @@ cabs:
                 info: Gain calibration table(s) to apply on the fly
                 dtype: List[str] 
                 default: []
+            gainfield:
+                info: Select a subset of calibrators from gaintable(s). Subparameter of callib=False
+                dtype: List[str] 
+                default: []
             interp:
                 info: Interpolation parmameters (in time[,freq]) for each gaintable, as a list of strings.
                 dtype: List[str] 
@@ -103,3 +138,7 @@ cabs:
                 info: Spectral window mappings to form for gaintable(s)
                 dtype: List[int]
                 default: []
+            parang:
+                info: Apply parallactic angle correction
+                dtype: bool 
+                default: false
