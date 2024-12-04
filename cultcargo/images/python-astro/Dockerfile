@@ -12,13 +12,13 @@ RUN apt-get update && apt-get install apt-utils && \
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python{VERSION} 1
 
-# needed to upgrade pip properly -- sometimes it gets stuck and is unable to upgrade itself
+# # needed to upgrade pip properly -- sometimes it gets stuck and is unable to upgrade itself
 RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python{VERSION}
 
-RUN python{VERSION} -mpip install --no-cache-dir -U pip setuptools wheel 
+RUN python{VERSION} -m pip install --no-cache-dir -U setuptools wheel packaging
 
 # add useful astro stuff
-RUN python{VERSION} -mpip install --no-cache-dir \
+RUN python{VERSION} -m pip install --no-cache-dir \
     python-casacore astropy astroplan regions astro-tigger-lsm \
     owlcat dask-ms scipy omegaconf bdsf msutils
 
