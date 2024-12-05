@@ -1,4 +1,4 @@
-FROM kernsuite/base:9
+FROM kernsuite/base:{kern_version}
 
 ENV DEBIAN_FRONTEND=noninteractive
 

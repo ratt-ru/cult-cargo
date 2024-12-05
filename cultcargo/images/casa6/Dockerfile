@@ -11,9 +11,8 @@ RUN mkdir -p /opt/casa/data
 
 COPY casasiteconfig.py /opt/casa
 
-RUN python3.8 -m casaconfig --measurespath /opt/casa/data --update-all
+RUN {python} -m casaconfig --measurespath /opt/casa/data --update-all
 
-RUN python3.8 -m casaconfig --measurespath /opt/casa/data --current-data
+RUN {python} -m casaconfig --measurespath /opt/casa/data --current-data
 
-CMD /usr/bin/python3.8
-
+CMD /usr/bin/{python}

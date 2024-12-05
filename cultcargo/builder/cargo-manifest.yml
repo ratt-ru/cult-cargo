@@ -19,14 +19,27 @@ assign:
   extra_deps: ''
 
   # base image for generic Python-based packages
-  base_python_image: python-astro:3.9
+  base_python_image: python-base:3.10
   # corresponding python binary
-  python: python3.9
+  python: python3.10
 
 images:
   base-cult:
     versions:
-      base: {}
+      'kern7':
+        kern_version: 7
+      'kern8':
+        kern_version: 8
+      'kern9':
+        kern_version: 9
+
+  python-base:
+    versions:
+#      '3.12': {}
+      '3.11': {}
+      '3.10': {}
+      '3.9': {}
+      '3.8': {}
 
   python-astro:
     versions:
@@ -50,15 +63,15 @@ images:
 
   wsclean:
     versions:
-      kern7:
-        dockerfile: Dockerfile.kern7
+      kern9:
+        dockerfile: Dockerfile.kern9
       ## 2.9 won't build with this recipe, figure it out later
       # '2.9':
       #   dockerfile: Dockerfile.build.2x
       #   tag: wsclean2.9
-      '2.10.1':
-        dockerfile: Dockerfile.build
-        tag: v2.10.1
+      # '2.10.1':
+      #   dockerfile: Dockerfile.build.2x
+      #   tag: v2.10.1
       '3.0.1':
         dockerfile: Dockerfile.build
         tag: v3.0.1
@@ -71,6 +84,12 @@ images:
       '3.3':
         dockerfile: Dockerfile.build
         tag: v3.3
+      '3.4':
+        dockerfile: Dockerfile.build
+        tag: v3.4
+      '3.5':
+        dockerfile: Dockerfile.build
+        tag: v3.5
 
   casa:
     assign:
@@ -87,10 +106,10 @@ images:
 
   casa6:
     versions:
-      '6.5':
-          wheel_version: 6.5.6.22
+      # '6.5':  # deprecated
+      #     wheel_version: 6.5.6.22
       '6.6':
-          wheel_version: 6.6.3.22
+          wheel_version: 6.6.5.31
 
   breizorro:
     versions:
@@ -120,15 +139,17 @@ images:
         package: git+https://github.com/caracal-pipeline/crystalball
 
   tricolour:
-    # assign:
+    assign:
+      base_python_image: python-base:3.8
     #  pre_install: RUN pip uninstall -y bokeh # bokeh causes deps conflict with numpy pin in tricolour
-    #   extra_deps: numpy\<1.20 numba==0.54.0 bokeh\<3 psutil
+    #  extra_deps: numpy\<1.20 # numba==0.54.0 bokeh\<3 psutil
     versions:
       '0.1.8.1':
         package: tricolour==0.1.8
       latest:
         package: tricolour
       master:
+        # pre_install: RUN pip install -U
         package: git+https://github.com/ratt-ru/tricolour
 
   smops:
