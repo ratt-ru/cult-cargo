@@ -11,7 +11,7 @@ RUN apt-get update && apt-get -y upgrade && \
     && rm -rf /var/cache/apt/archives 
 
 RUN git clone https://gitlab.com/aroffringa/wsclean.git && \
-    (cd wsclean && git checkout {tag}) && \
+    (cd wsclean && git checkout v{VERSION}) && \
     mkdir build && \
     (cd build && cmake ../wsclean && make -j16) && \
     ln -s /build/wsclean /usr/bin && \
