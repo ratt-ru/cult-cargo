@@ -1,0 +1,100 @@
+_include:
+    - (cultcargo):
+        - genesis/cult-cargo-base.yml
+        - genesis/casa/casa-inputs.yml
+
+cabs:
+    casa.polcal:
+        info: Summarize dataset 
+        command: casatasks.polcal
+        _use: lib.misc.casa6.command-data
+        inputs:
+            _use: lib.params.casa.ms-field-spw-inputs
+            caltable:
+                info: Name of output gain calibration table
+                dtype: str 
+                required: true
+            intent:
+                info: Select observing intent
+                dtype: str 
+                default: ''
+            selectdata:
+                info: Other data selection parameters
+                dtype: bool 
+                default: true
+            timerange:
+                info: Select data based on time range (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            uvrange:
+                info: Select data based on baseline length (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            antenna:
+                info: Select data based on antenna/baseline (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            scan:
+                info: Scan number range (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            observation:
+                info: Select by observation ID(s) (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            msselect:
+                info: Optional complex data selection (ignore for now)
+                dtype: str 
+                default: ''
+            solint:
+                info: Solution interval
+                dtype: str 
+                default: 'inf' 
+            combine:
+                info: Data axes which to combine for solve. Options ‘’,’obs’,’scan’,’spw’,field’, or any comma-separated combination in a single string
+                dtype: str 
+                default: 'obs, scan' 
+            preavg:
+                info: Pre-averaging interval (sec)
+                dtype: float
+                default: 300.0
+            refant:
+                info: Reference antenna. You may use any antenna that is working for the whole duration of the observation.
+                dtype: str 
+                required: true
+            minblperant:
+                info: Minimum number of baselines required per antenna for each solve
+                dtype: int 
+                default: 4
+            minsnr:
+                info: Reject solutions below this SNR
+                dtype: float
+                default: 3.0
+            poltype:
+                info: Type of instrumental polarization solution
+                dtype: str
+                default: 'D+QU'
+            append:
+                info: Append solutions to the (existing) table
+                dtype: bool 
+                default: false
+            docallib:
+                info: Control means of specifying the caltables
+                dtype: bool 
+                default: false
+            callib:
+                info: Specify a file containing cal library directives. Subparameter of docallib=True
+                dtype: str 
+                default: ''
+            gaintable:
+                info: Gain calibration table(s) to apply on the fly
+                dtype: List[str] 
+                default: []
+            interp:
+                info: Interpolation parmameters (in time[,freq]) for each gaintable, as a list of strings.
+                dtype: List[str] 
+                default: []
+            spwmap:
+                info: Spectral window mappings to form for gaintable(s)
+                dtype: List[int]
+                default: []

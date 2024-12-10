@@ -30,7 +30,7 @@ RUN docker-apt-install libblitz0-dev \
 
 
 RUN mkdir -p /usr/share/casacore/data/
-RUN rsync -avz rsync://casa-rsync.nrao.edu/casa-data /usr/share/casacore/data
+RUN rsync -az rsync://casa-rsync.nrao.edu/casa-data /usr/share/casacore/data
 RUN pip install purr \
     owlcat \
     kittens \
