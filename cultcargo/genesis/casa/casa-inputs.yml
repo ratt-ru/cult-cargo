@@ -29,7 +29,7 @@ lib:
             command-data:
                 flavour:
                     kind: python
-                    interpreter_binary: python3.8
+                    interpreter_binary: python3.10
                 image: 
                     _use: vars.cult-cargo.images
                     name: casa6

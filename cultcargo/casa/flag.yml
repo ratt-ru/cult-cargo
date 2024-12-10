@@ -7,12 +7,7 @@ cabs:
     casa.flagman:
         info: Uses CASA flagmanager to save/restore/list flagversions 
         command: casatasks.flagmanager
-        flavour:
-            kind: python
-            interpreter_binary: python3.8
-        image: 
-            _use: vars.cult-cargo.images
-            name: casa6
+        _use: lib.misc.casa6.command-data
         inputs:
             _use: lib.params.casa.base-inputs
             # TODO decide on the write_parent_dir: true
@@ -25,12 +20,7 @@ cabs:
     casa.flagsummary:
         info: Uses CASA flagdata to obtain a flag summary
         command: casatasks.flagdata
-        flavour:
-            kind: python
-            interpreter_binary: python3.8
-        image: 
-            _use: vars.cult-cargo.images
-            name: casa6
+        _use: lib.misc.casa6.command-data
         inputs:
             _use: lib.params.casa.base-inputs
             spw:
@@ -50,12 +40,7 @@ cabs:
     casa.flagdata:
         info: Uses CASA flagdata to perform flagging for different modes.
         command: casatasks.flagdata
-        flavour:
-            kind: python
-            interpreter_binary: python3.8
-        image: 
-            _use: vars.cult-cargo.images
-            name: casa6
+        _use: lib.misc.casa6.command-data
         inputs:
             _use: lib.params.casa.ms-field-spw-inputs
             #    write_parent_dir: true

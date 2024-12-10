@@ -7,12 +7,7 @@ cabs:
     casa.setjy:
         info: Uses CASA flux density calibration 
         command: casatasks.setjy
-        flavour:
-            kind: python
-            interpreter_binary: python3.8
-        image: 
-            _use: vars.cult-cargo.images
-            name: casa6
+        _use: lib.misc.casa6.command-data
         inputs:
             _use: lib.params.casa.ms-field-spw-inputs
             standard:
