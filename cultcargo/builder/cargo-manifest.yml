@@ -141,12 +141,12 @@ images:
 
   crystalball:
     versions:
-      # '0.3.0':
-      #   package: crystalball==0.3.0
-#      latest:
-#         package: crystalball  # doesn't work?
       master:
         package: git+https://github.com/caracal-pipeline/crystalball
+      '0.4.2': 
+        package: crystalball==0.4.2
+      latest:
+        package: crystalball  
 
   tricolour:
     assign:
