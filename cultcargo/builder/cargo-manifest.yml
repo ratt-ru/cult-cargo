@@ -253,6 +253,8 @@ images:
         package: git+https://github.com/caracal-pipeline/MosaicQueen
 
   spimple:
+    assign:
+      CMD: spimple-spifit --help
     versions:
       master:
         package: git+https://github.com/landmanbester/spimple.git
@@ -260,6 +262,8 @@ images:
         package: git+https://github.com/landmanbester/spimple.git@dropzweights
 
   sunblocker:
+    assign:
+      CMD: python -c 'import sunblocker'
     versions:
       '1.0.1':
         package: sunblocker==1.0.1

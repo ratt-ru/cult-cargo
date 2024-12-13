@@ -1,8 +1,7 @@
-FROM quay.io/stimela2/ddfacet:cc0.1.2
-#TODO(Developer/Maintainer has to build it)
-#FROM {REGISTRY}/{base_python_image}-{BUNDLE_VERSION}
-#
-#RUN apt-get update && \
+FROM {REGISTRY}/ddfacet:{VERSION}-cc0.1.2
+# FROM {REGISTRY}/python-base:{default_python_version}-{BUNDLE_VERSION}
+
+# RUN apt-get update && \
 #    apt-get -y install \
 #        dpkg-dev \
 #        libc-dev \
@@ -41,12 +40,12 @@ FROM quay.io/stimela2/ddfacet:cc0.1.2
 #    && rm -rf /var/lib/apt/lists/* \
 #    && rm -rf /var/cache/apt/archives 
 
-{pre_install}
+# {pre_install}
 
-#RUN {python} -mpip install --use-pep517 --no-cache-dir -U matplotlib dask-ms python-casacore casadata 
-#RUN {python} -mpip install --use-pep517 --no-cache-dir {package} {extra_deps}
+# RUN python{default_python_version} -mpip install --use-pep517 --no-cache-dir -U matplotlib dask-ms python-casacore casadata 
+# RUN python{default_python_version} -mpip install --use-pep517 --no-cache-dir {package} {extra_deps}
 
-{post_install}
+# {post_install}
 
-CMD ["DDF.py"]
+CMD DDF.py --help
 
