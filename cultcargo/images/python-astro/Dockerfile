@@ -6,5 +6,5 @@ RUN python{VERSION} -m pip install --no-cache-dir \
     owlcat dask-ms scipy omegaconf bdsf msutils \
     stimela
 
-CMD /usr/bin/python{VERSION}
+CMD python{VERSION}
 

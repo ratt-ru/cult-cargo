@@ -56,7 +56,7 @@ def run(command, cwd=None, input=None):
     args = command.split()
     result = subprocess.run(args, cwd=cwd, input=input, text=True)
     if result.returncode:
-        print(f"{command} failed with exit code {result.returncode}")
+        print(f"[bold red]{command} failed with exit code {result.returncode}[/bold red]")
         sys.exit(1)
     return 0
 
@@ -75,10 +75,12 @@ print = console.print
 @click.option('-a', '--all', is_flag=True, help='Build and/or push all images in manifest.')
 @click.option('-E', '--experimental', is_flag=True, help='Enable experimental versions.')
 @click.option('-v', '--verbose', is_flag=True, help='Be verbose.')
+@click.option('--no-tests', is_flag=True, help='Skip image tests during the list or build.')
 @click.option('--ignore-latest-tag', is_flag=True, help='Neither require nor apply latest tag.')
 @click.option('--boring', is_flag=True, help='Be boring -- no progress bar.')
 @click.argument('imagenames', type=str, nargs=-1)
 def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False, rebuild=False, boring=False,
+                no_tests=False,
                 experimental=False, ignore_latest_tag=False, verbose=False, imagenames: List[str] = []):
     if not (build or push or do_list):
         build = push = True
@@ -144,7 +146,6 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             else:
                 print(f"  [red]Failed to fetch release info: {response.status_code}[/red]")
                 sys.exit(1)
-
 
         # get registry
         def resolve_config_reference(value):
@@ -248,7 +249,7 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
             image_info = conf.images[image]
             image_vars = global_vars.copy()
             image_vars.update(IMAGE=image, **(image_info.assign or {}))
-            image_vars.setdefault("CMD", image)
+            image_vars.setdefault("CMD", f"{image} --help")
 
             path = os.path.join(global_vars.BASE_IMAGE_PATH, image).format(**image_vars)
 
@@ -329,6 +330,11 @@ def build_cargo(manifest: str, do_list=False, build=False, push=False, all=False
                     # is this the latest version that needs to be tagged
                     if image_version == tag_latest.get(image):
                         run(f"docker tag {registry}/{image}:{image_version} {registry}/{image}:{BUNDLE_VERSION}")
+                
+                # run the image tests
+                if not no_tests:
+                    print(f"Running sanity check of {full_image}")
+                    run(f"docker run {full_image}", input="")
 
                 # go push
                 if push:
