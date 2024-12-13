@@ -211,11 +211,18 @@ images:
         package: git+https://github.com/ratt-ru/CubiCal
 
   pfb-imaging:
+    assign:
+      # base image for generic Python-based packages
+      base_python_image: python-astro:3.10
+      # corresponding python binary
+      python: python3.10
     versions:
       '0.0.4':
         package: pfb-imaging==0.0.4
+      '0.0.5':
+        package: pfb-imaging==0.0.4
       latest:
-        package: git+https://github.com/ratt-ru/pfb-imaging@v0.0.5-dev
+        package: git+https://github.com/ratt-ru/pfb-imaging
       master:
         package: git+https://github.com/ratt-ru/pfb-imaging
 
