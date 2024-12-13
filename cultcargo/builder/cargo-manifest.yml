@@ -18,10 +18,12 @@ assign:
   post_install: ''
   extra_deps: ''
 
-  # base image for generic Python-based packages
-  base_python_image: python-base:3.10
-  # corresponding python binary
-  python: python3.10
+  default_python_version: '3.10'
+  # slim_python_image: python:3.10-slim
+  # # base cult image for generic Python-based packages
+  # base_python_image: python-base:3.10
+  # # corresponding python binary
+  # python: python3.10
 
 images:
   # Bare-bones base images based off kern, with updates applied
@@ -140,23 +142,26 @@ images:
         package: git+https://github.com/ratt-ru/shadeMS
 
   crystalball:
+    assign:
+      extra_deps: -U matplotlib
     versions:
-      # '0.3.0':
-      #   package: crystalball==0.3.0
-#      latest:
-#         package: crystalball  # doesn't work?
       master:
         package: git+https://github.com/caracal-pipeline/crystalball
+      '0.4.2': 
+        package: crystalball==0.4.2
+      latest:
+        package: crystalball  
 
   tricolour:
     assign:
-      base_python_image: python-base:3.8
-      python: python3.8
+      default_python_version: '3.8'
+      # python: python3.8
+      # extra_deps: -U scipy 
     #  pre_install: RUN pip uninstall -y bokeh # bokeh causes deps conflict with numpy pin in tricolour
     #  extra_deps: numpy\<1.20 # numba==0.54.0 bokeh\<3 psutil
     versions:
       '0.1.8.1':
-        package: tricolour==0.1.8
+        package: tricolour==0.1.8.1
       latest:
         package: tricolour
       master:

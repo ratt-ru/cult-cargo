@@ -6,4 +6,4 @@ RUN ln -s {entrypoint} /usr/local/bin
 
 ENV LC_ALL=C
 
-CMD {entrypoint}
+CMD {entrypoint} --help

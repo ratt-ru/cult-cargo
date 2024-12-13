@@ -1,8 +1,8 @@
-FROM {REGISTRY}/{base_python_image}-{BUNDLE_VERSION}
+FROM {REGISTRY}/python-base:{default_python_version}-{BUNDLE_VERSION}
 
 {pre_install}
 
-RUN {python} -mpip install --no-cache-dir {package} {extra_deps}
+RUN python{default_python_version} -m pip install --no-cache-dir {package} {extra_deps}
 
 {post_install}
 
