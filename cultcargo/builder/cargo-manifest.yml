@@ -19,11 +19,6 @@ assign:
   extra_deps: ''
 
   default_python_version: '3.10'
-  # slim_python_image: python:3.10-slim
-  # # base cult image for generic Python-based packages
-  # base_python_image: python-base:3.10
-  # # corresponding python binary
-  # python: python3.10
 
 images:
   # Bare-bones base images based off kern, with updates applied
@@ -79,10 +74,12 @@ images:
         dockerfile: Dockerfile.kern
       '3.1-kern8':     # frozen version
         kern_version: 8
+        post_install: ENV OPENBLAS_NUM_THREADS 1
         dockerfile: Dockerfile.kern
-      'kern9':
-        kern_version: 9
-        dockerfile: Dockerfile.kern
+      ## disabling -- needs libradler as deps
+      # 'kern9':
+      #   kern_version: 9
+      #   dockerfile: Dockerfile.kern
       ## 2.9/10 won't build with this recipe, figure it out later
       # '2.9':
       #   dockerfile: Dockerfile.build.2x
@@ -178,6 +175,8 @@ images:
         package: git+https://github.com/Mulan-94/smops
 
   msutils:
+    assign:
+      CMD: /bin/true  # no main binary as such
     versions:
       '1.2.0':
         package: msutils==1.2.0
@@ -187,6 +186,8 @@ images:
         package: git+https://github.com/SpheMakh/msutils
 
   quartical:
+    assign:
+      CMD: goquartical
     versions:
       master:
         package: git+https://github.com/ratt-ru/QuartiCal
@@ -200,6 +201,9 @@ images:
         package: quartical
 
   cubical:
+    assign:
+      CMD: gocubical --help
+      default_python_version: 3.9
     versions:
       '1.6.4':
         package: cubical==1.6.4
@@ -209,6 +213,8 @@ images:
         package: git+https://github.com/ratt-ru/CubiCal
 
   pfb-imaging:
+    assign:
+      CMD: pfb --help
     versions:
       '0.0.4':
         package: pfb-imaging==0.0.4
@@ -217,10 +223,7 @@ images:
 
   ddfacet:
     assign:
-      # base image for generic Python-based packages
-      base_python_image: python-astro:3.10
-      # corresponding python binary
-      python: python3.10
+      CMD: DDF.py --help
     versions:
       # experimental branch, Oleg only
       useapp-meerklass:
