@@ -189,16 +189,18 @@ images:
     assign:
       CMD: goquartical
     versions:
-      master:
-        package: git+https://github.com/ratt-ru/QuartiCal
       '0.2.2':
         package: quartical==0.2.2
       '0.2.3':
         package: quartical==0.2.3
       '0.2.4':
         package: quartical==0.2.4
+      '0.2.5':
+        package: quartical==0.2.5
       latest:
         package: quartical
+      master:
+        package: git+https://github.com/ratt-ru/QuartiCal
 
   cubical:
     assign:
@@ -218,8 +220,10 @@ images:
     versions:
       '0.0.4':
         package: pfb-imaging==0.0.4
-      # master:
-      #   package: git+https://github.com/ratt-ru/pfb-imaging
+      '0.0.5':
+        package: pfb-imaging==0.0.5
+      master:
+        package: git+https://github.com/ratt-ru/pfb-imaging
 
   ddfacet:
     assign:
