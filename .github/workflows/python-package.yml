@@ -48,4 +48,4 @@ jobs:
         poetry install --with builder --no-interaction
     - name: List all quay.io images
       run: |
-        poetry run build-cargo -a -l
+        poetry run build-cargo -a -l --no-tests
