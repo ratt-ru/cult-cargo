@@ -1,0 +1,297 @@
+_include:
+    - (cultcargo):
+        - genesis/cult-cargo-base.yml
+        - genesis/casa/casa-inputs.yml
+
+cabs:
+    casa.applycal:
+        info: Summarize dataset 
+        command: casatasks.applycal
+        _use: lib.misc.casa6.command-data
+        inputs:
+            _use: lib.params.casa.ms-field-spw-inputs
+            intent:
+                info: Select observing intent
+                dtype: str 
+                default: ''
+            selectdata:
+                info: Other data selection parameters
+                dtype: bool 
+                default: true
+            timerange:
+                info: Select data based on time range (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            uvrange:
+                info: Select data based on baseline length (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            antenna:
+                info: Select data based on antenna/baseline (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            scan:
+                info: Scan number range (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            observation:
+                info: Select by observation ID(s) (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            msselect:
+                info: Optional complex data selection (ignore for now)
+                dtype: str 
+                default: ''
+            docallib:
+                info: Control means of specifying the caltables
+                dtype: bool 
+                default: false
+            callib:
+                info: Specify a file containing cal library directives. Subparameter of docallib=True
+                dtype: str 
+                default: ''
+            gaintable:
+                info: Gain calibration table(s) to apply on the fly
+                dtype: List[str] 
+                default: []
+            gainfield:
+                info: Select a subset of calibrators from gaintable(s). Subparameter of callib=False
+                dtype: List[str] 
+                default: []
+            interp:
+                info: Interpolation parmameters (in time[,freq]) for each gaintable, as a list of strings.
+                dtype: List[str] 
+                default: []
+            spwmap:
+                info: Spectral window mappings to form for gaintable(s)
+                dtype: List[int]
+                default: []
+            calwt:
+                info: Calibrate data weights per gaintable.
+                dtype: List[bool]
+                default: [true]
+            parang:
+                info: Apply parallactic angle correction
+                dtype: bool 
+                default: false
+            applymode:
+                info: Calibration apply mode
+                dtype: str 
+                choices: [calflag, calflagstrict, trial, flagonly, flagonlystrict, calonly]
+                default: calflag
+            flagbackup:
+                info: Automatically back up the state of flags before the run?
+                dtype: bool 
+                default: true
+                
+
+    casa.fluxscale:
+        info: Bootstrap the flux density scale from standard calibrators 
+        command: casatasks.fluxscale
+        _use: lib.misc.casa6.command-data
+        inputs:
+            _use: lib.params.casa.base-inputs
+            caltable:
+                info: Name of input calibation table
+                dtype: str 
+                required: true
+            fluxtable:
+                info: Name of output flux-scaled calibation table
+                dtype: str 
+                required: true
+            reference:
+                info: Reference field name(s) (transfer flux scale FROM
+                dtype: str 
+                required: true
+            transfer:
+                info: Transfer field name(s) (transfer flux scale TO)
+                dtype: str 
+                default: ''
+            listfile:
+                info: Name of listfile that contains the fit information
+                dtype: str 
+                default: ''
+            append:
+                info: Append fluxscaled solutions to the fluxtable?
+                dtype: bool
+                default: false
+            refspwmap:
+                info: Vector of spectral windows enabling scaling across
+                dtype: List[int]
+                default: [-1]
+            gainthreshold:
+                info: Threshold in the input gain solutions to be used in fractional deviation from median values.
+                dtype: float
+                default: -1.0
+            antenna:
+                info: Select data based on antenna/baseline
+                dtype: str 
+                default: ''
+            timerange:
+                info: Select data based on time range
+                dtype: str 
+                default: ''
+            scan:
+                info: Scan number range
+                dtype: str 
+                default: ''
+            incremental:
+                info: Create an incremental caltable containing only gain correction factor?
+                dtype: bool
+                default: false
+            fitorder:
+                info: Polynomial order of the spectral fitting for valid flux
+                dtype: int
+                default: 1
+            display:
+                info: Display statistics and/or spectral fitting results?
+                dtype: bool
+                default: false
+                
+            
+    casa.gaincal:
+        info: Uses CASA flux density calibration 
+        command: casatasks.gaincal
+        _use: lib.misc.casa6.command-data
+        inputs:
+            _use: lib.params.casa.ms-field-spw-inputs
+            caltable:
+                info: Name of output gain calibration table
+                dtype: str 
+                required: true
+            intent:
+                info: Select observing intent
+                dtype: str 
+                default: ''
+            selectdata:
+                info: Other data selection parameters
+                dtype: bool 
+                default: true
+            timerange:
+                info: Select data based on time range (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            uvrange:
+                info: Select data based on baseline length (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            antenna:
+                info: Select data based on antenna/baseline (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            scan:
+                info: Scan number range (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            observation:
+                info: Select by observation ID(s) (subparameter of selectdata=True)
+                dtype: str 
+                default: ''
+            msselect:
+                info: Optional complex data selection (ignore for now)
+                dtype: str 
+                default: ''
+            solint:
+                info: Solution interval
+                dtype: str 
+                default: 'inf' 
+            combine:
+                info: Data axes which to combine for solve. Options ‘’,’obs’,’scan’,’spw’,field’, or any comma-separated combination in a single string
+                dtype: str 
+                default: '' 
+            preavg:
+                info: Pre-averaging interval (sec)
+                dtype: float
+                default: -1.0
+            refant:
+                info: Reference antenna. You may use any antenna that is working for the whole duration of the observation.
+                dtype: str 
+                required: true
+            refantmode:
+                info: Reference antenna mode 
+                dtype: str 
+                default: 'flex'
+            minblperant:
+                info: Minimum number of baselines required per antenna for each solve
+                dtype: int 
+                default: 4
+            minsnr:
+                info: Reject solutions below this SNR
+                dtype: float
+                default: 3.0
+            solnorm:
+                info: Normalize (squared) solution amplitudes (G, T only)
+                dtype: bool 
+                default: false
+            normtype:
+                info: Solution normalization calculation type
+                dtype: str
+                choices: [mean, median]
+                default: mean
+            gaintype:
+                info: Type of gain solution (G,T,GSPLINE,K,KCROSS)
+                dtype: str
+                choices: [G,T,GSPLINE,K,KCROSS]
+                default: G
+            # smodel:
+            #   info: Point source Stokes parameters for source model (experimental).
+            calmode:
+                info: Type of solution” ('ap', 'p', 'a')
+                dtype: str
+                choices: [ap, p, a]
+                default: ap
+            solmode:
+                info: Robust solving mode Options ‘’, ‘L1’, ‘R’, ‘L1R’
+                dtype: str
+                choices: [ '', L1, R, L1R ]
+                default: ''
+            rmsthresh:
+                info: RMS Threshold sequence. Subparameter of solmode=’R’ or ‘L1R’
+                dtype: List[float]
+                default: []
+            corrdepflags:
+                info: See CASA docs
+                dtype: bool 
+                default: false
+            append:
+                info: Append solutions to the (existing) table
+                dtype: bool 
+                default: false
+            splinetime:
+                info: Spline timescale(sec); All spw's are first averaged. Subparameter of gaintype=’GSPLINE’
+                dtype: float
+                default: 3600.0
+            npointaver:
+                info: Tune phase-wrapping algorithm.
+                dtype: int
+                default: 3
+            phasewrap:
+                info: Wrap the phase for jumps greater than this value (degrees)
+                dtype: float
+                default: 180.0
+            docallib:
+                info: Control means of specifying the caltables
+                dtype: bool 
+                default: false
+            callib:
+                info: Specify a file containing cal library directives. Subparameter of docallib=True
+                dtype: str 
+                default: ''
+            gaintable:
+                info: Gain calibration table(s) to apply on the fly
+                dtype: List[str] 
+                default: []
+            interp:
+                info: Interpolation parmameters (in time[,freq]) for each gaintable, as a list of strings.
+                dtype: List[str] 
+                default: []
+            spwmap:
+                info: Spectral window mappings to form for gaintable(s)
+                dtype: List[int]
+                default: []
+            parang:
+                info: Apply parallactic angle correction
+                dtype: bool 
+                default: false
+
+         

@@ -6,18 +6,18 @@ inputs:
     info: Path to measurement set
   scans:
     dtype: List[int]
-    info: List of SCAN_NUMBERS to image. Defaults to all. Input as string eg. '[0,2]'
-      if running from CLI
+    info: List of SCAN_NUMBERS to image. Defaults to all. Input as comma separated
+      list 0,2 if running from CLI
   ddids:
     dtype: List[int]
-    info: List of DATA_DESC_ID's to images. Defaults to all. Input as string eg. '[0,1]'
-      if running from CLI
+    info: List of DATA_DESC_ID's to images. Defaults to all. Input as comma separated
+      list 0,2 if running from CLI
   fields:
     dtype: List[int]
-    info: List of FIELD_ID's to image. Defaults to all. Input as string eg. '[0,1,2]'
-      if running from CLI
+    info: List of FIELD_ID's to image. Defaults to all. Input as comma separated list
+      0,2 if running from CLI
   freq-range:
-    dtype: str
+    dtype: Optional[str]
     info: Frequency range to image in Hz. Specify as a string with colon delimiter
       eg. '1e9:1.1e9'
   overwrite:
@@ -31,7 +31,9 @@ inputs:
     dtype: str
     default: DATA
     abbreviation: dc
-    info: Data column to image. Must be the same across MSs
+    info: Data column to image. Must be the same across MSs. Simple arithmetic is
+      supported eg. 'CORRECTED_DATA-MODEL_DATA'. When gains are present this column
+      will be corrected.
   weight-column:
     dtype: str
     abbreviation: wc
@@ -47,13 +49,9 @@ inputs:
     abbreviation: fc
     info: Column containing data flags. Must be the same across MSs
   gain-table:
-    dtype: List[str]
+    dtype: List[URI]
     info: Path to Quartical gain table containing NET gains. There must be a table
-      for each MS and glob(ms) and glob(gt) should match up
-  gain-term:
-    dtype: str
-    default: NET
-    info: Which gain term to use. Default is NET
+      for each MS and glob(ms) and glob(gt) should match up when running from CLI.
   integrations-per-image:
     dtype: int
     abbreviation: ipi
@@ -63,8 +61,9 @@ inputs:
   channels-per-image:
     dtype: int
     abbreviation: cpi
-    default: -1
-    info: Number of channels per image. Default (-1, 0, None) -> dataset per spw.
+    default: 32
+    info: Number of channels per image for degridding resolution. Any of (-1, 0, None)
+      implies single dataset per spw.
   precision:
     dtype: str
     default: double
@@ -76,21 +75,46 @@ inputs:
     dtype: float
     default: 1.0
     info: BDA decorrelation factor. Only has an effect if less than one
-  beam-model:
-    dtype: str
-    info: Beam model to use
   max-field-of-view:
     dtype: float
-    abbreviation: fov
     default: 3.0
-    info: Field of view in degrees
+    abbreviation: max-fov
+    info: The maximum field of view that will be considered. Used to compute decorrelation
+      due to BDA.
+  beam-model:
+    dtype: str
+    info: Beam model to use. Only katbeam currently supported.
   chan-average:
     dtype: int
     default: 1
     info: Average this number if channels together
+  target:
+    dtype: str
+    info: This can be predefined celestial objects known to astropy or a string in
+      the format 'HH:MM:SS,DD:MM:SS' (note the , delimiter)
+  progressbar:
+    dtype: bool
+    default: true
+    info: Display progress. Use --no-progressbar to deactivate.
+  memory-reporting:
+    dtype: bool
+    default: false
+    info: Report worker memory as tasks complete
+  check-ants:
+    dtype: bool
+    default: false
+    info: Check that ANTENNA1 and ANTENNA2 tables are consistent with the ANTENNA
+      table.
 
   _include:
-    - (.)dist.yml
     - (.)out.yml
+    - (.)dist.yml
 
-outputs: {}
+outputs:
+  xds-out:
+    implicit: '{current.output-filename}_{current.product}.xds'
+    dtype: Directory
+    must_exist: false
+
+policies:
+  pass_missing_as_none: true

@@ -1,4 +1,4 @@
-FROM {REGISTRY}/base-cult:base-{BUNDLE_VERSION}
+FROM {REGISTRY}/base-cult:{BUNDLE_VERSION}
 
 RUN apt-get update && apt-get -y upgrade && \
     apt-get -y install libfreetype6 \
@@ -23,4 +23,4 @@ RUN apt-get update && apt-get -y upgrade && \
 
 RUN mkdir -m 777 /.casa /.matplotlib
 
-ENV LD_PRELOAD=/usr/lib/libnss_wrapper.so
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnss_wrapper.so

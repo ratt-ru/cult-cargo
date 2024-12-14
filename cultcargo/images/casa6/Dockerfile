@@ -1,7 +1,7 @@
-FROM {REGISTRY}/base-cult:{BUNDLE_VERSION}
+FROM {REGISTRY}/python-base:{default_python_version}-{BUNDLE_VERSION}
 
 RUN apt-get update && apt-get -y upgrade && \
-    apt-get -y install xvfb python3-casacore python3-pip libblas-dev liblapack-dev \
+    apt-get -y install xvfb python3-casacore libblas-dev liblapack-dev \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt/archives 
 
@@ -13,9 +13,8 @@ COPY casasiteconfig.py /opt/casa
 
 ENV CASASITECONFIG /opt/casa/casasiteconfig.py
 
-RUN ln -s /usr/bin/python3.8 /usr/bin/python  
+RUN python{default_python_version} -m casaconfig --measurespath /opt/casa/data --update-all
 
-CMD /usr/bin/python3.8
+RUN python{default_python_version} -m casaconfig --measurespath /opt/casa/data --current-data
 
-
-
+CMD python{default_python_version}

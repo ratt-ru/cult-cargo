@@ -1,9 +1,9 @@
-FROM {REGISTRY}/ddfacet:{BUNDLE_VERSION}
+FROM {REGISTRY}/ddfacet:{VERSION}-{BUNDLE_VERSION}
 
-{pre_install}
+# {pre_install}
 
-RUN {python} -mpip install --use-pep517 --no-cache-dir {package} {extra_deps}
+# RUN {python} -mpip install --use-pep517 --no-cache-dir {package} {extra_deps}
 
-{post_install}
+# {post_install}
 
-CMD ["kMS.py"]
+CMD kMS.py --help

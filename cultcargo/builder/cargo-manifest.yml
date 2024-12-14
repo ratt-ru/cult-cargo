@@ -18,15 +18,41 @@ assign:
   post_install: ''
   extra_deps: ''
 
-  # base image for generic Python-based packages
-  base_python_image: python-astro:3.9
-  # corresponding python binary
-  python: python3.9
+  default_python_version: '3.10'
 
 images:
+  # Bare-bones base images based off kern, with updates applied
+  # These are suitable as base images for binary installs
   base-cult:
     versions:
-      base: {}
+      'kern7':
+        kern_version: 7
+      'kern8':
+        kern_version: 8
+      'kern9':
+        kern_version: 9
+
+  # This adds a specific version of python on top of a base image, and upgrades pip
+  # These are suitable as base images for pip installs
+  python-base:
+    versions:
+#      '3.12': {}   # having some trouble with 3.12 so ignoring it for now
+      '3.11': {}
+      '3.10': {}
+      '3.9': {}
+      '3.8': {}
+
+  # Python base will all the astro goodies (and stimela) thrown in
+  # This is the default image stimela uses for python cabs
+  python-astro:
+    versions:
+#      '3.12': {}
+      '3.11': {}
+      '3.10': {}
+      '3.9': {}
+      '3.8': {}
+
+  # Package-specific images follow
 
   aimfast:
     versions:
@@ -42,33 +68,37 @@ images:
 
   wsclean:
     versions:
-      kern7:
-        dockerfile: Dockerfile.kern7
-      ## 2.9 won't build with this recipe, figure it out later
+      # these versions shipped in KERN
+      '2.10.1-kern7':  # frozen version
+        kern_version: 7
+        dockerfile: Dockerfile.kern
+      '3.1-kern8':     # frozen version
+        kern_version: 8
+        post_install: ENV OPENBLAS_NUM_THREADS 1
+        dockerfile: Dockerfile.kern
+      ## disabling -- needs libradler as deps
+      # 'kern9':
+      #   kern_version: 9
+      #   dockerfile: Dockerfile.kern
+      ## 2.9/10 won't build with this recipe, figure it out later
       # '2.9':
       #   dockerfile: Dockerfile.build.2x
       #   tag: wsclean2.9
-      '2.10.1':
-        dockerfile: Dockerfile.build
-        tag: v2.10.1
+      # '2.10.1':
+      #   dockerfile: Dockerfile.build.2x
+      #   tag: v2.10.1
       '3.0.1':
         dockerfile: Dockerfile.build
-        tag: v3.0.1
       '3.1':
         dockerfile: Dockerfile.build
-        tag: v3.1
       '3.2':
         dockerfile: Dockerfile.build
-        tag: v3.2
       '3.3':
         dockerfile: Dockerfile.build
-        tag: v3.3
-
-  python-astro:
-    versions:
-      '3.10': {}
-      '3.9': {}
-      '3.8': {}
+      '3.4':
+        dockerfile: Dockerfile.build
+      '3.5':
+        dockerfile: Dockerfile.build
 
   casa:
     assign:
@@ -85,10 +115,10 @@ images:
 
   casa6:
     versions:
-      '6.5':
-          wheel_version: 6.5.6.22
+      # '6.5':  # deprecated
+      #     wheel_version: 6.5.6.22
       '6.6':
-          wheel_version: 6.6.3.22
+          wheel_version: 6.6.5.31
 
   breizorro:
     versions:
@@ -109,24 +139,30 @@ images:
         package: git+https://github.com/ratt-ru/shadeMS
 
   crystalball:
+    assign:
+      extra_deps: -U matplotlib
     versions:
-      # '0.3.0':
-      #   package: crystalball==0.3.0
-#      latest:
-#         package: crystalball  # doesn't work?
       master:
         package: git+https://github.com/caracal-pipeline/crystalball
+      '0.4.2': 
+        package: crystalball==0.4.2
+      latest:
+        package: crystalball  
 
   tricolour:
-    # assign:
+    assign:
+      default_python_version: '3.8'
+      # python: python3.8
+      # extra_deps: -U scipy 
     #  pre_install: RUN pip uninstall -y bokeh # bokeh causes deps conflict with numpy pin in tricolour
-    #   extra_deps: numpy\<1.20 numba==0.54.0 bokeh\<3 psutil
+    #  extra_deps: numpy\<1.20 # numba==0.54.0 bokeh\<3 psutil
     versions:
       '0.1.8.1':
-        package: tricolour==0.1.8
+        package: tricolour==0.1.8.1
       latest:
         package: tricolour
       master:
+        # pre_install: RUN pip install -U
         package: git+https://github.com/ratt-ru/tricolour
 
   smops:
@@ -139,6 +175,8 @@ images:
         package: git+https://github.com/Mulan-94/smops
 
   msutils:
+    assign:
+      CMD: /bin/true  # no main binary as such
     versions:
       '1.2.0':
         package: msutils==1.2.0
@@ -148,15 +186,26 @@ images:
         package: git+https://github.com/SpheMakh/msutils
 
   quartical:
+    assign:
+      CMD: goquartical
     versions:
       '0.2.2':
         package: quartical==0.2.2
+      '0.2.3':
+        package: quartical==0.2.3
+      '0.2.4':
+        package: quartical==0.2.4
+      '0.2.5':
+        package: quartical==0.2.5
       latest:
         package: quartical
       master:
         package: git+https://github.com/ratt-ru/QuartiCal
 
   cubical:
+    assign:
+      CMD: gocubical --help
+      default_python_version: 3.9
     versions:
       '1.6.4':
         package: cubical==1.6.4
@@ -165,17 +214,20 @@ images:
       master:
         package: git+https://github.com/ratt-ru/CubiCal
 
-  pfb-clean:
+  pfb-imaging:
+    assign:
+      CMD: pfb --help
     versions:
-      latest:
-        package: git+https://github.com/ratt-ru/pfb-clean
+      '0.0.4':
+        package: pfb-imaging==0.0.4
+      '0.0.5':
+        package: pfb-imaging==0.0.5
+      master:
+        package: git+https://github.com/ratt-ru/pfb-imaging
 
   ddfacet:
     assign:
-      # base image for generic Python-based packages
-      base_python_image: python-astro:3.10
-      # corresponding python binary
-      python: python3.10
+      CMD: DDF.py --help
     versions:
       # experimental branch, Oleg only
       useapp-meerklass:
@@ -201,6 +253,8 @@ images:
         package: git+https://github.com/caracal-pipeline/MosaicQueen
 
   spimple:
+    assign:
+      CMD: spimple-spifit --help
     versions:
       master:
         package: git+https://github.com/landmanbester/spimple.git
@@ -208,6 +262,8 @@ images:
         package: git+https://github.com/landmanbester/spimple.git@dropzweights
 
   sunblocker:
+    assign:
+      CMD: python -c 'import sunblocker'
     versions:
       '1.0.1':
         package: sunblocker==1.0.1

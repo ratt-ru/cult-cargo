@@ -25,14 +25,14 @@ pfb.degrid:
   _include:
     - (.)degrid.yaml
 
-pfb.clean:
-  command: pfb.workers.clean.clean
+pfb.kclean:
+  command: pfb.workers.kclean.kclean
   flavour: python
   policies:
     pass_missing_as_none: true
 
   _include:
-    - (.)clean.yaml
+    - (.)kclean.yaml
 
 pfb.restore:
   command: pfb.workers.restore.restore
@@ -43,23 +43,14 @@ pfb.restore:
   _include:
     - (.)restore.yaml
 
-pfb.fwdbwd:
-  command: pfb.workers.fwdbwd.fwdbwd
+pfb.fluxtractor:
+  command: pfb.workers.fluxtractor.fluxtractor
   flavour: python
   policies:
     pass_missing_as_none: true
 
   _include:
-    - (.)fwdbwd.yaml
-
-pfb.forward:
-  command: pfb.workers.forward.forward
-  flavour: python
-  policies:
-    pass_missing_as_none: true
-
-  _include:
-    - (.)forward.yaml
+    - (.)fluxtractor.yaml
 
 pfb.spotless:
   command: pfb.workers.spotless.spotless
@@ -70,6 +61,15 @@ pfb.spotless:
   _include:
     - (.)spotless.yaml
 
+pfb.sara:
+  command: pfb.workers.sara.sara
+  flavour: python
+  policies:
+    pass_missing_as_none: true
+
+  _include:
+    - (.)sara.yaml
+
 pfb.model2comps:
   command: pfb.workers.model2comps.model2comps
   flavour: python
@@ -78,3 +78,21 @@ pfb.model2comps:
 
   _include:
     - (.)model2comps.yaml
+
+pfb.hci:
+  command: pfb.workers.hci.hci
+  flavour: python
+  policies:
+    pass_missing_as_none: true
+
+  _include:
+    - (.)hci.yaml
+
+pfb.smoovie:
+  command: pfb.workers.smoovie.smoovie
+  flavour: python
+  policies:
+    pass_missing_as_none: true
+
+  _include:
+    - (.)smoovie.yaml

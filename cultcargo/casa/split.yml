@@ -1,0 +1,41 @@
+_include:
+    - (cultcargo):
+        - genesis/cult-cargo-base.yml
+        - genesis/casa/casa-inputs.yml
+
+cabs:
+            
+    casa.split:
+        info: Split casa task. 
+        command: casatasks.split
+        _use: lib.misc.casa6.command-data
+        inputs:
+            _use: lib.params.casa.ms-field-spw-inputs
+            ms:
+                writable: false
+            uvrange:
+                info: Select data by baseline length
+                dtype: str 
+                default: ''
+            datacolumn:
+                info: Which data column(s) to process
+                dtype: str 
+                choices: 
+                    - data
+                    - corrected
+                    - model
+                default: corrected
+            width:
+                info: Number of channels to average to form one output channel
+                dtype: int 
+            timebin:
+                info: Bin width for time averaging
+                dtype: str 
+        outputs:
+            output-ms:
+                info: Name of output MS
+                dtype: MS
+                required: true
+                mkdir: false
+                nom_de_guerre: outputvis
+

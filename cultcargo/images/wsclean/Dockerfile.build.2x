@@ -1,19 +1,23 @@
-FROM {REGISTRY}/base-cult:base-{BUNDLE_VERSION}
+FROM kernsuite/base:7
 
-RUN apt-get update && \
-    apt-get -y install casacore-dev libgsl-dev libhdf5-dev \
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get -y upgrade && \
+    apt-get install -y apt-utils \
+        python3 python3-pip wget git libfreetype6 \        
+        casacore-dev libgsl-dev libhdf5-dev \
         libfftw3-dev libboost-dev \
         libboost-date-time-dev libboost-filesystem-dev \
         libboost-program-options-dev libboost-system-dev \
         libcfitsio-dev cmake g++ cmake \
-        libblas-dev liblapack-dev && \
-    rm -rf /var/lib/apt/lists/* \
+        libblas-dev liblapack-dev \
+    && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/cache/apt/archives 
 
 RUN git clone https://gitlab.com/aroffringa/wsclean.git && \
     (cd wsclean && git checkout {tag}) && \
     mkdir build-wsclean && \
-    (cd build-wsclean && cmake ../wsclean/wsclean && make -j16) && \
+    (cd build-wsclean && cmake ../wsclean && make -j16) && \
     mkdir build-chgcentre && \
     (cd build-chgcentre && cmake ../wsclean/chgcentre && make -j16) && \
     ln -s /build/wsclean /usr/local/bin && \
