@@ -4,7 +4,7 @@ _include:
 cabs:
   crystalball:
     name: crystalball
-    image: 
+    image:
       _use: vars.cult-cargo.images
       name: crystalball
     command: crystalball
@@ -17,13 +17,27 @@ cabs:
         required: true
         policies:
           positional: true
+      field:
+        info: The field name or id to be predicted. If not provided, only a single field may be present in the MS.
+        dtype: str
       output-column:
         dtype: str
         required: true
       sky-model:
+        info: Wsclean format sky model file.
         dtype: File
         required: true
       within:
+        info: A JS9 region file to constrain the model. Only sources within those regions will be included.
         dtype: File
       num-sources:
+        info: Select only N brightest sources
         dtype: int
+      points-only:
+        info: Select only point-type sources
+        dtype: bool
+        default: false
+      memory-fraction:
+        info: Fraction of system RAM that can be used. Used when setting automatically the chunk size.
+        dtype: float
+        default: 0.1
